@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Earn Pro - Full Featured</title>
+    <!-- ডাইনামিক স্ক্রিপ্ট লোডার হেড ট্যাগে কাজ করবে -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            --card-bg: rgba(30, 41, 59, 0.85);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #6366f1;
+            --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --danger: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --nav-bg: rgba(15, 23, 42, 0.95);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding-bottom: 90px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            min-height: 100vh;
+            position: relative;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 0 40px rgba(0,0,0,0.5);
+        }
+
+        .block-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #0f172a; color: #f8fafc; z-index: 9999;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            padding: 30px; text-align: center;
+        }
+        .block-card {
+            background: #1e293b; padding: 30px 20px; border-radius: 24px;
+            width: 100%; max-width: 380px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid var(--card-border);
+        }
+        .block-icon { font-size: 50px; margin-bottom: 15px; }
+
+        .header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 20px; background: var(--card-bg);
+            border-bottom: 1px solid var(--card-border); position: sticky; top: 0; z-index: 100;
+        }
+
+        .profile-info { display: flex; align-items: center; gap: 12px; }
+        .avatar {
+            width: 45px; height: 45px; border-radius: 50%; background: var(--accent-gradient);
+            display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; overflow: hidden;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+        .user-text h4 { font-size: 14px; font-weight: 600; }
+        .user-text span { font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 4px; }
+
+        .content { padding: 20px; }
+        .page { display: none; }
+        .page.active { display: block; }
+
+        .card {
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            padding: 20px; border-radius: 20px; margin-bottom: 16px; backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .welcome-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(168, 85, 247, 0.15) 100%);
+            border: 1px solid rgba(99, 102, 241, 0.3); text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--accent-gradient); color: white; border: none;
+            padding: 14px; font-size: 15px; font-weight: 600; border-radius: 14px;
+            cursor: pointer; width: 100%; box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+            transition: 0.2s; margin-top: 10px; text-decoration: none; display: inline-block; text-align: center;
+        }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-primary:active { transform: scale(0.98); }
+
+        .btn-youtube {
+            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 15px; }
+        .stat-item { background: rgba(15, 23, 42, 0.4); padding: 14px; border-radius: 14px; border: 1px solid var(--card-border); }
+        .stat-item span { font-size: 12px; color: var(--text-secondary); display: block; margin-bottom: 4px; }
+        .stat-item h3 { font-size: 18px; font-weight: 700; color: var(--text-primary); }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.75); backdrop-filter: blur(8px);
+            display: none; justify-content: center; align-items: center; z-index: 1000;
+        }
+        .modal-card {
+            background: #1e293b; padding: 30px 20px; border-radius: 24px;
+            width: 85%; max-width: 340px; border: 1px solid var(--card-border);
+            text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+        .modal-icon {
+            width: 70px; height: 70px; border-radius: 50%; margin: 0 auto 15px auto;
+            display: flex; align-items: center; justify-content: center; font-size: 32px;
+        }
+        .modal-icon.success { background: rgba(16, 185, 129, 0.2); color: var(--success); border: 2px solid var(--success); }
+        .modal-icon.error { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 2px solid var(--danger); }
+
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 480px; background: var(--nav-bg);
+            backdrop-filter: blur(20px); display: flex; justify-content: space-around;
+            padding: 12px 0; border-top: 1px solid var(--card-border); z-index: 100;
+        }
+        .nav-item { background: none; border: none; color: var(--text-secondary); font-size: 12px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .nav-item svg { width: 22px; height: 22px; fill: currentColor; }
+        .nav-item.active { color: var(--accent); }
+    </style>
+</head>
+<body>
+
+<div id="blockScreen" class="block-screen">
+    <div class="block-card">
+        <div class="block-icon" id="blockIcon">🚫</div>
+        <h3 id="blockTitle" style="font-size: 18px; color: #f8fafc; margin-bottom: 10px; font-weight: 700;">নোটিশ</h3>
+        <p id="blockDesc" style="font-size: 13px; color: #94a3b8; line-height: 1.5; margin-bottom: 15px;"></p>
+        <div id="blockActionButtons" style="display: flex; flex-direction: column; gap: 8px;"></div>
+    </div>
+</div>
+
+<div class="app-container">
+    <div class="header">
+        <div class="profile-info">
+            <div class="avatar" id="headerAvatar">G</div>
+            <div class="user-text">
+                <h4 id="headerName">User</h4>
+                <span id="headerSub">🏅 0.00 Pts</span>
+            </div>
+        </div>
+        <button class="btn-primary" style="padding: 6px 14px; font-size: 12px; width: auto; margin-top:0;" onclick="openLoginModal()" id="headerLoginBtn">Login</button>
+    </div>
+
+    <div class="content">
+        <!-- HOME PAGE -->
+        <div id="homePage" class="page active">
+            <div class="card welcome-card">
+                <h2 id="welcomeMsg">Welcome!</h2>
+                <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">টেলিগ্রাম বট ওয়েবে কাজ করে আয় করুন।</p>
+                <button class="btn-primary" onclick="handleStartEarning()">🚀 Start Earning Now</button>
+                <button class="btn-primary btn-youtube" onclick="openYouTubeTask()" style="margin-top: 10px;">▶️ কাজের ভিডিও (YouTube)</button>
+            </div>
+
+            <div class="card">
+                <h4 style="margin-bottom: 10px; font-size: 15px;">📊 Statistics</h4>
+                <div class="stat-grid">
+                    <div class="stat-item">
+                        <span>Total Earnings</span>
+                        <h3 id="totalEarnings">0.00</h3>
+                    </div>
+                    <div class="stat-item">
+                        <span>Total Click</span>
+                        <h3 id="totalClick">0</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EARN PAGE -->
+        <div id="earnPage" class="page">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <span style="font-size: 14px; font-weight: 600;">Today's Progress</span>
+                    <span style="color: var(--success); font-size: 12px; font-weight: 700;">🟢 Live Mode</span>
+                </div>
+                <div class="stat-grid" style="margin-bottom: 20px;">
+                    <div class="stat-item">
+                        <span>Today Ad Limit</span>
+                        <h3 id="todayViewsDisplay">0 / 800</h3>
+                    </div>
+                    <div class="stat-item">
+                        <span>Hourly Ad Limit</span>
+                        <h3 id="hourlyViewsDisplay">0 / 300</h3>
+                    </div>
+                </div>
+                <button class="btn-primary" id="watchBtn" onclick="startAdProcess()">Watch Ads Full</button>
+                <button class="btn-primary btn-youtube" onclick="openYouTubeTask()">▶️ Watch YouTube Video Task</button>
+                <p style="font-size: 12px; color: var(--warning); margin-top: 12px; text-align: center;">📢 Notice: বিজ্ঞাপন সম্পূর্ণ দেখে টাস্ক সম্পন্ন করুন।</p>
+            </div>
+        </div>
+
+        <!-- PROFILE PAGE -->
+        <div id="profilePage" class="page">
+            <div class="card" style="text-align: center;">
+                <div class="avatar" id="profileAvatar" style="width: 70px; height: 70px; margin: 0 auto 12px auto; font-size: 26px;">G</div>
+                <h3 id="profileName" style="font-size: 18px; margin-bottom: 4px;">User</h3>
+                <p id="profilePhone" style="color: var(--text-secondary); font-size: 13px; margin-bottom: 15px;">No Account Linked</p>
+                <button class="btn-primary" onclick="openLoginModal()" id="profileLoginBtn">Login with Smart Earn Number</button>
+                <button class="btn-primary" style="background: var(--danger); margin-top: 10px; display: none;" id="logoutBtn" onclick="logoutAccount()">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal-overlay" id="customModal">
+        <div class="modal-card">
+            <div class="modal-icon success">✓</div>
+            <h3 style="font-size: 20px; margin-bottom: 8px;">Claim সফল হয়েছে!</h3>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px;">আপনার পয়েন্ট যোগ হয়ে গেছে ✅</p>
+            <button class="btn-primary" onclick="closeModalAndApplyPoint()">ঠিক আছে</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="errorModal">
+        <div class="modal-card">
+            <div class="modal-icon error">❌</div>
+            <h3 style="font-size: 20px; margin-bottom: 8px;">নিয়ম অমান্য!</h3>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">আপনি নির্দিষ্ট সময়ের আগেই বিজ্ঞাপন থেকে বের হয়েছেন! নিয়ম মেনে কাজ করুন।</p>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button class="btn-primary btn-youtube" onclick="openYouTubeTaskFromError()">▶️ কাজের ভিডিও দেখুন</button>
+                <button class="btn-primary" onclick="closeErrorModal()">বুঝেছি</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-card">
+            <h3>Telegram Bot Login</h3>
+            <p style="font-size: 12px; color: var(--text-secondary); margin-top: 5px;">স্মার্ট আর্ন মেইন অ্যাপের নম্বর দিন:</p>
+            <input type="tel" id="mainAppPhone" placeholder="Enter Phone Number" style="width: 100%; padding: 12px; background: #0f172a; border: 1px solid var(--card-border); border-radius: 10px; color: white; margin: 15px 0; font-size: 15px; outline: none; text-align: center;">
+            <button class="btn-primary" onclick="verifyLogin()" style="margin-top:0;">লগইন করুন</button>
+            <button class="btn-primary" style="background: none; color: var(--text-secondary); margin-top: 8px;" onclick="closeLoginModal()">বাতিল</button>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <button class="nav-item active" onclick="switchPage('homePage')" id="navHome"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Home</button>
+        <button class="nav-item" onclick="switchPage('earnPage')"><svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>Earn</button>
+        <button class="nav-item" onclick="switchPage('profilePage')" id="navProfile"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>Profile</button>
+    </div>
+</div>
+
+<script>
+    let state = {
+        isLoggedIn: false,
+        phone: '',
+        name: 'User',
+        points: 0.00,
+        totalClick: 0,
+        todayClick: 0,
+        hourlyViews: 0,
+        maxTodayViews: 800,
+        maxHourlyViews: 300,
+        adminPointRate: 1.50,
+        youtubeUrl: '',
+        taskTime: 5
+    };
+
+    let adStartTime = 0;
+    let isWaitingForReturn = false;
+    let isCheckingProcess = false;
+    let globalAllowedList = [];
+
+    const countryTimeZones = {
+        'US': ['America/New_York', 'America/Chicago', 'America/Denver', 'America/Los_Angeles', 'America/Anchorage', 'America/Honolulu'],
+        'CA': ['America/Toronto', 'America/Vancouver', 'America/Edmonton', 'America/Winnipeg'],
+        'GB': ['Europe/London'],
+        'AU': ['Australia/Sydney', 'Australia/Melbourne', 'Australia/Brisbane', 'Australia/Perth'],
+        'NZ': ['Pacific/Auckland'],
+        'DE': ['Europe/Berlin'],
+        'CH': ['Europe/Zurich'],
+        'NO': ['Europe/Oslo'],
+        'SE': ['Europe/Stockholm'],
+        'DK': ['Europe/Copenhagen'],
+        'NL': ['Europe/Amsterdam'],
+        'FI': ['Europe/Helsinki'],
+        'FR': ['Europe/Paris'],
+        'JP': ['Asia/Tokyo'],
+        'SG': ['Asia/Singapore']
+    };
+
+    const countryDetails = {
+        'US': { name: 'United States', flag: '🇺🇸' },
+        'CA': { name: 'Canada', flag: '🇨🇦' },
+        'GB': { name: 'United Kingdom', flag: '🇬🇧' },
+        'AU': { name: 'Australia', flag: '🇦🇺' },
+        'NZ': { name: 'New Zealand', flag: '🇳🇿' },
+        'DE': { name: 'Germany', flag: '🇩🇪' },
+        'CH': { name: 'Switzerland', flag: '🇨🇭' },
+        'NO': { name: 'Norway', flag: '🇳🇴' },
+        'SE': { name: 'Sweden', flag: '🇸🇪' },
+        'DK': { name: 'Denmark', flag: '🇩🇰' },
+        'NL': { name: 'Netherlands', flag: '🇳🇱' },
+        'FI': { name: 'Finland', flag: '🇫🇮' },
+        'FR': { name: 'France', flag: '🇫🇷' },
+        'JP': { name: 'Japan', flag: '🇯🇵' },
+        'SG': { name: 'Singapore', flag: '🇸🇬' }
+    };
+
+    async function initAppSecurity() {
+        try {
+            let res = await fetch('https://smart-earn-official-default-rtdb.firebaseio.com/adminSettings.json');
+            let settings = await res.json();
+
+            if (!settings) {
+                showBlockScreen("🛡️ কনফিগারেশন এরর", "এডমিন সেটিংস ডাটাবেজে পাওয়া যায়নি।", []);
+                return;
+            }
+
+            if (settings.botStatus === false || settings.botStatus === "off") {
+                showBlockScreen("🛑 বট সাময়িকভাবে বন্ধ আছে!", "বর্তমানে কাজের সিস্টেম বন্ধ রাখা হয়েছে।", []);
+                return;
+            }
+
+            let zoneId = settings.monetagZoneId || "11383687";
+            let sdkFunc = settings.monetagSdkFunction || "show_11383687";
+            
+            window.monetagSdkFuncName = sdkFunc;
+
+            let existingScript = document.getElementById('dynamicMonetagSdk');
+            if (!existingScript) {
+                let script = document.createElement('script');
+                script.id = 'dynamicMonetagSdk';
+                script.src = '//libtl.com/sdk.js';
+                script.setAttribute('data-zone', zoneId);
+                script.setAttribute('data-sdk', sdkFunc);
+                document.head.appendChild(script);
+            }
+
+            if(settings.maxTodayViews) state.maxTodayViews = settings.maxTodayViews;
+            if(settings.maxHourlyViews) state.maxHourlyViews = settings.maxHourlyViews;
+            if(settings.adminPointRate) state.adminPointRate = parseFloat(settings.adminPointRate);
+            if(settings.youtubeUrl) state.youtubeUrl = settings.youtubeUrl;
+            if(settings.taskTime) state.taskTime = parseInt(settings.taskTime);
+
+            globalAllowedList = settings.allowedCountries;
+            
+            if (!globalAllowedList || !Array.isArray(globalAllowedList) || globalAllowedList.length === 0) {
+                showBlockScreen("🛡️ দেশ সীমাবদ্ধতা (Country Restricted)", "এডমিন প্যানেল থেকে কোনো দেশ সিলেক্ট করা হয়নি।", []);
+                return;
+            }
+
+            await performFullSecurityChecks();
+            loadSavedSession();
+            
+            setInterval(async () => {
+                await performFullSecurityChecks(true);
+            }, 5000);
+
+        } catch (e) {
+            loadSavedSession();
+        }
+    }
+
+    async function performFullSecurityChecks(isBackground = false) {
+        if (!navigator.onLine) {
+            showBlockScreen("⚠️ ইন্টারনেট সংযোগ বিচ্ছিন্ন", "আপনার ইন্টারনেট সংযোগ নেই। দয়া করে আপনার মোবাইল ডাটা বা ওয়াইফাই চেক করুন।", []);
+            return false;
+        }
+
+        let connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        if (connection) {
+            if (connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
+                showBlockScreen("⚠️ অতি ধীরগতির ইন্টারনেট (2G/E)", "আপনার সিমের নেটওয়ার্ক খুব দুর্বল (2G বা E)। ভালো ইন্টারনেটের মাধ্যমে কাজ করুন।", []);
+                return false;
+            }
+            if (connection.downlink && connection.downlink < 0.1) {
+                showBlockScreen("⚠️ নেটওয়ার্ক সমস্যা ।", "আপনার ইন্টারনেট স্পিড প্রায় শূন্য। এমবি শেষ হয়ে থাকতে পারে বা ওয়াইফাইতে ইন্টারনেট নেই।", []);
+                return false;
+            }
+        }
+
+        try {
+            let controller = new AbortController();
+            let timeoutId = setTimeout(() => controller.abort(), 4000);
+            let pingTest = await fetch('https://www.google.com/favicon.ico', { method: 'HEAD', mode: 'no-cors', signal: controller.signal });
+            clearTimeout(timeoutId);
+        } catch (err) {
+            showBlockScreen("⚠️ নেটওয়ার্ক ত্রুটি / নো ইন্টারনেট", "আপনার ওয়াইফাই অন নেই বা মোবাইল ডাটা অন নেই । নেট ঠিক করে আবার চেষ্টা করুন।", []);
+            return false;
+        }
+
+        let ipApis = [
+            'https://ipwho.is/',
+            'https://ipapi.co/json/',
+            'https://freeipapi.com/api/json'
+        ];
+        let ipData = null;
+
+        for (let apiUrl of ipApis) {
+            try {
+                let ipRes = await fetch(apiUrl);
+                let data = await ipRes.json();
+                let country = data.country_code || data.country_code_iso2 || data.country_code2 || data.country;
+                if (data && country) {
+                    ipData = { resolved_country: country.toUpperCase().trim() };
+                    break;
+                }
+            } catch (err) {
+                continue;
+            }
+        }
+
+        if (!ipData || !ipData.resolved_country) {
+            return true; 
+        }
+
+        let userCountry = ipData.resolved_country;
+        let allowedUpperList = globalAllowedList.map(c => c.toUpperCase().trim());
+        let isCountryAllowed = allowedUpperList.includes('ALL') || allowedUpperList.includes(userCountry);
+
+        if (!isCountryAllowed) {
+            let allowedStr = globalAllowedList.map(c => {
+                let info = countryDetails[c];
+                return info ? `${info.flag} ${info.name}` : c;
+            }).join(', ');
+
+            let currentInfo = countryDetails[userCountry] || { name: userCountry, flag: '🌍' };
+            
+            showBlockScreen("🚫 ভিপিএন ডিসকানেক্টড / দেশ সীমাবদ্ধতা", `আপনার বর্তমান দেশ (${currentInfo.flag} <b>${currentInfo.name}</b>) অনুমোদিত নয়。<br><br><b>অনুমোদিত দেশসমূহ:</b> ${allowedStr}`, [
+                { text: "⚙️ ভিপিএন সেটিংস ঠিক করুন", link: "content://com.android.settings/action/SETTINGS" }
+            ]);
+            return false;
+        }
+
+        let deviceTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        let validZones = countryTimeZones[userCountry] || [];
+        let isTzValid = allowedUpperList.includes('ALL') || validZones.length === 0 || validZones.includes(deviceTimeZone);
+
+        if (!isTzValid) {
+            showBlockScreen("⏰ টাইম জোন মিলেনি!", `আপনার ভিপিএন দেশ এবং ফোনের টাইম জোন (${deviceTimeZone}) এক নয়। দয়া করে টাইম জোন ঠিক করুন।`, [
+                { text: "⚙️ টাইম জোন সেটিংস খুলুন", link: "content://com.android.settings/action/DATE_SETTINGS" }
+            ]);
+            return false;
+        }
+
+        let blockScreenEl = document.getElementById('blockScreen');
+        if (blockScreenEl.style.display === 'flex') {
+            blockScreenEl.style.display = 'none';
+        }
+        return true;
+    }
+
+    function showBlockScreen(title, desc, buttons = []) {
+        document.getElementById('blockTitle').innerText = title;
+        document.getElementById('blockDesc').innerHTML = desc;
+        
+        let btnContainer = document.getElementById('blockActionButtons');
+        btnContainer.innerHTML = '';
+        
+        if (buttons.length > 0) {
+            buttons.forEach(btnInfo => {
+                let a = document.createElement('a');
+                a.href = btnInfo.link;
+                a.className = "btn-primary";
+                a.style.background = "var(--warning)";
+                a.style.color = "#000";
+                a.style.marginTop = "5px";
+                a.innerText = btnInfo.text;
+                
+                a.onclick = function(e) {
+                    try {
+                        window.location.href = btnInfo.link;
+                    } catch (err) {
+                        alert("দয়া করে আপনার ফোনের সেটিংস থেকে ভিপিএন বা নেটওয়ার্ক ঠিক করে নিন।");
+                    }
+                };
+                
+                btnContainer.appendChild(a);
+            });
+        }
+        
+        document.getElementById('blockScreen').style.display = 'flex';
+    }
+
+    function loadSavedSession() {
+        let savedPhone = localStorage.getItem('smart_earn_phone');
+        if (savedPhone) {
+            state.isLoggedIn = true;
+            state.phone = savedPhone;
+            fetchUserDataFromFirebase(savedPhone);
+        }
+        updateUI();
+    }
+
+    async function fetchUserDataFromFirebase(phone) {
+        try {
+            let res = await fetch('https://smart-earn-official-default-rtdb.firebaseio.com/users.json');
+            let users = await res.json();
+            if(users) {
+                for(let k in users) {
+                    if(users[k].phone === phone || k === phone) {
+                        state.totalClick = users[k].total_click || 0;
+                        
+                        // সার্ভার বা ডেটাবেজ থেকে আজকের তারিখ চেক করা
+                        let todayDateStr = new Date().toISOString().split('T')[0]; // YYYY-MM-DD ফরম্যাট
+                        let dbLastDate = users[k].last_click_date || '';
+
+                        if (dbLastDate === todayDateStr) {
+                            state.todayClick = users[k].today_click || 0;
+                        } else {
+                            // নতুন দিন শুরু হলে টুডে ক্লিক শূন্য ধরবে এবং ফায়ারবেসে আপডেট করে দেবে
+                            state.todayClick = 0;
+                            await resetTodayClickInFirebase(k);
+                        }
+                        break;
+                    }
+                }
+            }
+        } catch(e) {}
+        updateUI();
+    }
+
+    async function resetTodayClickInFirebase(userKey) {
+        try {
+            let todayDateStr = new Date().toISOString().split('T')[0];
+            await fetch('https://smart-earn-official-default-rtdb.firebaseio.com/users/' + userKey + '.json', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    today_click: 0,
+                    last_click_date: todayDateStr
+                })
+            });
+        } catch(e) {}
+    }
+
+    function switchPage(pageId) {
+        document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+        document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
+        document.getElementById(pageId).classList.add('active');
+        if(pageId === 'homePage') document.getElementById('navHome').classList.add('active');
+        if(pageId === 'earnPage') document.querySelectorAll('.nav-item')[1].classList.add('active');
+        if(pageId === 'profilePage') document.querySelectorAll('.nav-item')[2].classList.add('active');
+    }
+
+    function handleStartEarning() {
+        if(!state.isLoggedIn) openLoginModal();
+        else switchPage('earnPage');
+    }
+
+    function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
+    function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
+
+    async function verifyLogin() {
+        let inputPhone = document.getElementById('mainAppPhone').value.trim();
+        if(!inputPhone) { alert("দয়া করে আপনার মোবাইল নম্বরটি লিখুন।"); return; }
+
+        try {
+            let response = await fetch('https://smart-earn-official-default-rtdb.firebaseio.com/users.json');
+            let usersData = await response.json();
+            let isValidUser = false;
+
+            if (usersData) {
+                for (let key in usersData) {
+                    if (usersData[key].phone === inputPhone || key === inputPhone) {
+                        isValidUser = true;
+                        break;
+                    }
+                }
+            }
+
+            if (isValidUser) {
+                state.isLoggedIn = true;
+                state.phone = inputPhone;
+                localStorage.setItem('smart_earn_phone', inputPhone);
+                closeLoginModal();
+                fetchUserDataFromFirebase(inputPhone);
+                alert("সফলভাবে লগইন হয়েছে!");
+                switchPage('earnPage');
+            } else {
+                alert("⚠️ ভুল নম্বর! স্মার্ট আর্ন মেইন অ্যাপের এই নম্বরটি নিবন্ধিত নেই।");
+            }
+        } catch (error) {
+            alert("কানেক্ট করতে সমস্যা হচ্ছে।");
+        }
+    }
+
+    function logoutAccount() {
+        state.isLoggedIn = false;
+        state.phone = '';
+        localStorage.removeItem('smart_earn_phone');
+        updateUI();
+        alert("লগআউট সফল হয়েছে।");
+    }
+
+    function updateUI() {
+        document.getElementById('headerAvatar').innerText = state.phone ? state.phone.slice(-2) : 'U';
+        document.getElementById('profileAvatar').innerText = state.phone ? state.phone.slice(-2) : 'U';
+
+        if(state.isLoggedIn) {
+            document.getElementById('headerName').innerText = state.phone;
+            document.getElementById('headerSub').innerText = '🏅 0.00 Pts';
+            document.getElementById('welcomeMsg').innerText = 'Welcome, ' + state.phone + '!';
+            document.getElementById('profileName').innerText = state.phone;
+            document.getElementById('profilePhone').innerText = 'Smart Earn Verified Account ✅';
+            document.getElementById('headerLoginBtn').style.display = 'none';
+            document.getElementById('profileLoginBtn').style.display = 'none';
+            document.getElementById('logoutBtn').style.display = 'block';
+        } else {
+            document.getElementById('headerName').innerText = "User";
+            document.getElementById('headerSub').innerText = '🏅 0.00 Pts';
+            document.getElementById('welcomeMsg').innerText = 'Welcome!';
+            document.getElementById('profileName').innerText = "User";
+            document.getElementById('profilePhone').innerText = 'No Account Linked';
+            document.getElementById('headerLoginBtn').style.display = 'block';
+            document.getElementById('profileLoginBtn').style.display = 'block';
+            document.getElementById('logoutBtn').style.display = 'none';
+        }
+
+        document.getElementById('totalEarnings').innerText = "0.00";
+        document.getElementById('totalClick').innerText = state.totalClick;
+        document.getElementById('todayViewsDisplay').innerText = state.todayClick + ' / ' + state.maxTodayViews;
+        document.getElementById('hourlyViewsDisplay').innerText = state.hourlyViews + ' / ' + state.maxHourlyViews;
+    }
+
+    async function startAdProcess() {
+        let isSecured = await performFullSecurityChecks();
+        if (!isSecured) return;
+
+        if(!state.isLoggedIn) { alert("আগে স্মার্ট আর্ন নম্বর দিয়ে লগইন করুন!"); openLoginModal(); return; }
+        if(state.todayClick >= state.maxTodayViews) { alert("আজকের অ্যাড দেখার লিমিট শেষ!"); return; }
+        if(isCheckingProcess) return;
+
+        let btn = document.getElementById('watchBtn');
+
+        btn.disabled = true;
+        btn.innerText = "⏳ Ads লোডিং হচ্ছে...";
+
+        setTimeout(function() {
+            adStartTime = Date.now();
+            isWaitingForReturn = true;
+
+            let sdkFunc = window.monetagSdkFuncName || 'show_11383687';
+
+            if (typeof window[sdkFunc] === 'function') {
+                window[sdkFunc]().then(function() {
+                    processValidationAndClaim();
+                }).catch(function(e) {
+                    processValidationAndClaim();
+                });
+            } else {
+                processValidationAndClaim();
+            }
+
+            btn.innerText = "⏳ বিজ্ঞাপন দেখা হচ্ছে...";
+        }, 3000);
+    }
+
+    function processValidationAndClaim() {
+        if (!isWaitingForReturn || isCheckingProcess) return;
+        isWaitingForReturn = false;
+        isCheckingProcess = true;
+
+        let btn = document.getElementById('watchBtn');
+        btn.disabled = true;
+        btn.innerText = "⏳ Ads লোডিং হচ্ছে...";
+
+        setTimeout(function() {
+            let timeElapsed = (Date.now() - adStartTime) / 1000;
+            let isOnline = navigator.onLine;
+
+            btn.disabled = false;
+            btn.innerText = "Watch Ads Full";
+            isCheckingProcess = false;
+
+            if (!isOnline) {
+                alert("⚠️ আপনার ইন্টারনেট সংযোগ বিচ্ছিন্ন ছিল! পয়েন্ট যোগ করা সম্ভব হয়নি।");
+                showErrorModal();
+                return;
+            }
+
+            if (timeElapsed < state.taskTime) {
+                showErrorModal();
+            } else {
+                showModal();
+            }
+        }, 3000);
+    }
+
+    document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'visible' && isWaitingForReturn) {
+            processValidationAndClaim();
+        }
+    });
+
+    window.addEventListener('focus', function() {
+        if (isWaitingForReturn) {
+            processValidationAndClaim();
+        }
+    });
+
+    function openYouTubeTask() {
+        if(!state.youtubeUrl) { alert("বর্তমান কোনো কাজের ভিডিও এখানে নেই, অ্যাড করলে ভিডিও দেখতে পারবেন!"); return; }
+        window.open(state.youtubeUrl, '_blank');
+    }
+
+    function openYouTubeTaskFromError() {
+        closeErrorModal();
+        openYouTubeTask();
+    }
+
+    function closeModalAndApplyPoint() {
+        closeModal();
+        state.totalClick++;
+        state.todayClick++;
+        state.hourlyViews++;
+        updateUI();
+        syncDataToFirebase();
+    }
+
+    async function syncDataToFirebase() {
+        if(!state.phone) return;
+        try {
+            let res = await fetch('https://smart-earn-official-default-rtdb.firebaseio.com/users.json');
+            let users = await res.json();
+            if(users) {
+                for(let key in users) {
+                    if(users[key].phone === state.phone || key === state.phone) {
+                        let currentDbBalance = users[key].balance || 0;
+                        let newDbBalance = currentDbBalance + state.adminPointRate;
+                        
+                        let currentTotalClick = users[key].total_click || 0;
+                        let currentTodayClick = users[key].today_click || 0;
+                        let todayDateStr = new Date().toISOString().split('T')[0];
+
+                        await fetch('https://smart-earn-official-default-rtdb.firebaseio.com/users/' + key + '.json', {
+                            method: 'PATCH',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                balance: newDbBalance,
+                                total_click: currentTotalClick + 1,
+                                today_click: currentTodayClick + 1,
+                                last_click_date: todayDateStr
+                            })
+                        });
+                        break;
+                    }
+                }
+            }
+        } catch(e) {}
+    }
+
+    function showModal() { document.getElementById('customModal').style.display = 'flex'; }
+    function closeModal() { document.getElementById('customModal').style.display = 'none'; }
+    function showErrorModal() { document.getElementById('errorModal').style.display = 'flex'; }
+    function closeErrorModal() { document.getElementById('errorModal').style.display = 'none'; }
+
+    initAppSecurity();
+</script>
+</body>
+</html>
