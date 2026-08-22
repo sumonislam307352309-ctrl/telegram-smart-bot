@@ -1,490 +1,1710 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Earn Pro - Full Featured</title>
-    <!-- ডাইনামিক স্ক্রিপ্ট লোডার হেড ট্যাগে কাজ করবে -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Smart Earn Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-            --card-bg: rgba(30, 41, 59, 0.85);
+            --bg: #0b1120;
+            --card: rgba(30, 41, 59, 0.75);
             --card-border: rgba(255, 255, 255, 0.08);
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --accent: #6366f1;
-            --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            --danger: #ef4444;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --primary: #818cf8;
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --danger: #f43f5e;
             --success: #10b981;
             --warning: #f59e0b;
-            --nav-bg: rgba(15, 23, 42, 0.95);
+            --nav-bg: rgba(11, 17, 32, 0.96);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+            --safe-top: env(safe-area-inset-top, 0px);
         }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+        html, body { width: 100%; max-width: 100%; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
         body {
-            background: var(--bg-gradient);
-            color: var(--text-primary);
-            min-height: 100vh;
-            padding-bottom: 90px;
-            display: flex;
-            justify-content: center;
+            background: var(--bg); color: var(--text); min-height: 100vh; min-height: 100dvh;
+            display: flex; justify-content: center;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            background-image: radial-gradient(ellipse at top, rgba(99, 102, 241, 0.15), transparent 55%), radial-gradient(ellipse at bottom right, rgba(168, 85, 247, 0.1), transparent 50%);
         }
+        .app-container { width: 100%; max-width: 480px; min-height: 100vh; min-height: 100dvh; position: relative; padding-bottom: calc(72px + var(--safe-bottom)); overflow-x: hidden; }
 
-        .app-container {
-            width: 100%;
-            max-width: 480px;
-            min-height: 100vh;
-            position: relative;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(20px);
-            box-shadow: 0 0 40px rgba(0,0,0,0.5);
-        }
-
-        .block-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #0f172a; color: #f8fafc; z-index: 9999;
+        .apps-status-screen {
+            position: fixed; inset: 0; background: #0b1120; z-index: 9999;
             display: none; flex-direction: column; align-items: center; justify-content: center;
-            padding: 30px; text-align: center;
+            padding: 24px; padding-bottom: calc(24px + var(--safe-bottom)); text-align: center;
         }
-        .block-card {
-            background: #1e293b; padding: 30px 20px; border-radius: 24px;
-            width: 100%; max-width: 380px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            border: 1px solid var(--card-border);
+        .apps-status-screen .status-icon { font-size: 56px; margin-bottom: 16px; }
+        .apps-status-screen .status-title { font-size: 20px; font-weight: 800; margin-bottom: 16px; color: #f1f5f9; }
+        .apps-status-screen .status-notice {
+            font-size: 16px; color: #94a3b8; line-height: 1.6;
+            background: rgba(30,41,59,0.7); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px; padding: 18px 16px; max-width: 360px; width: 100%;
         }
-        .block-icon { font-size: 50px; margin-bottom: 15px; }
+
+        .country-status-screen {
+            position: fixed; inset: 0; background: #0b1120; z-index: 9999;
+            display: none; flex-direction: column; align-items: center;
+            padding: 20px 16px; padding-top: max(20px, var(--safe-top));
+            padding-bottom: calc(20px + var(--safe-bottom)); overflow-y: auto; -webkit-overflow-scrolling: touch;
+        }
+        .country-status-screen .country-header { text-align: center; margin-bottom: 18px; width: 100%; }
+        .country-status-screen .country-icon { font-size: 42px; margin-bottom: 8px; }
+        .country-status-screen .country-title { font-size: 16px; font-weight: 800; color: #f1f5f9; line-height: 1.45; max-width: 340px; margin: 0 auto; }
+        .country-list-box {
+            background: rgba(30,41,59,0.75); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px; padding: 14px; width: 100%; max-width: 360px; margin-bottom: 16px;
+        }
+        .country-item { font-size: 14px; padding: 8px 6px; border-bottom: 1px solid rgba(255,255,255,0.06); color: #e2e8f0; display: flex; align-items: center; gap: 8px; }
+        .country-item:last-child { border-bottom: none; }
+        .country-user-box {
+            background: rgba(244, 63, 94, 0.12); border: 1px solid rgba(244, 63, 94, 0.3);
+            border-radius: 14px; padding: 14px; width: 100%; max-width: 360px; text-align: center;
+        }
+        .country-user-box p { font-size: 14px; color: #f1f5f9; line-height: 1.5; margin-bottom: 6px; }
+        .country-user-box .not-allowed { font-size: 13px; color: #f43f5e; font-weight: 700; }
+
+        /* ========== Security Check Screen (Country + TimeZone + Location) ========== */
+        .security-check-screen {
+            position: fixed; inset: 0; background: #0b1120; z-index: 10000;
+            display: none; flex-direction: column; align-items: center;
+            padding: 16px 14px; padding-top: max(16px, var(--safe-top));
+            padding-bottom: calc(16px + var(--safe-bottom)); overflow-y: auto; -webkit-overflow-scrolling: touch;
+        }
+        .security-check-screen.show { display: flex; }
+        .sec-header { text-align: center; margin-bottom: 14px; width: 100%; max-width: 400px; }
+        .sec-header .sec-icon { font-size: 36px; margin-bottom: 6px; }
+        .sec-header .sec-title { font-size: 18px; font-weight: 800; color: #f1f5f9; }
+        .sec-header .sec-sub { font-size: 12px; color: #94a3b8; margin-top: 4px; line-height: 1.4; }
+        .sec-main {
+            background: rgba(30,41,59,0.75); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px; padding: 14px; width: 100%; max-width: 400px; margin-bottom: 12px;
+        }
+        .sec-country { text-align: center; margin-bottom: 12px; }
+        .sec-country-name { font-size: 20px; font-weight: 800; color: #f1f5f9; }
+        .sec-ip { font-size: 13px; color: #818cf8; font-weight: 600; margin-top: 4px; }
+        .sec-times { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+        .sec-time-box {
+            background: rgba(15,23,42,0.6); border-radius: 12px; padding: 10px 8px; text-align: center;
+        }
+        .sec-time-label { font-size: 9px; color: #94a3b8; font-weight: 700; letter-spacing: 0.5px; }
+        .sec-time-clock { font-size: 18px; font-weight: 800; margin-top: 3px; color: #f1f5f9; }
+        .sec-time-tz { font-size: 10px; color: #94a3b8; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .sec-card {
+            width: 100%; border-radius: 12px; padding: 12px 10px; border: 1px solid; text-align: center;
+            margin-bottom: 8px; cursor: default;
+        }
+        .sec-card.green { background: rgba(16,185,129,0.12); border-color: #10b981; color: #6ee7b7; }
+        .sec-card.red { background: rgba(244,63,94,0.12); border-color: #f43f5e; color: #fda4af; }
+        .sec-card-title { font-size: 14px; font-weight: 800; }
+        .sec-card-sub { font-size: 11px; margin-top: 3px; opacity: 0.9; }
+        .sec-hint {
+            font-size: 11px; color: #94a3b8; text-align: center; line-height: 1.45;
+            margin-top: 8px; max-width: 400px;
+        }
+        .sec-refresh-btn {
+            margin-top: 14px; background: var(--primary-gradient); color: white; border: none;
+            padding: 12px 20px; font-size: 14px; font-weight: 700; border-radius: 12px;
+            cursor: pointer; width: 100%; max-width: 280px; box-shadow: 0 6px 20px rgba(99,102,241,0.35);
+        }
+        .sec-refresh-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
         .header {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 20px; background: var(--card-bg);
-            border-bottom: 1px solid var(--card-border); position: sticky; top: 0; z-index: 100;
+            padding: 10px 12px; padding-top: max(10px, var(--safe-top));
+            background: rgba(15, 23, 42, 0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--card-border); position: sticky; top: 0; z-index: 100; gap: 8px;
         }
-
-        .profile-info { display: flex; align-items: center; gap: 12px; }
+        .profile-info { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
         .avatar {
-            width: 45px; height: 45px; border-radius: 50%; background: var(--accent-gradient);
-            display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; overflow: hidden;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            width: 40px; height: 40px; flex-shrink: 0; border-radius: 12px; background: var(--primary-gradient);
+            display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4); overflow: hidden;
         }
-        .user-text h4 { font-size: 14px; font-weight: 600; }
-        .user-text span { font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 4px; }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .user-text { min-width: 0; overflow: hidden; }
+        .user-text h4 { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .user-text span { font-size: 11px; color: var(--text-muted); margin-top: 1px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .header-btn {
+            flex-shrink: 0; background: var(--primary-gradient); color: white; border: none;
+            padding: 7px 12px; font-size: 12px; font-weight: 600; border-radius: 10px; cursor: pointer;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+        }
 
-        .content { padding: 20px; }
-        .page { display: none; }
+        .content { padding: 12px 12px 16px; width: 100%; overflow-x: hidden; }
+        .page { display: none; animation: fadeUp 0.28s ease; }
         .page.active { display: block; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
         .card {
-            background: var(--card-bg); border: 1px solid var(--card-border);
-            padding: 20px; border-radius: 20px; margin-bottom: 16px; backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; padding: 14px; margin-bottom: 12px;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 6px 24px rgba(0,0,0,0.2); width: 100%; overflow: hidden;
         }
+        .balance-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(168, 85, 247, 0.18));
+            border: 1px solid rgba(129, 140, 248, 0.3); border-radius: 18px; padding: 16px 14px; margin-bottom: 12px;
+            position: relative; overflow: hidden; width: 100%;
+        }
+        .balance-card::before {
+            content: ''; position: absolute; top: -30px; right: -30px; width: 100px; height: 100px;
+            background: radial-gradient(circle, rgba(255,255,255,0.08), transparent 70%); border-radius: 50%;
+        }
+        .balance-label { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+        .balance-amount { font-size: clamp(26px, 8vw, 32px); font-weight: 800; letter-spacing: -0.5px; margin-bottom: 12px; word-break: break-all; }
+        .balance-actions { display: flex; gap: 8px; }
+        .balance-btn {
+            flex: 1; min-width: 0; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.15);
+            color: white; padding: 10px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 4px;
+        }
+        .balance-btn.primary { background: var(--primary-gradient); border: none; box-shadow: 0 4px 14px rgba(99,102,241,0.35); }
 
-        .welcome-card {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(168, 85, 247, 0.15) 100%);
-            border: 1px solid rgba(99, 102, 241, 0.3); text-align: center;
+        .quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; width: 100%; }
+        .quick-item {
+            background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; padding: 14px 10px;
+            text-align: center; cursor: pointer; min-width: 0; overflow: hidden;
         }
+        .quick-item:active { transform: scale(0.97); }
+        .quick-icon { font-size: 24px; margin-bottom: 6px; }
+        .quick-item h4 { font-size: 12px; font-weight: 700; margin-bottom: 2px; }
+        .quick-item p { font-size: 10px; color: var(--text-muted); line-height: 1.3; }
+
+        .section-title { font-size: 13px; font-weight: 700; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+        .section-title span { font-size: 11px; color: var(--primary); font-weight: 600; flex-shrink: 0; }
+
+        .activity-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .activity-item:last-child { border-bottom: none; }
+        .activity-icon { width: 36px; height: 36px; flex-shrink: 0; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; background: rgba(99,102,241,0.15); }
+        .activity-info { flex: 1; min-width: 0; }
+        .activity-info h4 { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .activity-info p { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+        .activity-amount { font-size: 13px; font-weight: 700; color: var(--success); flex-shrink: 0; }
 
         .btn-primary {
-            background: var(--accent-gradient); color: white; border: none;
-            padding: 14px; font-size: 15px; font-weight: 600; border-radius: 14px;
-            cursor: pointer; width: 100%; box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
-            transition: 0.2s; margin-top: 10px; text-decoration: none; display: inline-block; text-align: center;
+            background: var(--primary-gradient); color: white; border: none; padding: 13px 12px; font-size: 14px; font-weight: 700;
+            border-radius: 12px; cursor: pointer; width: 100%; box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
         }
-        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
-        .btn-primary:active { transform: scale(0.98); }
+        .btn-primary:active { transform: scale(0.97); }
+        .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+        .btn-youtube { background: linear-gradient(135deg, #ef4444, #b91c1c); box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3); margin-top: 10px; }
+        .btn-danger { background: linear-gradient(135deg, #f43f5e, #e11d48); box-shadow: 0 6px 18px rgba(244, 63, 94, 0.28); }
 
-        .btn-youtube {
-            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
-            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; width: 100%; }
+        .stat-item { background: rgba(15, 23, 42, 0.55); border: 1px solid var(--card-border); border-radius: 12px; padding: 12px 10px; min-width: 0; overflow: hidden; }
+        .stat-item span { font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 4px; }
+        .stat-item h3 { font-size: clamp(15px, 4.5vw, 18px); font-weight: 800; word-break: break-all; }
+
+        .live-badge {
+            background: rgba(16, 185, 129, 0.15); color: var(--success); font-size: 10px; font-weight: 700;
+            padding: 3px 8px; border-radius: 20px; display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0;
+        }
+        .live-badge::before { content: ''; width: 6px; height: 6px; background: var(--success); border-radius: 50%; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        .notice {
+            font-size: 11px; color: var(--warning); text-align: center; margin-top: 10px; line-height: 1.5;
+            background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2); padding: 10px; border-radius: 10px;
         }
 
-        .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 15px; }
-        .stat-item { background: rgba(15, 23, 42, 0.4); padding: 14px; border-radius: 14px; border: 1px solid var(--card-border); }
-        .stat-item span { font-size: 12px; color: var(--text-secondary); display: block; margin-bottom: 4px; }
-        .stat-item h3 { font-size: 18px; font-weight: 700; color: var(--text-primary); }
+        .refer-hero {
+            background: linear-gradient(145deg, rgba(16, 185, 129, 0.18), rgba(6, 182, 212, 0.12));
+            border: 1px solid rgba(16, 185, 129, 0.28); border-radius: 18px; padding: 20px 14px; text-align: center; margin-bottom: 12px; width: 100%; overflow: hidden;
+        }
+        .refer-hero h2 { font-size: clamp(18px, 5.5vw, 22px); font-weight: 800; margin-bottom: 6px; }
+        .refer-hero p { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.5; }
+        .refer-reward {
+            display: inline-flex; align-items: center; gap: 6px; background: rgba(16,185,129,0.15); color: var(--success);
+            padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-bottom: 14px;
+        }
+        .refer-code-box {
+            background: rgba(15, 23, 42, 0.6); border: 1px dashed rgba(255,255,255,0.18); border-radius: 12px; padding: 12px 10px;
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px; width: 100%;
+        }
+        .refer-code-box span { font-size: clamp(13px, 4vw, 16px); font-weight: 800; letter-spacing: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+        .copy-btn { flex-shrink: 0; background: rgba(255,255,255,0.12); border: none; color: white; padding: 7px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; }
+
+        .refer-steps { display: flex; flex-direction: column; gap: 12px; }
+        .refer-step { display: flex; gap: 10px; align-items: flex-start; }
+        .step-num { width: 26px; height: 26px; flex-shrink: 0; border-radius: 50%; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+        .step-text { min-width: 0; }
+        .step-text h4 { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+        .step-text p { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+
+        .wallet-balance {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.22), rgba(168, 85, 247, 0.15));
+            border: 1px solid rgba(129, 140, 248, 0.28); border-radius: 18px; padding: 18px 14px; text-align: center; margin-bottom: 12px; width: 100%; overflow: hidden;
+        }
+        .wallet-balance span { font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px; }
+        .wallet-balance h2 { font-size: clamp(28px, 9vw, 36px); font-weight: 800; letter-spacing: -0.5px; margin-bottom: 14px; word-break: break-all; }
+        .wallet-btns { display: flex; gap: 8px; }
+        .wallet-btns button { flex: 1; min-width: 0; padding: 11px 8px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; border: none; }
+        .wallet-btns .withdraw { background: var(--primary-gradient); color: white; box-shadow: 0 4px 14px rgba(99,102,241,0.35); }
+        .wallet-btns .history { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.12); }
+
+        .method-item { display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
+        .method-item:last-child { border-bottom: none; }
+        .method-icon { width: 40px; height: 40px; flex-shrink: 0; border-radius: 11px; background: rgba(15,23,42,0.6); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .method-info { flex: 1; min-width: 0; }
+        .method-info h4 { font-size: 13px; font-weight: 700; }
+        .method-info p { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+        .method-arrow { color: var(--text-muted); font-size: 18px; flex-shrink: 0; }
+
+        .profile-header { text-align: center; padding: 8px 0 4px; }
+        .profile-avatar {
+            width: clamp(72px, 22vw, 90px); height: clamp(72px, 22vw, 90px); border-radius: 22px; margin: 0 auto 10px;
+            background: var(--primary-gradient); display: flex; align-items: center; justify-content: center;
+            font-size: clamp(24px, 8vw, 32px); font-weight: 800; box-shadow: 0 8px 24px rgba(99,102,241,0.4); overflow: hidden;
+        }
+        .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-name { font-size: clamp(17px, 5vw, 20px); font-weight: 800; margin-bottom: 4px; word-break: break-word; }
+        .profile-phone { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+        .verified-badge {
+            display: inline-flex; align-items: center; gap: 5px; background: rgba(16,185,129,0.12); color: var(--success);
+            padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; margin-bottom: 14px;
+        }
+        .profile-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 14px; width: 100%; }
+        .p-stat { background: rgba(15, 23, 42, 0.5); border-radius: 12px; padding: 10px 6px; text-align: center; min-width: 0; overflow: hidden; }
+        .p-stat span { font-size: 9px; color: var(--text-muted); display: block; margin-bottom: 3px; }
+        .p-stat h4 { font-size: clamp(13px, 3.8vw, 15px); font-weight: 800; word-break: break-all; }
+
+        .menu-item { display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
+        .menu-item:last-child { border-bottom: none; }
+        .menu-icon { width: 36px; height: 36px; flex-shrink: 0; border-radius: 10px; background: rgba(99,102,241,0.12); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        .menu-text { flex: 1; font-size: 13px; font-weight: 600; min-width: 0; }
+        .menu-arrow { color: var(--text-muted); flex-shrink: 0; }
 
         .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.75); backdrop-filter: blur(8px);
-            display: none; justify-content: center; align-items: center; z-index: 1000;
+            position: fixed; inset: 0; background: rgba(0,0,0,0.72); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            display: none; justify-content: center; align-items: center; z-index: 1000; padding: 16px; padding-bottom: calc(16px + var(--safe-bottom));
         }
         .modal-card {
-            background: #1e293b; padding: 30px 20px; border-radius: 24px;
-            width: 85%; max-width: 340px; border: 1px solid var(--card-border);
-            text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px; padding: 22px 16px; width: 100%; max-width: 340px; text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5); overflow: hidden;
         }
-        .modal-icon {
-            width: 70px; height: 70px; border-radius: 50%; margin: 0 auto 15px auto;
-            display: flex; align-items: center; justify-content: center; font-size: 32px;
+        .modal-icon { width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .modal-icon.success { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 2px solid rgba(16, 185, 129, 0.4); }
+        .modal-icon.error { background: rgba(244, 63, 94, 0.15); color: var(--danger); border: 2px solid rgba(244, 63, 94, 0.4); }
+        .modal-card h3 { font-size: 16px; font-weight: 800; margin-bottom: 8px; }
+        .modal-card p { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-bottom: 16px; }
+
+        input[type="tel"] {
+            width: 100%; padding: 12px 14px; background: #0f172a; border: 1px solid var(--card-border);
+            border-radius: 12px; color: white; font-size: 16px; outline: none; text-align: center; margin: 12px 0;
         }
-        .modal-icon.success { background: rgba(16, 185, 129, 0.2); color: var(--success); border: 2px solid var(--success); }
-        .modal-icon.error { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 2px solid var(--danger); }
+        input[type="tel"]:focus { border-color: var(--primary); }
 
         .bottom-nav {
-            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-            width: 100%; max-width: 480px; background: var(--nav-bg);
-            backdrop-filter: blur(20px); display: flex; justify-content: space-around;
-            padding: 12px 0; border-top: 1px solid var(--card-border); z-index: 100;
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px;
+            background: var(--nav-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            display: flex; justify-content: space-around; align-items: center; padding: 6px 0 calc(8px + var(--safe-bottom));
+            border-top: 1px solid var(--card-border); z-index: 100;
         }
-        .nav-item { background: none; border: none; color: var(--text-secondary); font-size: 12px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .nav-item svg { width: 22px; height: 22px; fill: currentColor; }
-        .nav-item.active { color: var(--accent); }
+        .nav-item {
+            background: none; border: none; color: var(--text-muted); font-size: 9px; font-weight: 600; cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; flex: 1; min-width: 0; max-width: 72px; padding: 4px 2px;
+        }
+        .nav-item svg { width: 20px; height: 20px; fill: currentColor; flex-shrink: 0; }
+        .nav-item.active { color: var(--primary); }
+
+        #demoToast {
+            position: fixed; bottom: calc(90px + var(--safe-bottom)); left: 50%; transform: translateX(-50%);
+            background: #1e293b; color: white; padding: 10px 16px; border-radius: 12px; font-size: 12px; font-weight: 600;
+            display: none; z-index: 2000; box-shadow: 0 10px 30px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);
+            max-width: min(90%, 360px); text-align: center; width: max-content;
+        }
+
+        @media (max-width: 360px) {
+            .header { padding: 8px 10px; padding-top: max(8px, var(--safe-top)); }
+            .content { padding: 10px 10px 14px; }
+            .card { padding: 12px; border-radius: 14px; }
+            .balance-card { padding: 14px 12px; }
+            .balance-btn { font-size: 11px; padding: 9px 6px; }
+            .quick-item { padding: 12px 8px; }
+            .quick-icon { font-size: 22px; }
+            .quick-item h4 { font-size: 11px; }
+            .quick-item p { font-size: 9px; }
+            .stat-item { padding: 10px 8px; }
+            .nav-item { font-size: 8px; }
+            .nav-item svg { width: 18px; height: 18px; }
+            .btn-primary { padding: 12px 10px; font-size: 13px; }
+        }
+        @media (max-width: 320px) {
+            .header { padding: 8px 8px; gap: 6px; }
+            .avatar { width: 36px; height: 36px; font-size: 13px; }
+            .content { padding: 8px 8px 12px; }
+            .card { padding: 10px; margin-bottom: 10px; }
+            .balance-amount { font-size: 24px; }
+            .btn-primary { padding: 11px 8px; font-size: 12px; border-radius: 10px; }
+            .nav-item { font-size: 8px; max-width: 60px; }
+            .nav-item svg { width: 17px; height: 17px; }
+        }
+
+        .retry-btn {
+            margin-top: 20px; background: var(--primary-gradient); color: white; border: none;
+            padding: 14px 24px; font-size: 15px; font-weight: 700; border-radius: 14px;
+            cursor: pointer; box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35); width: 100%; max-width: 280px;
+        }
+        .retry-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        
+        /* Prevent copy / selection */
+        body, .app-container, .apps-status-screen, .country-status-screen {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
+        input, textarea {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        img, svg, video, iframe { max-width: 100%; height: auto; }
+        button, input, select, textarea { max-width: 100%; }
+
+        /* =========================================================
+           EXTRA RESPONSIVE LAYER — সব Android ফোন
+           (মূল স্টাইল অপরিবর্তিত)
+           ========================================================= */
+        .app-container {
+            width: 100%;
+            max-width: min(480px, 100vw);
+            padding-bottom: calc(68px + var(--safe-bottom));
+        }
+        .content {
+            padding: clamp(8px, 2.8vw, 16px) clamp(8px, 2.8vw, 14px) clamp(12px, 3vw, 18px);
+        }
+        .header {
+            padding: clamp(8px, 2.5vw, 12px) clamp(8px, 2.8vw, 14px);
+            padding-top: max(clamp(8px, 2.5vw, 12px), var(--safe-top));
+            gap: clamp(6px, 2vw, 10px);
+        }
+        .avatar {
+            width: clamp(34px, 10vw, 42px);
+            height: clamp(34px, 10vw, 42px);
+            font-size: clamp(12px, 3.5vw, 15px);
+        }
+        .user-text h4 { font-size: clamp(12px, 3.5vw, 14px); }
+        .user-text span { font-size: clamp(10px, 2.9vw, 12px); }
+        .header-btn {
+            padding: clamp(6px, 2vw, 9px) clamp(10px, 3vw, 14px);
+            font-size: clamp(11px, 3.2vw, 13px);
+        }
+        .card {
+            padding: clamp(10px, 3vw, 16px);
+            margin-bottom: clamp(8px, 2.5vw, 14px);
+            border-radius: clamp(12px, 3.5vw, 16px);
+        }
+        .balance-card {
+            padding: clamp(12px, 3.5vw, 18px) clamp(10px, 3vw, 16px);
+        }
+        .balance-label { font-size: clamp(11px, 3.2vw, 13px); }
+        .balance-btn {
+            font-size: clamp(11px, 3.2vw, 13px);
+            padding: clamp(8px, 2.5vw, 12px) clamp(6px, 2vw, 10px);
+        }
+        .quick-grid { gap: clamp(6px, 2vw, 10px); }
+        .quick-item { padding: clamp(10px, 3vw, 16px) clamp(6px, 2vw, 12px); }
+        .quick-icon { font-size: clamp(20px, 6vw, 26px); }
+        .quick-item h4 { font-size: clamp(11px, 3.2vw, 13px); }
+        .quick-item p { font-size: clamp(9px, 2.6vw, 11px); }
+        .section-title { font-size: clamp(12px, 3.5vw, 14px); }
+        .btn-primary {
+            padding: clamp(11px, 3.2vw, 15px) clamp(10px, 3vw, 14px);
+            font-size: clamp(13px, 3.8vw, 15px);
+        }
+        .stat-grid { gap: clamp(6px, 2vw, 10px); }
+        .stat-item { padding: clamp(8px, 2.5vw, 14px) clamp(6px, 2vw, 12px); }
+        .stat-item span { font-size: clamp(9px, 2.6vw, 11px); }
+
+        /* Security / Country / Status screens */
+        .apps-status-screen {
+            padding: clamp(16px, 4vw, 28px);
+            padding-bottom: calc(clamp(16px, 4vw, 28px) + var(--safe-bottom));
+        }
+        .apps-status-screen .status-icon { font-size: clamp(42px, 12vw, 60px); }
+        .apps-status-screen .status-title { font-size: clamp(16px, 5vw, 22px); }
+        .apps-status-screen .status-notice {
+            font-size: clamp(13px, 3.8vw, 16px);
+            padding: clamp(12px, 3.5vw, 20px);
+            max-width: min(360px, 94vw);
+        }
+        .country-status-screen {
+            padding: clamp(12px, 3.5vw, 20px) clamp(10px, 3vw, 16px);
+            padding-top: max(clamp(12px, 3.5vw, 20px), var(--safe-top));
+        }
+        .country-status-screen .country-icon { font-size: clamp(32px, 10vw, 46px); }
+        .country-status-screen .country-title { font-size: clamp(14px, 4.2vw, 17px); max-width: min(340px, 92vw); }
+        .country-list-box, .country-user-box {
+            max-width: min(360px, 94vw);
+            padding: clamp(10px, 3vw, 16px);
+        }
+        .country-item { font-size: clamp(12px, 3.5vw, 15px); }
+        .country-user-box p { font-size: clamp(12px, 3.5vw, 15px); }
+        .country-user-box .not-allowed { font-size: clamp(12px, 3.4vw, 14px); }
+
+        .security-check-screen {
+            padding: clamp(10px, 3vw, 18px) clamp(8px, 2.8vw, 16px);
+            padding-top: max(clamp(10px, 3vw, 18px), var(--safe-top));
+        }
+        .sec-header { max-width: min(400px, 96vw); }
+        .sec-header .sec-icon { font-size: clamp(28px, 9vw, 40px); }
+        .sec-header .sec-title { font-size: clamp(15px, 4.8vw, 20px); }
+        .sec-header .sec-sub { font-size: clamp(11px, 3.2vw, 13px); }
+        .sec-main {
+            max-width: min(400px, 96vw);
+            padding: clamp(10px, 3vw, 16px);
+        }
+        .sec-country-name { font-size: clamp(16px, 5vw, 22px); }
+        .sec-ip { font-size: clamp(11px, 3.4vw, 14px); word-break: break-all; }
+        .sec-times { gap: clamp(6px, 2vw, 10px); }
+        .sec-time-box { padding: clamp(8px, 2.5vw, 12px) clamp(4px, 1.5vw, 10px); min-width: 0; }
+        .sec-time-label { font-size: clamp(8px, 2.4vw, 10px); }
+        .sec-time-clock { font-size: clamp(14px, 4.5vw, 20px); }
+        .sec-time-tz { font-size: clamp(9px, 2.6vw, 11px); }
+        .sec-card { padding: clamp(10px, 2.8vw, 14px) clamp(8px, 2.2vw, 12px); }
+        .sec-card-title { font-size: clamp(12px, 3.6vw, 15px); }
+        .sec-card-sub { font-size: clamp(10px, 2.9vw, 12px); }
+        .sec-hint { font-size: clamp(10px, 2.9vw, 12px); max-width: min(400px, 94vw); }
+        .sec-refresh-btn {
+            padding: clamp(10px, 3vw, 14px) clamp(14px, 4vw, 22px);
+            font-size: clamp(13px, 3.8vw, 15px);
+            max-width: min(280px, 90vw);
+        }
+
+        /* Profile */
+        .profile-stats { gap: clamp(4px, 1.5vw, 8px); }
+        .p-stat { padding: clamp(8px, 2.5vw, 12px) clamp(4px, 1.5vw, 8px); }
+        .p-stat span { font-size: clamp(8px, 2.4vw, 10px); }
+        .menu-text { font-size: clamp(12px, 3.5vw, 14px); }
+        .menu-icon { width: clamp(32px, 9vw, 38px); height: clamp(32px, 9vw, 38px); font-size: clamp(14px, 4vw, 17px); }
+
+        /* Modal */
+        .modal-overlay { padding: clamp(12px, 3.5vw, 20px); }
+        .modal-card {
+            max-width: min(340px, 94vw);
+            padding: clamp(16px, 4.5vw, 24px) clamp(12px, 3.5vw, 18px);
+        }
+        .modal-card h3 { font-size: clamp(14px, 4.2vw, 17px); }
+        .modal-card p { font-size: clamp(11px, 3.2vw, 13px); }
+        .modal-icon { width: clamp(48px, 14vw, 60px); height: clamp(48px, 14vw, 60px); font-size: clamp(20px, 6vw, 26px); }
+
+        /* Bottom nav */
+        .bottom-nav {
+            max-width: min(480px, 100vw);
+            padding: 6px 0 calc(6px + var(--safe-bottom));
+        }
+        .nav-item {
+            font-size: clamp(8px, 2.4vw, 10px);
+            max-width: clamp(56px, 18vw, 76px);
+        }
+        .nav-item svg {
+            width: clamp(17px, 5vw, 22px);
+            height: clamp(17px, 5vw, 22px);
+        }
+
+        /* Refer / Wallet */
+        .refer-hero { padding: clamp(14px, 4vw, 22px) clamp(10px, 3vw, 16px); }
+        .refer-hero p { font-size: clamp(11px, 3.2vw, 13px); }
+        .wallet-balance { padding: clamp(14px, 4vw, 20px) clamp(10px, 3vw, 16px); }
+        .wallet-btns button {
+            padding: clamp(9px, 2.8vw, 13px) clamp(6px, 2vw, 10px);
+            font-size: clamp(11px, 3.4vw, 14px);
+        }
+        .method-info h4 { font-size: clamp(12px, 3.5vw, 14px); }
+        .method-info p { font-size: clamp(10px, 2.9vw, 12px); }
+
+        .retry-btn {
+            padding: clamp(12px, 3.5vw, 16px) clamp(16px, 4.5vw, 26px);
+            font-size: clamp(13px, 4vw, 16px);
+            max-width: min(280px, 90vw);
+        }
+
+        /* Extra-small phones */
+        @media (max-width: 360px) {
+            .app-container { padding-bottom: calc(64px + var(--safe-bottom)); }
+            .profile-stats { grid-template-columns: 1fr 1fr 1fr; gap: 4px; }
+            .sec-times { gap: 5px; }
+            .sec-time-clock { font-size: 15px; }
+            .balance-actions { gap: 6px; }
+            .quick-grid { gap: 6px; }
+        }
+        @media (max-width: 320px) {
+            .app-container { padding-bottom: calc(60px + var(--safe-bottom)); }
+            .profile-stats { gap: 3px; }
+            .p-stat { padding: 8px 3px; }
+            .sec-country-name { font-size: 16px; }
+            .sec-card-title { font-size: 12px; }
+            .header-btn { padding: 6px 8px; font-size: 11px; }
+            .nav-item { max-width: 54px; }
+        }
+        @media (min-width: 400px) {
+            .content { padding: 14px 14px 18px; }
+            .quick-grid { gap: 10px; }
+        }
+        @media (min-width: 480px) {
+            .app-container { max-width: 480px; }
+        }
+
+        /* Overflow safety */
+        html, body, .app-container, .content, .page {
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+
     </style>
 </head>
 <body>
 
-<div id="blockScreen" class="block-screen">
-    <div class="block-card">
-        <div class="block-icon" id="blockIcon">🚫</div>
-        <h3 id="blockTitle" style="font-size: 18px; color: #f8fafc; margin-bottom: 10px; font-weight: 700;">নোটিশ</h3>
-        <p id="blockDesc" style="font-size: 13px; color: #94a3b8; line-height: 1.5; margin-bottom: 15px;"></p>
-        <div id="blockActionButtons" style="display: flex; flex-direction: column; gap: 8px;"></div>
+<!-- Apps Status Notice Screen -->
+<div id="appsStatusScreen" class="apps-status-screen">
+    <div class="status-icon">🤖</div>
+    <div class="status-title">বট সাময়িকভাবে বন্ধ আছে!</div>
+    <div class="status-notice" id="appsStatusNotice">এডমিন প্যানেল থেকে আসা নোটিশ।</div>
+    <button class="retry-btn" id="appsRetryBtn" onclick="retryCheckStatus()">🔄 আবার চেষ্টা করুন !</button>
+</div>
+
+<!-- Country Status Notice Screen -->
+<div id="countryStatusScreen" class="country-status-screen">
+    <div class="country-header">
+        <div class="country-icon">🔴</div>
+        <div class="country-title">🤖 BOT শুধু নিচের দেশগুলো থেকে ব্যবহার করা যায়!</div>
+    </div>
+    <div class="country-list-box" id="allowedCountriesList"></div>
+    <div class="country-user-box">
+        <p>আপনার বর্তমান লোকেশন- <strong id="userCountryName">—</strong></p>
+        <div class="not-allowed">এই লোকেশনটি ব্যবহার যোগ্য নয়।</div>
+    </div>
+    <button class="retry-btn" id="countryRetryBtn" onclick="retryCheckStatus()">🔄 আবার চেষ্টা করুন !</button>
+</div>
+
+<!-- ========== Security Check Screen (Country + TimeZone + Location) ========== -->
+<!-- TimeZone Security Screen (শুধু TimeZone) -->
+<div id="securityCheckScreen" class="security-check-screen">
+    <div class="sec-header">
+        <div class="sec-icon">🕒</div>
+        <div class="sec-title">TimeZone Check</div>
+        <div class="sec-sub">ডিভাইস ও IP টাইমজোন মিলছে কি না যাচাই হচ্ছে।<br>মিলে গেলেই অ্যাপ খুলবে।</div>
+    </div>
+    <div class="sec-main">
+        <div class="sec-times">
+            <div class="sec-time-box">
+                <div class="sec-time-label">DEVICE TIME</div>
+                <div class="sec-time-clock" id="secDevTime">--:--:--</div>
+                <div class="sec-time-tz" id="secDevTz">—</div>
+            </div>
+            <div class="sec-time-box">
+                <div class="sec-time-label">IP TIME</div>
+                <div class="sec-time-clock" id="secIpTime">--:--:--</div>
+                <div class="sec-time-tz" id="secIpTz">—</div>
+            </div>
+        </div>
+        <div id="secTzCard" class="sec-card red">
+            <div class="sec-card-title" id="secTzTitle">🔴 TimeZone চেক হচ্ছে...</div>
+            <div class="sec-card-sub" id="secTzSub">অপেক্ষা করুন...</div>
+        </div>
+    </div>
+    <div class="sec-hint">✅ TimeZone সবুজ হলে অটোমেটিক অ্যাপ খুলবে।</div>
+    <button class="sec-refresh-btn" id="secRefreshBtn" onclick="manualSecurityRefresh()">↻ রিফ্রেশ করুন</button>
+</div>
+
+<!-- Ads ID Reset Notice (১০০ ক্লিকের পর) -->
+<div id="adsResetScreen" class="security-check-screen">
+    <div class="sec-header">
+        <div class="sec-icon">📱</div>
+        <div class="sec-title">Ads ID রিসেট করুন</div>
+        <div class="sec-sub">আপনি এই সেশনে ১০০টি কাজ সম্পন্ন করেছেন।</div>
+    </div>
+    <div class="sec-main" style="text-align:center;">
+        <div class="sec-card red" style="margin-bottom:0;">
+            <div class="sec-card-title">⚠️ Ads ID রিসেট প্রয়োজন</div>
+            <div class="sec-card-sub" style="margin-top:8px;line-height:1.5;">
+                একই Ads ID দিয়ে আর কাজ করা যাবে না।<br>
+                ফোনের Settings → Google → Ads → Reset advertising ID<br>
+                তারপর অ্যাপ বন্ধ করে আবার খুলুন।
+            </div>
+        </div>
+    </div>
+    <div class="sec-hint">রিসেট করার পর অ্যাপ কেটে আবার ওপেন করলে কাজ করতে পারবেন।</div>
+</div>
+
+<!-- Third-party / Official Telegram Check -->
+<div id="thirdPartyScreen" class="security-check-screen" style="background:#f5f5f7;">
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;width:100%;padding:20px;">
+        <div style="background:#fff;border-radius:16px;padding:28px 20px;max-width:340px;width:100%;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.12);">
+            <div style="width:56px;height:56px;margin:0 auto 14px;position:relative;">
+              <svg viewBox="0 0 24 24" width="56" height="56">
+                <circle cx="12" cy="12" r="10" fill="none" stroke="#e53935" stroke-width="2.8"/>
+                <line x1="6" y1="6" x2="18" y2="18" stroke="#e53935" stroke-width="2.8" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div style="font-size:18px;font-weight:800;color:#1a1a1a;margin-bottom:12px;">থার্ড-পার্টি অ্যাপ সমর্থিত নয়</div>
+            <div style="font-size:14px;color:#555;line-height:1.6;margin-bottom:10px;">
+                নিরাপত্তা বজায় রাখতে Graph Messenger বা অন্য কোনো থার্ড-পার্টি অ্যাপ ব্যবহারের সুযোগ বন্ধ রাখা হয়েছে।
+            </div>
+            <div style="font-size:14px;color:#333;line-height:1.55;font-weight:600;">
+                দয়া করে অফিসিয়াল Telegram App ব্যবহার করুন।
+            </div>
+            <div style="font-size:12px;color:#888;margin-top:14px;line-height:1.4;">
+                Play Store থেকে অফিসিয়াল Telegram ইনস্টল/আপডেট করুন।<br>
+                পুরনো বা থার্ড-পার্টি অ্যাপে এই মিনি অ্যাপ চলবে না।
+            </div>
+        </div>
     </div>
 </div>
 
-<div class="app-container">
+<div class="app-container" id="mainApp" style="display:none;">
     <div class="header">
         <div class="profile-info">
-            <div class="avatar" id="headerAvatar">G</div>
+            <div class="avatar" id="headerAvatar">U</div>
             <div class="user-text">
                 <h4 id="headerName">User</h4>
                 <span id="headerSub">🏅 0.00 Pts</span>
             </div>
         </div>
-        <button class="btn-primary" style="padding: 6px 14px; font-size: 12px; width: auto; margin-top:0;" onclick="openLoginModal()" id="headerLoginBtn">Login</button>
+        <button class="header-btn" onclick="openLoginModal()" id="headerLoginBtn">Login</button>
     </div>
 
     <div class="content">
-        <!-- HOME PAGE -->
         <div id="homePage" class="page active">
-            <div class="card welcome-card">
-                <h2 id="welcomeMsg">Welcome!</h2>
-                <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">টেলিগ্রাম বট ওয়েবে কাজ করে আয় করুন।</p>
-                <button class="btn-primary" onclick="handleStartEarning()">🚀 Start Earning Now</button>
-                <button class="btn-primary btn-youtube" onclick="openYouTubeTask()" style="margin-top: 10px;">▶️ কাজের ভিডিও (YouTube)</button>
-            </div>
-
-            <div class="card">
-                <h4 style="margin-bottom: 10px; font-size: 15px;">📊 Statistics</h4>
-                <div class="stat-grid">
-                    <div class="stat-item">
-                        <span>Total Earnings</span>
-                        <h3 id="totalEarnings">0.00</h3>
-                    </div>
-                    <div class="stat-item">
-                        <span>Total Click</span>
-                        <h3 id="totalClick">0</h3>
-                    </div>
+            <div class="balance-card">
+                <div class="balance-label">Main App Balance</div>
+                <div class="balance-amount" id="homeBalance">0.00</div>
+                <div class="balance-actions">
+                    <button class="balance-btn primary" onclick="switchPage('earnPage')">▶ কাজ করুন</button>
+                    <button class="balance-btn" onclick="showDemoToast('উইথড্র ফিচার শীঘ্রই আসছে')">Withdraw</button>
                 </div>
+            </div>
+            <div class="quick-grid">
+                <div class="quick-item" onclick="switchPage('earnPage')"><div class="quick-icon">📺</div><h4>Watch Ads</h4><p>পয়েন্ট অর্জন করুন</p></div>
+                <div class="quick-item" onclick="switchPage('referPage')"><div class="quick-icon">🎁</div><h4>Refer</h4><p>+50 Pts / Friend</p></div>
+                <div class="quick-item" onclick="switchPage('walletPage')"><div class="quick-icon">💰</div><h4>Wallet</h4><p>ব্যালেন্স দেখুন</p></div>
+                <div class="quick-item" onclick="openYouTubeTask()"><div class="quick-icon">▶️</div><h4> How to Work </h4><p> কাজের ভিডিও (YouTube)</p></div>
+            </div>
+            <div class="card">
+                <div class="section-title">Recent Activity <span onclick="showDemoToast('সমস্ত হিস্ট্রি শীঘ্রই আসছে')">সব দেখুন</span></div>
+                <div class="activity-item"><div class="activity-icon">📺</div><div class="activity-info"><h4>Watch Ads</h4><p>নিয়ম মেনে কাজ করুন </p></div><div class="activity-amount">+0.00</div></div>
+                <div class="activity-item"><div class="activity-icon">🎁</div><div class="activity-info"><h4>Referral Bonus</h4><p>রেফার করে ইনকাম </p></div><div class="activity-amount">+0.00</div></div>
+                <div class="activity-item"><div class="activity-icon">▶️</div><div class="activity-info"><h4>YouTube</h4><p>ভিডিও দেখে কাজ করুন  </p></div><div class="activity-amount">+0.00</div></div>
             </div>
         </div>
 
-        <!-- EARN PAGE -->
         <div id="earnPage" class="page">
             <div class="card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <span style="font-size: 14px; font-weight: 600;">Today's Progress</span>
-                    <span style="color: var(--success); font-size: 12px; font-weight: 700;">🟢 Live Mode</span>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                    <span style="font-size: 15px; font-weight: 700;">Today's Progress</span>
+                    <span class="live-badge">Live</span>
                 </div>
-                <div class="stat-grid" style="margin-bottom: 20px;">
-                    <div class="stat-item">
-                        <span>Today Ad Limit</span>
-                        <h3 id="todayViewsDisplay">0 / 800</h3>
-                    </div>
-                    <div class="stat-item">
-                        <span>Hourly Ad Limit</span>
-                        <h3 id="hourlyViewsDisplay">0 / 300</h3>
-                    </div>
+                <div class="stat-grid" style="margin-bottom: 18px;">
+                    <div class="stat-item"><span>Today Ad Limit</span><h3 id="todayViewsDisplay">0 / 800</h3></div>
+                    <div class="stat-item"><span>Hourly Ad Limit</span><h3 id="hourlyViewsDisplay">0 / 300</h3></div>
                 </div>
-                <button class="btn-primary" id="watchBtn" onclick="startAdProcess()">Watch Ads Full</button>
-                <button class="btn-primary btn-youtube" onclick="openYouTubeTask()">▶️ Watch YouTube Video Task</button>
-                <p style="font-size: 12px; color: var(--warning); margin-top: 12px; text-align: center;">📢 Notice: বিজ্ঞাপন সম্পূর্ণ দেখে টাস্ক সম্পন্ন করুন।</p>
+                <button class="btn-primary" id="watchBtn" onclick="startAdProcess()">▶ বিজ্ঞাপন দেখুন</button>
+                <button class="btn-primary btn-youtube" onclick="openYouTubeTask()">✅ নিয়ম মেনে কাজ করুন!</button>
+                <div class="notice">📢 বিজ্ঞাপন সম্পূর্ণ দেখে টাস্ক সম্পন্ন করুন। সময়ের আগে বের হলে পয়েন্ট পাবেন না।</div>
+            </div>
+            <div class="card">
+                <div class="section-title">Your Statistics</div>
+                <div class="stat-grid">
+                    <div class="stat-item"><span>Total Balance</span><h3 id="totalEarnings">0.00</h3></div>
+                    <div class="stat-item"><span>Total Click</span><h3 id="totalClick">0</h3></div>
+                </div>
             </div>
         </div>
 
-        <!-- PROFILE PAGE -->
+        <div id="referPage" class="page">
+            <div class="refer-hero">
+                <div class="refer-reward">🎁 প্রতি রেফারে +500 Pts</div>
+                <h2>বন্ধুকে আমন্ত্রণ জানান</h2>
+                <p>আপনার রেফার কোড শেয়ার করুন। বন্ধু লগইন করলে আপনি বোনাস পাবেন।</p>
+                <div class="refer-code-box"><span id="referCode">Refer Code </span><button class="copy-btn" onclick="copyReferCode()">Copy</button></div>
+                <button class="btn-primary" style="background: linear-gradient(135deg,#10b981,#059669); box-shadow:0 6px 18px rgba(16,185,129,0.3);" onclick="showDemoToast('রেফার লিংক কপি হয়েছে! শেয়ার করুন')">শেয়ার করুন</button>
+            </div>
+            <div class="card">
+                <div class="section-title">কীভাবে কাজ করে</div>
+                <div class="refer-steps">
+                    <div class="refer-step"><div class="step-num">1</div><div class="step-text"><h4>কোড শেয়ার করুন</h4><p>আপনার ইউনিক রেফার কোড বন্ধুদের সাথে শেয়ার করুন</p></div></div>
+                    <div class="refer-step"><div class="step-num">2</div><div class="step-text"><h4>বন্ধু লগইন করবে</h4><p>বন্ধু আপনার কোড দিয়ে মেইন অ্যাপে রেজিস্টার করবে</p></div></div>
+                    <div class="refer-step"><div class="step-num">3</div><div class="step-text"><h4>বোনাস পাবেন</h4><p>প্রতি সফল রেফারে আপনার অ্যাকাউন্টে +500 পয়েন্ট যোগ হবে</p></div></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="section-title">রেফার স্ট্যাটাস</div>
+                <div class="stat-grid">
+                    <div class="stat-item"><span>মোট রেফার</span><h3>0</h3></div>
+                    <div class="stat-item"><span>আয়</span><h3>0.00</h3></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="walletPage" class="page">
+            <div class="wallet-balance">
+                <span>Total Balance</span>
+                <h2 id="walletBalance">0.00</h2>
+                <div class="wallet-btns">
+                    <button class="withdraw" onclick="showDemoToast('উইথড্র ফিচার শীঘ্রই চালু হবে')">Withdraw</button>
+                    <button class="history" onclick="showDemoToast('হিস্ট্রি শীঘ্রই আসছে')">History</button>
+                </div>
+            </div>
+            <div class="card">
+                <div class="section-title">Withdraw Method</div>
+                <div class="method-item" onclick="showDemoToast('বিকাশ উইথড্র শীঘ্রই আসছে')"><div class="method-icon">📱</div><div class="method-info"><h4>bKash</h4><p>মিনিমাম ১০০০ পয়েন্ট</p></div><div class="method-arrow">›</div></div>
+                <div class="method-item" onclick="showDemoToast('নগদ উইথড্র শীঘ্রই আসছে')"><div class="method-icon">💳</div><div class="method-info"><h4>Nagad</h4><p>মিনিমাম ১০০০ পয়েন্ট</p></div><div class="method-arrow">›</div></div>
+                <div class="method-item" onclick="showDemoToast('রকেট উইথড্র শীঘ্রই আসছে')"><div class="method-icon">🚀</div><div class="method-info"><h4>Rocket</h4><p>মিনিমাম ১০০০ পয়েন্ট</p></div><div class="method-arrow">›</div></div>
+            </div>
+            <div class="card">
+                <div class="section-title">Your Withdraw History</div>
+                <div style="text-align:center; padding:20px 0; color:var(--text-muted); font-size:13px;">এখনো কোনো ট্রানজেকশন নেই</div>
+            </div>
+        </div>
+
         <div id="profilePage" class="page">
-            <div class="card" style="text-align: center;">
-                <div class="avatar" id="profileAvatar" style="width: 70px; height: 70px; margin: 0 auto 12px auto; font-size: 26px;">G</div>
-                <h3 id="profileName" style="font-size: 18px; margin-bottom: 4px;">User</h3>
-                <p id="profilePhone" style="color: var(--text-secondary); font-size: 13px; margin-bottom: 15px;">No Account Linked</p>
-                <button class="btn-primary" onclick="openLoginModal()" id="profileLoginBtn">Login with Smart Earn Number</button>
-                <button class="btn-primary" style="background: var(--danger); margin-top: 10px; display: none;" id="logoutBtn" onclick="logoutAccount()">Logout</button>
+            <div class="card">
+                <div class="profile-header">
+                    <div class="profile-avatar" id="profileAvatar">U</div>
+                    <div class="profile-name" id="profileName">User Name</div>
+                    <div class="profile-phone" id="profilePhone">No Account Linked</div>
+                    <div class="verified-badge" id="verifiedBadge" style="display:none;">✓ Main App Verified User</div>
+                </div>
+                <div class="profile-stats">
+                    <div class="p-stat"><span>Balance</span><h4 id="profileBalance">0.00</h4></div>
+                    <div class="p-stat"><span>Clicks</span><h4 id="profileClicks">0</h4></div>
+                    <div class="p-stat"><span>Refer</span><h4>0</h4></div>
+                </div>
+                <button class="btn-primary" onclick="openLoginModal()" id="profileLoginBtn">মেইন অ্যাপ নম্বর দিয়ে লগইন</button>
+                <button class="btn-primary btn-danger" style="margin-top: 10px; display: none;" id="logoutBtn" onclick="logoutAccount()">লগআউট</button>
+            </div>
+            <div class="card">
+                <div class="menu-item" onclick="showDemoToast('সেটিংস শীঘ্রই আসছে')"><div class="menu-icon">⚙️</div><div class="menu-text">Settings</div><div class="menu-arrow">›</div></div>
+                <div class="menu-item" onclick="showDemoToast('সাপোর্ট শীঘ্রই আসছে')"><div class="menu-icon">💬</div><div class="menu-text">Support</div><div class="menu-arrow">›</div></div>
+                <div class="menu-item" onclick="showDemoToast('Privacy Policy শীঘ্রই আসছে')"><div class="menu-icon">🔒</div><div class="menu-text">Privacy Policy</div><div class="menu-arrow">›</div></div>
+                <div class="menu-item" onclick="showDemoToast('অ্যাপ ভার্সন 1.0.2')"><div class="menu-icon">ℹ️</div><div class="menu-text">Information</div><div class="menu-arrow">›</div></div>
             </div>
         </div>
     </div>
 
-    <!-- Modals -->
     <div class="modal-overlay" id="customModal">
         <div class="modal-card">
             <div class="modal-icon success">✓</div>
-            <h3 style="font-size: 20px; margin-bottom: 8px;">Claim সফল হয়েছে!</h3>
-            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px;">আপনার পয়েন্ট যোগ হয়ে গেছে ✅</p>
+            <h3>পয়েন্ট যোগ হয়েছে!</h3>
+            <p>আপনার পয়েন্ট সফলভাবে মেইন অ্যাপে যোগ হয়ে গেছে ✅</p>
             <button class="btn-primary" onclick="closeModalAndApplyPoint()">ঠিক আছে</button>
         </div>
     </div>
-
     <div class="modal-overlay" id="errorModal">
         <div class="modal-card">
             <div class="modal-icon error">❌</div>
-            <h3 style="font-size: 20px; margin-bottom: 8px;">নিয়ম অমান্য!</h3>
-            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">আপনি নির্দিষ্ট সময়ের আগেই বিজ্ঞাপন থেকে বের হয়েছেন! নিয়ম মেনে কাজ করুন।</p>
+            <h3>নিয়ম অমান্য!</h3>
+            <p>আপনি নির্দিষ্ট সময়ের আগেই বিজ্ঞাপন থেকে বের হয়েছেন। নিয়ম মেনে কাজ করুন।</p>
             <div style="display: flex; flex-direction: column; gap: 10px;">
                 <button class="btn-primary btn-youtube" onclick="openYouTubeTaskFromError()">▶️ কাজের ভিডিও দেখুন</button>
-                <button class="btn-primary" onclick="closeErrorModal()">বুঝেছি</button>
+                <button class="btn-primary" style="background: #334155; box-shadow: none;" onclick="closeErrorModal()">বুঝেছি</button>
             </div>
         </div>
     </div>
-
     <div class="modal-overlay" id="loginModal">
         <div class="modal-card">
-            <h3>Telegram Bot Login</h3>
-            <p style="font-size: 12px; color: var(--text-secondary); margin-top: 5px;">স্মার্ট আর্ন মেইন অ্যাপের নম্বর দিন:</p>
-            <input type="tel" id="mainAppPhone" placeholder="Enter Phone Number" style="width: 100%; padding: 12px; background: #0f172a; border: 1px solid var(--card-border); border-radius: 10px; color: white; margin: 15px 0; font-size: 15px; outline: none; text-align: center;">
-            <button class="btn-primary" onclick="verifyLogin()" style="margin-top:0;">লগইন করুন</button>
-            <button class="btn-primary" style="background: none; color: var(--text-secondary); margin-top: 8px;" onclick="closeLoginModal()">বাতিল</button>
+            <h3 style="font-size: 17px; font-weight: 800;">মেইন অ্যাপ লগইন</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">স্মার্ট আর্ন মেইন অ্যাপের নম্বর দিন</p>
+            <input type="tel" id="mainAppPhone" placeholder="01XXXXXXXXX">
+            <button class="btn-primary" id="loginBtn" onclick="verifyLogin()" style="margin-top: 0;">লগইন করুন</button>
+            <button class="btn-primary" style="background: transparent; color: var(--text-muted); box-shadow: none; margin-top: 8px;" onclick="closeLoginModal()">বাতিল</button>
         </div>
     </div>
+    <div id="demoToast"></div>
 
     <div class="bottom-nav">
         <button class="nav-item active" onclick="switchPage('homePage')" id="navHome"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Home</button>
-        <button class="nav-item" onclick="switchPage('earnPage')"><svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>Earn</button>
+        <button class="nav-item" onclick="switchPage('earnPage')" id="navEarn"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>Earn</button>
+        <button class="nav-item" onclick="switchPage('referPage')" id="navRefer"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Refer</button>
+        <button class="nav-item" onclick="switchPage('walletPage')" id="navWallet"><svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>Wallet</button>
         <button class="nav-item" onclick="switchPage('profilePage')" id="navProfile"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>Profile</button>
     </div>
 </div>
 
 <script>
     let state = {
-        isLoggedIn: false,
-        phone: '',
-        name: 'User',
-        points: 0.00,
-        totalClick: 0,
-        todayClick: 0,
-        hourlyViews: 0,
-        maxTodayViews: 800,
-        maxHourlyViews: 300,
-        adminPointRate: 1.50,
-        youtubeUrl: '',
-        taskTime: 5
+        isLoggedIn: false, phone: '', points: 0, todayPoints: 0, totalClick: 0, todayClick: 0, hourlyViews: 0,
+        maxTodayViews: 800, maxHourlyViews: 300, adminPointRate: 1.50, youtubeUrl: '', taskTime: 5,
+        timezoneCheck: true, thirdPartyBlock: true, minWebAppVersion: 7.0, adsLimitEnabled: true, adsClickLimit: 100,
+        monetagZoneId: '', monetagSdkFunction: '',
+        wrongCount: 0, todayClickRight: 0, botTodayClick: 0, periodId: '',
+        tgName: 'User', tgPhoto: '', currentUserCountry: '', allowedCountries: [],
+        secIp: '', secCountry: '', secCountryCode: '', secIpTimezone: '',
+        secTzOk: false, secReady: false,
+        adsSessionClicks: 0
+    };
+    let adStartTime = 0, isWaitingForReturn = false, isCheckingProcess = false;
+    let lastAutoSaveKey = '';
+    let lastHourChecked = -1;
+    let isAppsOff = false;
+    let isCountryBlocked = false;
+    let isSecurityBlocked = true;
+    let isThirdPartyBlocked = false;
+    let isAdsResetBlocked = false;
+    let securityCheckInProgress = false;
+    let ADS_CLICK_LIMIT = 100;
+
+    const MAIN_DB = 'https://smart-earn-official-default-rtdb.firebaseio.com/';
+    const ADMIN_DB = 'https://smart-earn-official1-default-rtdb.europe-west1.firebasedatabase.app/';
+
+    const COUNTRY_MAP = {
+        'US': '🇺🇸 United States — যুক্তরাষ্ট্র', 'CA': '🇨🇦 Canada — কানাডা', 'AU': '🇦🇺 Australia — অস্ট্রেলিয়া',
+        'GB': '🇬🇧 United Kingdom — যুক্তরাজ্য', 'CH': '🇨🇭 Switzerland — সুইজারল্যান্ড', 'NO': '🇳🇴 Norway — নরওয়ে',
+        'DK': '🇩🇰 Denmark — ডেনমার্ক', 'SE': '🇸🇪 Sweden — সুইডেন', 'NL': '🇳🇱 Netherlands — নেদারল্যান্ডস',
+        'DE': '🇩🇪 Germany — জার্মানি', 'FI': '🇫🇮 Finland — ফিনল্যান্ড', 'NZ': '🇳🇿 New Zealand — নিউজিল্যান্ড',
+        'IE': '🇮🇪 Ireland — আয়ারল্যান্ড', 'AT': '🇦🇹 Austria — অস্ট্রিয়া', 'BE': '🇧🇪 Belgium — বেলজিয়াম',
+        'SG': '🇸🇬 Singapore — সিঙ্গাপুর', 'LU': '🇱🇺 Luxembourg — লুক্সেমবার্গ', 'IS': '🇮🇸 Iceland — আইসল্যান্ড',
+        'FR': '🇫🇷 France — ফ্রান্স', 'IL': '🇮🇱 Israel — ইসরায়েল', 'JP': '🇯🇵 Japan — জাপান',
+        'KR': '🇰🇷 South Korea — দক্ষিণ কোরিয়া', 'MX': '🇲🇽 Mexico — মেক্সিকো', 'BR': '🇧🇷 Brazil — ব্রাজিল',
+        'TH': '🇹🇭 Thailand — থাইল্যান্ড', 'BD': '🇧🇩 Bangladesh — বাংলাদেশ', 'IN': '🇮🇳 India — ভারত',
+        'PK': '🇵🇰 Pakistan — পাকিস্তান', 'NP': '🇳🇵 Nepal — নেপাল', 'LK': '🇱🇰 Sri Lanka — শ্রীলঙ্কা',
+        'MY': '🇲🇾 Malaysia — মালয়েশিয়া', 'ID': '🇮🇩 Indonesia — ইন্দোনেশিয়া', 'PH': '🇵🇭 Philippines — ফিলিপাইন',
+        'VN': '🇻🇳 Vietnam — ভিয়েতনাম', 'CN': '🇨🇳 China — চীন', 'HK': '🇭🇰 Hong Kong — হংকং',
+        'TW': '🇹🇼 Taiwan — তাইওয়ান', 'AE': '🇦🇪 UAE — সংযুক্ত আরব আমিরাত', 'SA': '🇸🇦 Saudi Arabia — সৌদি আরব',
+        'QA': '🇶🇦 Qatar — কাতার', 'KW': '🇰🇼 Kuwait — কুয়েত', 'TR': '🇹🇷 Turkey — তুরস্ক',
+        'RU': '🇷🇺 Russia — রাশিয়া', 'UA': '🇺🇦 Ukraine — ইউক্রেন', 'IT': '🇮🇹 Italy — ইতালি',
+        'ES': '🇪🇸 Spain — স্পেন', 'PT': '🇵🇹 Portugal — পর্তুগাল', 'PL': '🇵🇱 Poland — পোল্যান্ড',
+        'CZ': '🇨🇿 Czech Republic — চেক প্রজাতন্ত্র', 'RO': '🇷🇴 Romania — রোমানিয়া', 'HU': '🇭🇺 Hungary — হাঙ্গেরি',
+        'GR': '🇬🇷 Greece — গ্রিস', 'EG': '🇪🇬 Egypt — মিশর', 'NG': '🇳🇬 Nigeria — নাইজেরিয়া',
+        'ZA': '🇿🇦 South Africa — দক্ষিণ আফ্রিকা', 'AR': '🇦🇷 Argentina — আর্জেন্টিনা', 'CL': '🇨🇱 Chile — চিলি',
+        'CO': '🇨🇴 Colombia — কলম্বিয়া', 'PE': '🇵🇪 Peru — পেরু'
+    };
+    const COUNTRY_NAME_ONLY = {
+        'US':'United States','CA':'Canada','AU':'Australia','GB':'United Kingdom','CH':'Switzerland',
+        'NO':'Norway','DK':'Denmark','SE':'Sweden','NL':'Netherlands','DE':'Germany','FI':'Finland',
+        'NZ':'New Zealand','IE':'Ireland','AT':'Austria','BE':'Belgium','SG':'Singapore','LU':'Luxembourg',
+        'IS':'Iceland','FR':'France','IL':'Israel','JP':'Japan','KR':'South Korea','MX':'Mexico',
+        'BR':'Brazil','TH':'Thailand','BD':'Bangladesh','IN':'India','PK':'Pakistan','NP':'Nepal',
+        'LK':'Sri Lanka','MY':'Malaysia','ID':'Indonesia','PH':'Philippines','VN':'Vietnam','CN':'China',
+        'HK':'Hong Kong','TW':'Taiwan','AE':'UAE','SA':'Saudi Arabia','QA':'Qatar','KW':'Kuwait',
+        'TR':'Turkey','RU':'Russia','UA':'Ukraine','IT':'Italy','ES':'Spain','PT':'Portugal',
+        'PL':'Poland','CZ':'Czech Republic','RO':'Romania','HU':'Hungary','GR':'Greece','EG':'Egypt',
+        'NG':'Nigeria','ZA':'South Africa','AR':'Argentina','CL':'Chile','CO':'Colombia','PE':'Peru'
     };
 
-    let adStartTime = 0;
-    let isWaitingForReturn = false;
-    let isCheckingProcess = false;
-    let globalAllowedList = [];
+    function getCountryDisplay(code) {
+        if (!code) return 'Unknown — Unknown';
+        const upper = code.toUpperCase();
+        if (COUNTRY_MAP[upper]) return COUNTRY_MAP[upper];
+        const name = COUNTRY_NAME_ONLY[upper] || upper;
+        return name + ' — ' + name;
+    }
+    function getCountryNameOnly(code) {
+        if (!code) return 'Unknown';
+        const upper = code.toUpperCase();
+        return COUNTRY_NAME_ONLY[upper] || upper;
+    }
 
-    const countryTimeZones = {
-        'US': ['America/New_York', 'America/Chicago', 'America/Denver', 'America/Los_Angeles', 'America/Anchorage', 'America/Honolulu'],
-        'CA': ['America/Toronto', 'America/Vancouver', 'America/Edmonton', 'America/Winnipeg'],
-        'GB': ['Europe/London'],
-        'AU': ['Australia/Sydney', 'Australia/Melbourne', 'Australia/Brisbane', 'Australia/Perth'],
-        'NZ': ['Pacific/Auckland'],
-        'DE': ['Europe/Berlin'],
-        'CH': ['Europe/Zurich'],
-        'NO': ['Europe/Oslo'],
-        'SE': ['Europe/Stockholm'],
-        'DK': ['Europe/Copenhagen'],
-        'NL': ['Europe/Amsterdam'],
-        'FI': ['Europe/Helsinki'],
-        'FR': ['Europe/Paris'],
-        'JP': ['Asia/Tokyo'],
-        'SG': ['Asia/Singapore']
+    function saveLocalClicks() {
+        try {
+            localStorage.setItem('smart_earn_totalClick', String(state.totalClick || 0));
+            localStorage.setItem('smart_earn_todayClick', String(state.todayClick || 0));
+            localStorage.setItem('smart_earn_hourlyViews', String(state.hourlyViews || 0));
+            const today = new Date();
+            const dateStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+            localStorage.setItem('smart_earn_todayDate', dateStr);
+            localStorage.setItem('smart_earn_lastHour', String(today.getHours()));
+        } catch(e) {}
+    }
+
+    function loadLocalClicks() {
+        try {
+            const today = new Date();
+            const dateStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+            const savedDate = localStorage.getItem('smart_earn_todayDate') || '';
+            const savedHour = parseInt(localStorage.getItem('smart_earn_lastHour') || '-1', 10);
+            state.totalClick = parseInt(localStorage.getItem('smart_earn_totalClick') || '0', 10) || 0;
+            if (savedDate === dateStr) {
+                state.todayClick = parseInt(localStorage.getItem('smart_earn_todayClick') || '0', 10) || 0;
+            } else { state.todayClick = 0; }
+            if (savedHour === today.getHours() && savedDate === dateStr) {
+                state.hourlyViews = parseInt(localStorage.getItem('smart_earn_hourlyViews') || '0', 10) || 0;
+            } else { state.hourlyViews = 0; }
+            lastHourChecked = today.getHours();
+            saveLocalClicks();
+        } catch(e) { state.totalClick = 0; state.todayClick = 0; state.hourlyViews = 0; }
+    }
+
+    function checkAndResetLimits() {
+        const now = new Date();
+        const h = now.getHours();
+        const m = now.getMinutes();
+        const dateStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+        const savedDate = localStorage.getItem('smart_earn_todayDate') || '';
+        if (h === 23 && m === 59) {
+            if (state.todayClick !== 0) { state.todayClick = 0; saveLocalClicks(); updateUI(); }
+        }
+        if (savedDate && savedDate !== dateStr) {
+            state.todayClick = 0; state.hourlyViews = 0; saveLocalClicks(); updateUI();
+        }
+        if (lastHourChecked !== -1 && lastHourChecked !== h) {
+            state.hourlyViews = 0; lastHourChecked = h; saveLocalClicks(); updateUI();
+        } else if (lastHourChecked === -1) { lastHourChecked = h; }
+    }
+
+    function loadTelegramUser() {
+        try {
+            const tg = window.Telegram && window.Telegram.WebApp;
+            if (!tg) {
+                console.log('Telegram WebApp not found - open inside Telegram');
+                updateUI();
+                return;
+            }
+            tg.ready();
+            try { tg.expand(); } catch(e) {}
+            try {
+                tg.setHeaderColor('#0b1120');
+                tg.setBackgroundColor('#0b1120');
+            } catch(e) {}
+            try {
+                if (typeof tg.disableVerticalSwipes === 'function') tg.disableVerticalSwipes();
+            } catch(e) {}
+
+            const user = (tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user : null;
+            if (user) {
+                let name = ((user.first_name || '') + (user.last_name ? ' ' + user.last_name : '')).trim();
+                if (!name && user.username) name = '@' + user.username;
+                if (!name) name = 'User';
+                state.tgName = name;
+                state.tgPhoto = user.photo_url || '';
+                if (user.id) state.tgId = user.id;
+                console.log('TG User loaded:', name, user.id);
+            } else {
+                console.log('No user in initDataUnsafe. initData length:', (tg.initData || '').length);
+            }
+        } catch(e) {
+            console.error('loadTelegramUser error', e);
+        }
+        updateUI();
+    }
+
+    function getPeriodId() {
+        // Calendar day period (resets at 23:59 / midnight)
+        const now = new Date();
+        return now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+    }
+
+    function loadMonetagSdk(zoneId, sdkFn) {
+        if (!zoneId) return;
+        document.querySelectorAll('script[data-zone]').forEach(s => s.remove());
+        const script = document.createElement('script');
+        script.src = '//libtl.com/sdk.js';
+        script.setAttribute('data-zone', zoneId);
+        script.setAttribute('data-sdk', sdkFn || ('show_' + zoneId));
+        document.head.appendChild(script);
+    }
+
+    function showAppsStatusScreen(noticeText) {
+        isAppsOff = true;
+        document.getElementById('appsStatusNotice').innerText = noticeText || 'এডমিন প্যানেল থেকে আসা নোটিশ।';
+        document.getElementById('appsStatusScreen').style.display = 'flex';
+        document.getElementById('countryStatusScreen').style.display = 'none';
+        document.getElementById('mainApp').style.display = 'none';
+    }
+    function hideAppsStatusScreen() {
+        isAppsOff = false;
+        document.getElementById('appsStatusScreen').style.display = 'none';
+        if (canShowMainApp()) document.getElementById('mainApp').style.display = 'block';
+    }
+    function showCountryStatusScreen(allowedList, userCountry) {
+        isCountryBlocked = true;
+        const listEl = document.getElementById('allowedCountriesList');
+        listEl.innerHTML = '';
+        if (allowedList && allowedList.length) {
+            allowedList.forEach(code => {
+                if (code === 'ALL') return;
+                const div = document.createElement('div');
+                div.className = 'country-item';
+                div.innerText = getCountryDisplay(code);
+                listEl.appendChild(div);
+            });
+        }
+        (function(){
+            const upper = (userCountry||'').toUpperCase();
+            const full = COUNTRY_MAP[upper];
+            if (full) {
+                // strip flag emoji if present: "🇧🇩 Bangladesh — বাংলাদেশ" -> "Bangladesh — বাংলাদেশ"
+                const cleaned = full.replace(/^[\u{1F1E6}-\u{1F1FF}]{2}\s*/u, '').trim();
+                document.getElementById('userCountryName').innerText = cleaned;
+            } else {
+                const name = getCountryNameOnly(userCountry);
+                document.getElementById('userCountryName').innerText = name + ' — ' + name;
+            }
+        })();
+        document.getElementById('countryStatusScreen').style.display = 'flex';
+        document.getElementById('appsStatusScreen').style.display = 'none';
+        document.getElementById('mainApp').style.display = 'none';
+    }
+    function hideCountryStatusScreen() {
+        isCountryBlocked = false;
+        document.getElementById('countryStatusScreen').style.display = 'none';
+        if (canShowMainApp()) document.getElementById('mainApp').style.display = 'block';
+    }
+
+    // ========== Security Check: 13 APIs for Country + TimeZone ==========
+    const GEO_APIS = [
+        { url: 'https://ipapi.co/json/', type: 'ipapi' },
+        { url: 'https://ipwho.is/', type: 'ipwho' },
+        { url: 'https://ipinfo.io/json', type: 'ipinfo' },
+        { url: 'https://api.ip.sb/geoip', type: 'ipsb' },
+        { url: 'https://get.geojs.io/v1/ip/geo.json', type: 'geojs' },
+        { url: 'https://free.freeipapi.com/api/json', type: 'freeipapi' },
+        { url: 'https://geo.kamero.ai/api/geo', type: 'kamero' },
+        { url: 'https://api.country.is/', type: 'countryis' },
+        { url: 'https://ippubblico.org/?api=1', type: 'ippubblico' },
+        { url: 'https://geoapi.info/api/geo', type: 'geoapi' },
+        { url: 'https://api.myip.com', type: 'myip' },
+        { url: 'https://ip.seeip.org/geoip', type: 'seeip' },
+        { url: 'https://www.cloudflare.com/cdn-cgi/trace', type: 'cftrace' }
+    ];
+
+    const FLAG_EMOJI = {
+        AD:"🇦🇩",AE:"🇦🇪",AF:"🇦🇫",AG:"🇦🇬",AI:"🇦🇮",AL:"🇦🇱",AM:"🇦🇲",AO:"🇦🇴",AR:"🇦🇷",AT:"🇦🇹",
+        AU:"🇦🇺",AZ:"🇦🇿",BA:"🇧🇦",BB:"🇧🇧",BD:"🇧🇩",BE:"🇧🇪",BF:"🇧🇫",BG:"🇧🇬",BH:"🇧🇭",BI:"🇧🇮",
+        BJ:"🇧🇯",BN:"🇧🇳",BO:"🇧🇴",BR:"🇧🇷",BS:"🇧🇸",BT:"🇧🇹",BW:"🇧🇼",BY:"🇧🇾",BZ:"🇧🇿",CA:"🇨🇦",
+        CD:"🇨🇩",CF:"🇨🇫",CG:"🇨🇬",CH:"🇨🇭",CI:"🇨🇮",CL:"🇨🇱",CM:"🇨🇲",CN:"🇨🇳",CO:"🇨🇴",CR:"🇨🇷",
+        CU:"🇨🇺",CV:"🇨🇻",CY:"🇨🇾",CZ:"🇨🇿",DE:"🇩🇪",DJ:"🇩🇯",DK:"🇩🇰",DM:"🇩🇲",DO:"🇩🇴",DZ:"🇩🇿",
+        EC:"🇪🇨",EE:"🇪🇪",EG:"🇪🇬",ER:"🇪🇷",ES:"🇪🇸",ET:"🇪🇹",FI:"🇫🇮",FJ:"🇫🇯",FR:"🇫🇷",GA:"🇬🇦",
+        GB:"🇬🇧",GD:"🇬🇩",GE:"🇬🇪",GH:"🇬🇭",GI:"🇬🇮",GM:"🇬🇲",GN:"🇬🇳",GQ:"🇬🇶",GR:"🇬🇷",GT:"🇬🇹",
+        GW:"🇬🇼",GY:"🇬🇾",HK:"🇭🇰",HN:"🇭🇳",HR:"🇭🇷",HT:"🇭🇹",HU:"🇭🇺",ID:"🇮🇩",IE:"🇮🇪",IL:"🇮🇱",
+        IN:"🇮🇳",IQ:"🇮🇶",IR:"🇮🇷",IS:"🇮🇸",IT:"🇮🇹",JM:"🇯🇲",JO:"🇯🇴",JP:"🇯🇵",KE:"🇰🇪",KG:"🇰🇬",
+        KH:"🇰🇭",KI:"🇰🇮",KM:"🇰🇲",KN:"🇰🇳",KP:"🇰🇵",KR:"🇰🇷",KW:"🇰🇼",KZ:"🇰🇿",LA:"🇱🇦",LB:"🇱🇧",
+        LC:"🇱🇨",LI:"🇱🇮",LK:"🇱🇰",LR:"🇱🇷",LS:"🇱🇸",LT:"🇱🇹",LU:"🇱🇺",LV:"🇱🇻",LY:"🇱🇾",MA:"🇲🇦",
+        MC:"🇲🇨",MD:"🇲🇩",ME:"🇲🇪",MG:"🇲🇬",MH:"🇲🇭",MK:"🇲🇰",ML:"🇲🇱",MM:"🇲🇲",MN:"🇲🇳",MO:"🇲🇴",
+        MR:"🇲🇷",MT:"🇲🇹",MU:"🇲🇺",MV:"🇲🇻",MW:"🇲🇼",MX:"🇲🇽",MY:"🇲🇾",MZ:"🇲🇿",NA:"🇳🇦",NE:"🇳🇪",
+        NG:"🇳🇬",NI:"🇳🇮",NL:"🇳🇱",NO:"🇳🇴",NP:"🇳🇵",NR:"🇳🇷",NZ:"🇳🇿",OM:"🇴🇲",PA:"🇵🇦",PE:"🇵🇪",
+        PG:"🇵🇬",PH:"🇵🇭",PK:"🇵🇰",PL:"🇵🇱",PT:"🇵🇹",PY:"🇵🇾",QA:"🇶🇦",RO:"🇷🇴",RS:"🇷🇸",RU:"🇷🇺",
+        RW:"🇷🇼",SA:"🇸🇦",SB:"🇸🇧",SC:"🇸🇨",SD:"🇸🇩",SE:"🇸🇪",SG:"🇸🇬",SI:"🇸🇮",SK:"🇸🇰",SL:"🇸🇱",
+        SM:"🇸🇲",SN:"🇸🇳",SO:"🇸🇴",SR:"🇸🇷",SS:"🇸🇸",SV:"🇸🇻",SY:"🇸🇾",SZ:"🇸🇿",TD:"🇹🇩",TG:"🇹🇬",
+        TH:"🇹🇭",TJ:"🇹🇯",TL:"🇹🇱",TM:"🇹🇲",TN:"🇹🇳",TO:"🇹🇴",TR:"🇹🇷",TT:"🇹🇹",TV:"🇹🇻",TW:"🇹🇼",
+        TZ:"🇹🇿",UA:"🇺🇦",UG:"🇺🇬",US:"🇺🇸",UY:"🇺🇾",UZ:"🇺🇿",VA:"🇻🇦",VE:"🇻🇪",VN:"🇻🇳",VU:"🇻🇺",
+        WS:"🇼🇸",XK:"🇽🇰",YE:"🇾🇪",ZA:"🇿🇦",ZM:"🇿🇲",ZW:"🇿🇼"
     };
 
-    const countryDetails = {
-        'US': { name: 'United States', flag: '🇺🇸' },
-        'CA': { name: 'Canada', flag: '🇨🇦' },
-        'GB': { name: 'United Kingdom', flag: '🇬🇧' },
-        'AU': { name: 'Australia', flag: '🇦🇺' },
-        'NZ': { name: 'New Zealand', flag: '🇳🇿' },
-        'DE': { name: 'Germany', flag: '🇩🇪' },
-        'CH': { name: 'Switzerland', flag: '🇨🇭' },
-        'NO': { name: 'Norway', flag: '🇳🇴' },
-        'SE': { name: 'Sweden', flag: '🇸🇪' },
-        'DK': { name: 'Denmark', flag: '🇩🇰' },
-        'NL': { name: 'Netherlands', flag: '🇳🇱' },
-        'FI': { name: 'Finland', flag: '🇫🇮' },
-        'FR': { name: 'France', flag: '🇫🇷' },
-        'JP': { name: 'Japan', flag: '🇯🇵' },
-        'SG': { name: 'Singapore', flag: '🇸🇬' }
-    };
+    function deviceTz() {
+        try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown'; }
+        catch (e) { return 'Unknown'; }
+    }
+    function deviceTimeStr() {
+        return new Date().toLocaleTimeString('en-GB', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }
+    function zoneTimeStr(tz) {
+        try {
+            return new Date().toLocaleTimeString('en-GB', { timeZone: tz, hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        } catch (e) { return '—'; }
+    }
+    function cleanTz(tz) {
+        if (!tz) return '';
+        if (typeof tz === 'string') return tz.trim();
+        if (typeof tz === 'object') {
+            if (tz.id) return String(tz.id).trim();
+            if (tz.name) return String(tz.name).trim();
+            if (tz.timezone) return String(tz.timezone).trim();
+        }
+        return '';
+    }
+
+    async function fetchGeoFromApis() {
+        for (const api of GEO_APIS) {
+            try {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), 2500);
+                const r = await fetch(api.url, { cache: 'no-store', mode: 'cors', signal: controller.signal });
+                clearTimeout(timer);
+                if (!r.ok) continue;
+
+                let ip = '', country = '', countryCode = '', timezone = '';
+
+                if (api.type === 'cftrace') {
+                    const text = await r.text();
+                    const data = {};
+                    text.split('\n').forEach(line => {
+                        const i = line.indexOf('=');
+                        if (i > 0) data[line.substring(0, i).trim()] = line.substring(i + 1).trim();
+                    });
+                    ip = data.ip || '';
+                    countryCode = (data.loc || '').toUpperCase();
+                    if (countryCode.length === 2) country = getCountryNameOnly(countryCode) || countryCode;
+                } else {
+                    const d = await r.json();
+                    if (api.type === 'ipapi') {
+                        ip = d.ip || ''; country = d.country_name || ''; countryCode = (d.country_code || '').toUpperCase(); timezone = cleanTz(d.timezone);
+                    } else if (api.type === 'ipwho') {
+                        ip = d.ip || ''; country = d.country || ''; countryCode = (d.country_code || '').toUpperCase(); timezone = cleanTz(d.timezone);
+                    } else if (api.type === 'ipinfo') {
+                        ip = d.ip || ''; country = d.country || ''; countryCode = (d.country || '').toUpperCase(); timezone = cleanTz(d.timezone);
+                    } else if (api.type === 'ipsb') {
+                        ip = d.ip || ''; country = d.country || ''; countryCode = (d.country_code || '').toUpperCase(); timezone = cleanTz(d.timezone);
+                    } else if (api.type === 'geojs') {
+                        ip = d.ip || ''; country = d.country || ''; countryCode = (d.country_code || '').toUpperCase(); timezone = cleanTz(d.timezone);
+                    } else if (api.type === 'freeipapi') {
+                        ip = d.ipAddress || ''; country = d.countryName || ''; countryCode = (d.countryCode || '').toUpperCase(); timezone = cleanTz(d.timeZone);
+                    } else if (api.type === 'kamero') {
+                        ip = d.ip || ''; country = d.country || ''; countryCode = (d.country || '').toUpperCase(); timezone = cleanTz(d.timezone);
+                    } else if (api.type === 'countryis') {
+                        countryCode = (d.country || '').toUpperCase(); country = getCountryNameOnly(countryCode) || countryCode;
+                    } else if (api.type === 'ippubblico') {
+                        ip = d.ip || ''; country = d.country || ''; countryCode = (d.countryCode || '').toUpperCase(); timezone = cleanTz(d.timezone);
+                    } else if (api.type === 'geoapi') {
+                        ip = d.ip || ''; country = d.country || ''; countryCode = (d.country_code || d.country || '').toUpperCase(); timezone = cleanTz(d.timezone);
+                    } else if (api.type === 'myip') {
+                        ip = d.ip || ''; country = d.country || ''; countryCode = (d.cc || '').toUpperCase();
+                    } else if (api.type === 'seeip') {
+                        ip = d.ip || ''; country = d.country || ''; countryCode = (d.country_code || '').toUpperCase();
+                    }
+                }
+
+                if (ip || countryCode) {
+                    return { ip: ip || state.secIp || '', country: country || '', countryCode: countryCode.length === 2 ? countryCode : '', timezone: timezone || '' };
+                }
+            } catch (e) { continue; }
+        }
+        return null;
+    }
+
+    async function detectUserCountry() {
+        const geo = await fetchGeoFromApis();
+        if (geo && geo.countryCode) {
+            state.currentUserCountry = geo.countryCode;
+            state.secIp = geo.ip || state.secIp;
+            state.secCountry = geo.country || getCountryNameOnly(geo.countryCode);
+            state.secCountryCode = geo.countryCode;
+            if (geo.timezone) state.secIpTimezone = geo.timezone;
+            return geo.countryCode;
+        }
+        return state.currentUserCountry || '';
+    }
+
+    // ========== Third-party Telegram detection ==========
+    // Play Store APK সোর্স জানা যায় না। বিকল্প:
+    // - পরিচিত থার্ড-পার্টি UA ব্লক
+    // - WebApp API + initData/user আবশ্যক
+    // - মিনিমাম WebApp version (অফিসিয়াল সাধারণত আপ টু ডেট)
+    function parseWebAppVersion(v) {
+        try {
+            const s = String(v || '0').trim();
+            const parts = s.split('.');
+            const major = parseInt(parts[0], 10) || 0;
+            const minor = parseInt(parts[1], 10) || 0;
+            return major + (minor / 1000);
+        } catch (e) { return 0; }
+    }
+
+    function isThirdPartyTelegram() {
+        try {
+            const ua = (navigator.userAgent || '');
+            const uaL = ua.toLowerCase();
+            const minVer = parseWebAppVersion(state.minWebAppVersion != null ? state.minWebAppVersion : 7.0);
+
+            const thirdPartyMarks = [
+                'graphmessenger', 'graph messenger', 'graph-messenger', 'org.telegram.messenger.graph',
+                'nicegram', 'plus messenger', 'plusmessenger', 'org.telegram.plus',
+                'telegram plus', 'nekogram', 'nekox', 'owlgram', 'nullgram', 'forkgram',
+                'telegramx', 'org.thunderdog.challegram', 'bgram', 'catogram', 'exteragram',
+                'swiftgram', 'unigram', 'teleplus', 'ime messenger', 'private telegram',
+                'private v1', 'moagram', 'nagram', 'mercurygram', 'telega', 'challegram',
+                'app.graph', 'messenger.graph', 'telegram gold', 'tgx', 'nullgramx',
+                'mdgram', 'sapphire', 'cherrygram', 'org.telegram.messenger.web', 'webogram'
+            ];
+            for (let i = 0; i < thirdPartyMarks.length; i++) {
+                if (uaL.indexOf(thirdPartyMarks[i].toLowerCase()) >= 0) return true;
+            }
+            if (/\bgraph\b/i.test(ua) && /messenger|telegram|tg|android/i.test(ua)) return true;
+
+            try {
+                if (window.GraphMessenger || window.graphMessenger || window.__GRAPH__ ||
+                    window.Nicegram || window.Nekogram || window.__NICEGRAM__) return true;
+            } catch (e) {}
+
+            const tg = window.Telegram && window.Telegram.WebApp;
+            if (!tg) return true;
+
+            let initData = '';
+            let platform = '';
+            let verNum = 0;
+            let verRaw = '';
+            try {
+                initData = String(tg.initData || '');
+                platform = String(tg.platform || '').toLowerCase();
+                verRaw = String(tg.version || '0');
+                verNum = parseWebAppVersion(verRaw);
+            } catch (e) {}
+
+            let hasUser = false;
+            try {
+                const u = tg.initDataUnsafe && tg.initDataUnsafe.user;
+                if (u && (u.id || u.username || u.first_name)) hasUser = true;
+            } catch (e) {}
+
+            if (!initData && !hasUser) return true;
+
+            // মিনিমাম অফিসিয়াল-লেভেল WebApp version
+            if (verNum > 0 && verNum < minVer) return true;
+            // version রিপোর্টই নেই + session দুর্বল
+            if ((!verRaw || verRaw === '0') && !initData) return true;
+
+            const isMobile = /android|iphone|ipad|ipod|mobile/i.test(uaL);
+            if (platform === 'web' && isMobile && !hasUser) return true;
+            if ((!platform || platform === 'unknown') && !initData && !hasUser) return true;
+
+            return false;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function showThirdPartyScreen() {
+        isThirdPartyBlocked = true;
+        const el = document.getElementById('thirdPartyScreen');
+        if (el) el.classList.add('show');
+        document.getElementById('mainApp').style.display = 'none';
+        const sec = document.getElementById('securityCheckScreen');
+        if (sec) sec.classList.remove('show');
+        const ads = document.getElementById('adsResetScreen');
+        if (ads) ads.classList.remove('show');
+    }
+    function hideThirdPartyScreen() {
+        isThirdPartyBlocked = false;
+        const el = document.getElementById('thirdPartyScreen');
+        if (el) el.classList.remove('show');
+    }
+
+    // ========== Ads ID Reset after 100 clicks ==========
+    function loadAdsSessionClicks() {
+        try {
+            // নতুন সেশনে আবার ওপেন করলে লিমিট রিসেট (রিসেট করে এসেছে ধরে নেওয়া)
+            const blocked = localStorage.getItem('smart_earn_ads_blocked');
+            if (blocked === '1') {
+                // আগের সেশনে ব্লক ছিল → এবার ওপেন করেছে = রিসেট করে এসেছে
+                localStorage.removeItem('smart_earn_ads_blocked');
+                localStorage.setItem('smart_earn_ads_session_clicks', '0');
+                state.adsSessionClicks = 0;
+                isAdsResetBlocked = false;
+                return;
+            }
+            state.adsSessionClicks = parseInt(localStorage.getItem('smart_earn_ads_session_clicks') || '0', 10) || 0;
+        } catch (e) {
+            state.adsSessionClicks = 0;
+        }
+    }
+
+    function saveAdsSessionClicks() {
+        try {
+            localStorage.setItem('smart_earn_ads_session_clicks', String(state.adsSessionClicks || 0));
+        } catch (e) {}
+    }
+
+    function incrementAdsClickAndCheck() {
+        if (!state.adsLimitEnabled) return false;
+        ADS_CLICK_LIMIT = state.adsClickLimit || 100;
+        state.adsSessionClicks = (state.adsSessionClicks || 0) + 1;
+        saveAdsSessionClicks();
+        if (state.adsSessionClicks >= ADS_CLICK_LIMIT) {
+            try { localStorage.setItem('smart_earn_ads_blocked', '1'); } catch (e) {}
+            showAdsResetScreen();
+            return true;
+        }
+        return false;
+    }
+
+    function showAdsResetScreen() {
+        isAdsResetBlocked = true;
+        const el = document.getElementById('adsResetScreen');
+        if (el) el.classList.add('show');
+        document.getElementById('mainApp').style.display = 'none';
+        const sec = document.getElementById('securityCheckScreen');
+        if (sec) sec.classList.remove('show');
+        isSecurityBlocked = false;
+    }
+    function hideAdsResetScreen() {
+        isAdsResetBlocked = false;
+        const el = document.getElementById('adsResetScreen');
+        if (el) el.classList.remove('show');
+    }
+
+    function canShowMainApp() {
+        return !isAppsOff && !isCountryBlocked && !isThirdPartyBlocked && !isAdsResetBlocked && !isSecurityBlocked;
+    }
+
+    function showSecurityCheckScreen() {
+        if (isAppsOff || isCountryBlocked || isThirdPartyBlocked || isAdsResetBlocked) {
+            const el = document.getElementById('securityCheckScreen');
+            if (el) el.classList.remove('show');
+            isSecurityBlocked = false;
+            return;
+        }
+        isSecurityBlocked = true;
+        const el = document.getElementById('securityCheckScreen');
+        if (el) el.classList.add('show');
+        document.getElementById('mainApp').style.display = 'none';
+        updateSecurityUI();
+    }
+    function hideSecurityCheckScreen() {
+        isSecurityBlocked = false;
+        const el = document.getElementById('securityCheckScreen');
+        if (el) el.classList.remove('show');
+        if (canShowMainApp()) {
+            document.getElementById('mainApp').style.display = 'block';
+        }
+    }
+
+    function updateSecurityUI() {
+        const dtz = deviceTz();
+        const devEl = document.getElementById('secDevTime');
+        const devTzEl = document.getElementById('secDevTz');
+        if (devEl) devEl.textContent = deviceTimeStr();
+        if (devTzEl) devTzEl.textContent = dtz;
+        if (state.secIpTimezone) {
+            const it = document.getElementById('secIpTime');
+            const iz = document.getElementById('secIpTz');
+            if (it) it.textContent = zoneTimeStr(state.secIpTimezone);
+            if (iz) iz.textContent = state.secIpTimezone;
+        } else {
+            const it = document.getElementById('secIpTime');
+            const iz = document.getElementById('secIpTz');
+            if (it) it.textContent = '—';
+            if (iz) iz.textContent = '—';
+        }
+
+        const tCard = document.getElementById('secTzCard');
+        const tTitle = document.getElementById('secTzTitle');
+        const tSub = document.getElementById('secTzSub');
+        if (!tCard) return;
+        if (state.secTzOk) {
+            tCard.className = 'sec-card green';
+            if (tTitle) tTitle.textContent = '🟢 TimeZone ঠিক আছে';
+            if (tSub) tSub.textContent = 'Device & IP TimeZone মিলে গেছে';
+        } else {
+            tCard.className = 'sec-card red';
+            if (tTitle) tTitle.textContent = '🔴 TimeZone মিলেনি';
+            if (tSub) tSub.textContent = 'Device: ' + dtz + (state.secIpTimezone ? ' | IP: ' + state.secIpTimezone : ' | IP: লোড হচ্ছে...');
+        }
+    }
+
+    async function runSecurityCheck() {
+        if (securityCheckInProgress) return;
+        if (isAppsOff || isCountryBlocked || isThirdPartyBlocked || isAdsResetBlocked) {
+            hideSecurityCheckScreen();
+            return;
+        }
+        // অ্যাডমিন TimeZone চেক বন্ধ রাখলে স্কিপ
+        if (state.timezoneCheck === false) {
+            state.secTzOk = true;
+            state.secReady = true;
+            hideSecurityCheckScreen();
+            return;
+        }
+        securityCheckInProgress = true;
+        try {
+            const geo = await fetchGeoFromApis();
+            if (geo) {
+                state.secIp = geo.ip || state.secIp;
+                state.secCountryCode = geo.countryCode || state.secCountryCode;
+                state.secCountry = geo.country || getCountryNameOnly(state.secCountryCode) || state.secCountry;
+                if (geo.timezone) state.secIpTimezone = geo.timezone;
+                if (state.secCountryCode) state.currentUserCountry = state.secCountryCode;
+            }
+
+            const dtz = deviceTz();
+            state.secTzOk = !!(state.secIpTimezone && state.secIpTimezone === dtz);
+            state.secReady = state.secTzOk;
+
+            if (state.secReady) {
+                hideSecurityCheckScreen();
+            } else if (state.secIpTimezone) {
+                updateSecurityUI();
+                showSecurityCheckScreen();
+            } else {
+                isSecurityBlocked = true;
+                const el = document.getElementById('securityCheckScreen');
+                if (el) el.classList.remove('show');
+                document.getElementById('mainApp').style.display = 'none';
+            }
+        } catch (e) {
+            isSecurityBlocked = true;
+            const el = document.getElementById('securityCheckScreen');
+            if (el) el.classList.remove('show');
+        }
+        securityCheckInProgress = false;
+    }
+
+    async function manualSecurityRefresh() {
+        const btn = document.getElementById('secRefreshBtn');
+        if (btn) { btn.disabled = true; btn.textContent = '⏳ চেক হচ্ছে...'; }
+        await runSecurityCheck();
+        if (btn) { btn.disabled = false; btn.textContent = '↻ রিফ্রেশ করুন'; }
+    }
+
+    setInterval(function () {
+        const el = document.getElementById('secDevTime');
+        if (el && isSecurityBlocked) {
+            el.textContent = deviceTimeStr();
+            if (state.secIpTimezone) {
+                const it = document.getElementById('secIpTime');
+                if (it) it.textContent = zoneTimeStr(state.secIpTimezone);
+            }
+        }
+    }, 1000);
+
+    setInterval(function () {
+        if (isAppsOff) return;
+        runSecurityCheck();
+    }, 8000);
+
+    async function checkAdminSettingsLive() {
+        try {
+            let res = await fetch(ADMIN_DB + 'adminSettings.json');
+            let settings = await res.json();
+            if (!settings) return;
+
+            if (settings.botStatus === false || settings.botStatus === 'off') {
+                const notice = settings.botOffNotice || settings.offNotice || settings.notice || 'বর্তমানে কাজের সিস্টেম বন্ধ রাখা হয়েছে।';
+                showAppsStatusScreen(notice);
+                return;
+            } else {
+                hideAppsStatusScreen();
+            }
+
+            let allowedList = settings.allowedCountries;
+            if (Array.isArray(allowedList)) state.allowedCountries = allowedList;
+            if (!allowedList || !Array.isArray(allowedList) || allowedList.length === 0) {
+                showCountryStatusScreen([], state.currentUserCountry || 'Unknown');
+                return;
+            }
+            if (allowedList.includes('ALL')) {
+                hideCountryStatusScreen();
+            } else {
+                if (!state.currentUserCountry) await detectUserCountry();
+                if (state.currentUserCountry && !allowedList.includes(state.currentUserCountry)) {
+                    showCountryStatusScreen(allowedList, state.currentUserCountry);
+                } else {
+                    hideCountryStatusScreen();
+                }
+            }
+
+            if (settings.maxTodayViews) state.maxTodayViews = settings.maxTodayViews;
+            if (settings.maxHourlyViews) state.maxHourlyViews = settings.maxHourlyViews;
+            if (settings.adminPointRate != null) state.adminPointRate = parseFloat(settings.adminPointRate);
+            if (settings.youtubeUrl) state.youtubeUrl = settings.youtubeUrl;
+            if (settings.taskTime) state.taskTime = parseInt(settings.taskTime);
+            if (settings.monetagZoneId && settings.monetagZoneId !== state.monetagZoneId) {
+                state.monetagZoneId = String(settings.monetagZoneId);
+                state.monetagSdkFunction = settings.monetagSdkFunction || ('show_' + state.monetagZoneId);
+                loadMonetagSdk(state.monetagZoneId, state.monetagSdkFunction);
+            }
+            // Security toggles from admin
+            state.timezoneCheck = settings.timezoneCheck !== false;
+            state.thirdPartyBlock = settings.thirdPartyBlock !== false;
+            if (settings.minWebAppVersion != null && settings.minWebAppVersion !== '') {
+                state.minWebAppVersion = parseFloat(settings.minWebAppVersion) || 7.0;
+            }
+            state.adsLimitEnabled = settings.adsLimitEnabled !== false;
+            if (settings.adsClickLimit) {
+                state.adsClickLimit = parseInt(settings.adsClickLimit) || 100;
+                ADS_CLICK_LIMIT = state.adsClickLimit;
+            }
+            // Blocked user live check
+            if (state.isLoggedIn && state.phone) {
+                await checkIfUserBlocked();
+            }
+            updateUI();
+        } catch (e) {}
+    }
+
+    async function checkIfUserBlocked() {
+        if (!state.phone) return false;
+        try {
+            const res = await fetch(ADMIN_DB + 'botUsers/' + state.phone + '/blocked.json?t=' + Date.now());
+            const blocked = await res.json();
+            if (blocked === true) {
+                showAppsStatusScreen('আপনার অ্যাকাউন্ট অ্যাডমিন কর্তৃক ব্লক করা হয়েছে। সাপোর্টে যোগাযোগ করুন।');
+                state.isLoggedIn = false;
+                return true;
+            }
+        } catch (e) {}
+        return false;
+    }
+
+    async function autoBlockUser(reason) {
+        if (!state.phone) return;
+        try {
+            await fetch(ADMIN_DB + 'botUsers/' + state.phone + '/blocked.json', {
+                method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: 'true'
+            });
+            await fetch(ADMIN_DB + 'botUsers/' + state.phone + '/blockReason.json', {
+                method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(reason || 'hack_points')
+            });
+        } catch (e) {}
+        showAppsStatusScreen('নিরাপত্তা কারণে আপনার অ্যাকাউন্ট ব্লক করা হয়েছে। (' + (reason || 'invalid points') + ')');
+        state.isLoggedIn = false;
+    }
+
+
+    async function retryCheckStatus() {
+        const appsBtn = document.getElementById('appsRetryBtn');
+        const countryBtn = document.getElementById('countryRetryBtn');
+        if (appsBtn) { appsBtn.disabled = true; appsBtn.innerText = '⏳ লোডিং...'; }
+        if (countryBtn) { countryBtn.disabled = true; countryBtn.innerText = '⏳ লোডিং...'; }
+        try {
+            state.currentUserCountry = '';
+            await detectUserCountry();
+            await checkAdminSettingsLive();
+        } catch(e) {}
+        if (appsBtn) { appsBtn.disabled = false; appsBtn.innerText = '🔄 আবার চেষ্টা করুন !'; }
+        if (countryBtn) { countryBtn.disabled = false; countryBtn.innerText = '🔄 আবার চেষ্টা করুন !'; }
+    }
 
     async function initAppSecurity() {
         try {
-            let res = await fetch('https://smart-earn-official-default-rtdb.firebaseio.com/adminSettings.json');
+            loadTelegramUser();
+            loadLocalClicks();
+            loadAdsSessionClicks();
+
+            await detectUserCountry();
+
+            let res = await fetch(ADMIN_DB + 'adminSettings.json');
             let settings = await res.json();
-
             if (!settings) {
-                showBlockScreen("🛡️ কনফিগারেশন এরর", "এডমিন সেটিংস ডাটাবেজে পাওয়া যায়নি।", []);
+                showAppsStatusScreen('এডমিন সেটিংস পাওয়া যায়নি।');
                 return;
             }
 
-            if (settings.botStatus === false || settings.botStatus === "off") {
-                showBlockScreen("🛑 বট সাময়িকভাবে বন্ধ আছে!", "বর্তমানে কাজের সিস্টেম বন্ধ রাখা হয়েছে।", []);
+            // Security toggles
+            state.timezoneCheck = settings.timezoneCheck !== false;
+            state.thirdPartyBlock = settings.thirdPartyBlock !== false;
+            state.adsLimitEnabled = settings.adsLimitEnabled !== false;
+            if (settings.adsClickLimit) {
+                state.adsClickLimit = parseInt(settings.adsClickLimit) || 100;
+                ADS_CLICK_LIMIT = state.adsClickLimit;
+            }
+
+            // থার্ড-পার্টি চেক (অ্যাডমিন টগল চালু থাকলে)
+            if (state.thirdPartyBlock && isThirdPartyTelegram()) {
+                showThirdPartyScreen();
                 return;
             }
+            hideThirdPartyScreen();
 
-            let zoneId = settings.monetagZoneId || "11383687";
-            let sdkFunc = settings.monetagSdkFunction || "show_11383687";
-            
-            window.monetagSdkFuncName = sdkFunc;
-
-            let existingScript = document.getElementById('dynamicMonetagSdk');
-            if (!existingScript) {
-                let script = document.createElement('script');
-                script.id = 'dynamicMonetagSdk';
-                script.src = '//libtl.com/sdk.js';
-                script.setAttribute('data-zone', zoneId);
-                script.setAttribute('data-sdk', sdkFunc);
-                document.head.appendChild(script);
+            if (settings.botStatus === false || settings.botStatus === 'off') {
+                const notice = settings.botOffNotice || settings.offNotice || settings.notice || 'বর্তমানে কাজের সিস্টেম বন্ধ রাখা হয়েছে।';
+                showAppsStatusScreen(notice);
             }
 
-            if(settings.maxTodayViews) state.maxTodayViews = settings.maxTodayViews;
-            if(settings.maxHourlyViews) state.maxHourlyViews = settings.maxHourlyViews;
-            if(settings.adminPointRate) state.adminPointRate = parseFloat(settings.adminPointRate);
-            if(settings.youtubeUrl) state.youtubeUrl = settings.youtubeUrl;
-            if(settings.taskTime) state.taskTime = parseInt(settings.taskTime);
+            if (settings.maxTodayViews) state.maxTodayViews = settings.maxTodayViews;
+            if (settings.maxHourlyViews) state.maxHourlyViews = settings.maxHourlyViews;
+            if (settings.adminPointRate != null) state.adminPointRate = parseFloat(settings.adminPointRate);
+            if (settings.youtubeUrl) state.youtubeUrl = settings.youtubeUrl;
+            if (settings.taskTime) state.taskTime = parseInt(settings.taskTime);
+            if (settings.monetagZoneId) state.monetagZoneId = String(settings.monetagZoneId);
+            if (settings.monetagSdkFunction) state.monetagSdkFunction = String(settings.monetagSdkFunction);
+            else if (state.monetagZoneId) state.monetagSdkFunction = 'show_' + state.monetagZoneId;
+            if (state.monetagZoneId) loadMonetagSdk(state.monetagZoneId, state.monetagSdkFunction);
 
-            globalAllowedList = settings.allowedCountries;
-            
-            if (!globalAllowedList || !Array.isArray(globalAllowedList) || globalAllowedList.length === 0) {
-                showBlockScreen("🛡️ দেশ সীমাবদ্ধতা (Country Restricted)", "এডমিন প্যানেল থেকে কোনো দেশ সিলেক্ট করা হয়নি।", []);
-                return;
-            }
+            let allowedList = settings.allowedCountries || [];
+            state.allowedCountries = allowedList;
 
-            await performFullSecurityChecks();
-            loadSavedSession();
-            
-            setInterval(async () => {
-                await performFullSecurityChecks(true);
-            }, 5000);
-
-        } catch (e) {
-            loadSavedSession();
-        }
-    }
-
-    async function performFullSecurityChecks(isBackground = false) {
-        if (!navigator.onLine) {
-            showBlockScreen("⚠️ ইন্টারনেট সংযোগ বিচ্ছিন্ন", "আপনার ইন্টারনেট সংযোগ নেই। দয়া করে আপনার মোবাইল ডাটা বা ওয়াইফাই চেক করুন।", []);
-            return false;
-        }
-
-        let connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-        if (connection) {
-            if (connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
-                showBlockScreen("⚠️ অতি ধীরগতির ইন্টারনেট (2G/E)", "আপনার সিমের নেটওয়ার্ক খুব দুর্বল (2G বা E)। ভালো ইন্টারনেটের মাধ্যমে কাজ করুন।", []);
-                return false;
-            }
-            if (connection.downlink && connection.downlink < 0.1) {
-                showBlockScreen("⚠️ নেটওয়ার্ক সমস্যা ।", "আপনার ইন্টারনেট স্পিড প্রায় শূন্য। এমবি শেষ হয়ে থাকতে পারে বা ওয়াইফাইতে ইন্টারনেট নেই।", []);
-                return false;
-            }
-        }
-
-        try {
-            let controller = new AbortController();
-            let timeoutId = setTimeout(() => controller.abort(), 4000);
-            let pingTest = await fetch('https://www.google.com/favicon.ico', { method: 'HEAD', mode: 'no-cors', signal: controller.signal });
-            clearTimeout(timeoutId);
-        } catch (err) {
-            showBlockScreen("⚠️ নেটওয়ার্ক ত্রুটি / নো ইন্টারনেট", "আপনার ওয়াইফাই অন নেই বা মোবাইল ডাটা অন নেই । নেট ঠিক করে আবার চেষ্টা করুন।", []);
-            return false;
-        }
-
-        let ipApis = [
-            'https://ipwho.is/',
-            'https://ipapi.co/json/',
-            'https://freeipapi.com/api/json'
-        ];
-        let ipData = null;
-
-        for (let apiUrl of ipApis) {
-            try {
-                let ipRes = await fetch(apiUrl);
-                let data = await ipRes.json();
-                let country = data.country_code || data.country_code_iso2 || data.country_code2 || data.country;
-                if (data && country) {
-                    ipData = { resolved_country: country.toUpperCase().trim() };
-                    break;
+            if (!allowedList.includes('ALL') && allowedList.length > 0) {
+                if (state.currentUserCountry && !allowedList.includes(state.currentUserCountry)) {
+                    showCountryStatusScreen(allowedList, state.currentUserCountry);
                 }
-            } catch (err) {
-                continue;
+            } else if (!allowedList || allowedList.length === 0) {
+                showCountryStatusScreen([], state.currentUserCountry || 'Unknown');
+            }
+
+            // যদি এখনো ads block ফ্ল্যাগ থাকে (একই সেশন)
+            try {
+                if (localStorage.getItem('smart_earn_ads_blocked') === '1') {
+                    showAdsResetScreen();
+                    return;
+                }
+            } catch (e) {}
+
+            // TimeZone — চুপচাপ চেক; শুধু ফেল হলে স্ক্রিন দেখাবে
+            await runSecurityCheck();
+
+            state.periodId = getPeriodId();
+            loadSavedSession();
+            setInterval(checkAdminSettingsLive, 8000);
+            setInterval(checkFivePMSchedule, 20000);
+            setInterval(checkAndResetLimits, 15000);
+        } catch (e) {
+            loadLocalClicks();
+            loadAdsSessionClicks();
+            loadSavedSession();
+            if (!isThirdPartyBlocked) {
+                runSecurityCheck();
             }
         }
-
-        if (!ipData || !ipData.resolved_country) {
-            return true; 
-        }
-
-        let userCountry = ipData.resolved_country;
-        let allowedUpperList = globalAllowedList.map(c => c.toUpperCase().trim());
-        let isCountryAllowed = allowedUpperList.includes('ALL') || allowedUpperList.includes(userCountry);
-
-        if (!isCountryAllowed) {
-            let allowedStr = globalAllowedList.map(c => {
-                let info = countryDetails[c];
-                return info ? `${info.flag} ${info.name}` : c;
-            }).join(', ');
-
-            let currentInfo = countryDetails[userCountry] || { name: userCountry, flag: '🌍' };
-            
-            showBlockScreen("🚫 ভিপিএন ডিসকানেক্টড / দেশ সীমাবদ্ধতা", `আপনার বর্তমান দেশ (${currentInfo.flag} <b>${currentInfo.name}</b>) অনুমোদিত নয়。<br><br><b>অনুমোদিত দেশসমূহ:</b> ${allowedStr}`, [
-                { text: "⚙️ ভিপিএন সেটিংস ঠিক করুন", link: "content://com.android.settings/action/SETTINGS" }
-            ]);
-            return false;
-        }
-
-        let deviceTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        let validZones = countryTimeZones[userCountry] || [];
-        let isTzValid = allowedUpperList.includes('ALL') || validZones.length === 0 || validZones.includes(deviceTimeZone);
-
-        if (!isTzValid) {
-            showBlockScreen("⏰ টাইম জোন মিলেনি!", `আপনার ভিপিএন দেশ এবং ফোনের টাইম জোন (${deviceTimeZone}) এক নয়। দয়া করে টাইম জোন ঠিক করুন।`, [
-                { text: "⚙️ টাইম জোন সেটিংস খুলুন", link: "content://com.android.settings/action/DATE_SETTINGS" }
-            ]);
-            return false;
-        }
-
-        let blockScreenEl = document.getElementById('blockScreen');
-        if (blockScreenEl.style.display === 'flex') {
-            blockScreenEl.style.display = 'none';
-        }
-        return true;
     }
 
-    function showBlockScreen(title, desc, buttons = []) {
-        document.getElementById('blockTitle').innerText = title;
-        document.getElementById('blockDesc').innerHTML = desc;
-        
-        let btnContainer = document.getElementById('blockActionButtons');
-        btnContainer.innerHTML = '';
-        
-        if (buttons.length > 0) {
-            buttons.forEach(btnInfo => {
-                let a = document.createElement('a');
-                a.href = btnInfo.link;
-                a.className = "btn-primary";
-                a.style.background = "var(--warning)";
-                a.style.color = "#000";
-                a.style.marginTop = "5px";
-                a.innerText = btnInfo.text;
-                
-                a.onclick = function(e) {
-                    try {
-                        window.location.href = btnInfo.link;
-                    } catch (err) {
-                        alert("দয়া করে আপনার ফোনের সেটিংস থেকে ভিপিএন বা নেটওয়ার্ক ঠিক করে নিন।");
-                    }
-                };
-                
-                btnContainer.appendChild(a);
-            });
+    async function checkFivePMSchedule() {
+        if (!state.isLoggedIn || !state.phone) return;
+        const now = new Date();
+        const h = now.getHours();
+        const m = now.getMinutes();
+        const periodId = getPeriodId();
+        // Auto save at 23:59
+        if (h === 23 && m === 59) {
+            const saveKey = periodId + '_saved';
+            if (lastAutoSaveKey !== saveKey) {
+                lastAutoSaveKey = saveKey;
+                await savePeriodHistory(periodId);
+            }
         }
-        
-        document.getElementById('blockScreen').style.display = 'flex';
+        // Reset after midnight (00:00)
+        if (h === 0 && m === 0) {
+            const resetKey = periodId + '_reset';
+            if (lastAutoSaveKey !== resetKey) {
+                const d = new Date(now);
+                d.setDate(d.getDate() - 1);
+                const oldPeriod = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+                await savePeriodHistory(oldPeriod);
+                state.wrongCount = 0; state.botTodayClick = 0; state.todayClickRight = 0;
+                state.periodId = getPeriodId();
+                lastAutoSaveKey = resetKey;
+                await syncBotUserToAdmin({ forceReset: true });
+            }
+        }
+        if (state.periodId && state.periodId !== periodId) {
+            await savePeriodHistory(state.periodId);
+            state.wrongCount = 0; state.botTodayClick = 0; state.todayClickRight = 0;
+            state.periodId = periodId;
+            await syncBotUserToAdmin({ forceReset: true });
+        }
+    }
+
+    async function savePeriodHistory(periodId) {
+        if (!state.phone || !periodId) return;
+        try {
+            let res = await fetch(ADMIN_DB + 'botUsers/' + state.phone + '.json');
+            let existing = await res.json();
+            let botTodayClick = state.botTodayClick, todayClickRight = state.todayClickRight, wrongCount = state.wrongCount;
+            let totalClick = state.totalClick, totalPoints = state.points, todayPoints = state.todayPoints;
+            if (existing && typeof existing === 'object') {
+                if (existing.periodId === periodId || existing.todayDate === periodId) {
+                    botTodayClick = Number(existing.botTodayClick ?? existing.todayClick) || botTodayClick;
+                    todayClickRight = Number(existing.todayClickRight) || todayClickRight;
+                    wrongCount = Number(existing.wrongCount) || wrongCount;
+                }
+                totalClick = Number(existing.totalClick) || totalClick;
+                totalPoints = Number(existing.totalPoints) || totalPoints;
+                todayPoints = Number(existing.todayPoints) || todayPoints;
+            }
+            await fetch(ADMIN_DB + 'botDailyHistory/' + periodId + '/' + state.phone + '.json', {
+                method: 'PUT', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone: state.phone, date: periodId, todayClick: botTodayClick, todayClickRight, wrongCount, totalClick, totalPoints, todayPoints, savedAt: new Date().toISOString() })
+            });
+        } catch (e) { console.error('History save error', e); }
     }
 
     function loadSavedSession() {
@@ -499,58 +1719,81 @@
 
     async function fetchUserDataFromFirebase(phone) {
         try {
-            let res = await fetch('https://smart-earn-official-default-rtdb.firebaseio.com/users.json');
-            let users = await res.json();
-            if(users) {
-                for(let k in users) {
-                    if(users[k].phone === phone || k === phone) {
-                        state.totalClick = users[k].total_click || 0;
-                        
-                        // সার্ভার বা ডেটাবেজ থেকে আজকের তারিখ চেক করা
-                        let todayDateStr = new Date().toISOString().split('T')[0]; // YYYY-MM-DD ফরম্যাট
-                        let dbLastDate = users[k].last_click_date || '';
-
-                        if (dbLastDate === todayDateStr) {
-                            state.todayClick = users[k].today_click || 0;
-                        } else {
-                            // নতুন দিন শুরু হলে টুডে ক্লিক শূন্য ধরবে এবং ফায়ারবেসে আপডেট করে দেবে
-                            state.todayClick = 0;
-                            await resetTodayClickInFirebase(k);
-                        }
-                        break;
-                    }
+            // ব্লক চেক
+            try {
+                const br = await fetch(ADMIN_DB + 'botUsers/' + phone + '/blocked.json?t=' + Date.now());
+                const blocked = await br.json();
+                if (blocked === true) {
+                    state.isLoggedIn = false;
+                    localStorage.removeItem('smart_earn_phone');
+                    showAppsStatusScreen('আপনার অ্যাকাউন্ট অ্যাডমিন কর্তৃক ব্লক করা হয়েছে।');
+                    updateUI();
+                    return;
                 }
+            } catch (e) {}
+
+            let res = await fetch(MAIN_DB + 'users/' + phone + '.json');
+            let user = await res.json();
+            if (user && typeof user === 'object' && !user.error) {
+                state.points = Number(user.points) || 0;
+                state.todayPoints = Number(user.todayPoints) || 0;
             }
-        } catch(e) {}
+            await syncBotUserToAdmin({ checkPeriod: true });
+        } catch (e) { console.error(e); }
         updateUI();
     }
 
-    async function resetTodayClickInFirebase(userKey) {
+    async function syncBotUserToAdmin(extra = {}) {
+        if (!state.phone) return;
+        const periodId = getPeriodId();
+        state.periodId = periodId;
         try {
-            let todayDateStr = new Date().toISOString().split('T')[0];
-            await fetch('https://smart-earn-official-default-rtdb.firebaseio.com/users/' + userKey + '.json', {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    today_click: 0,
-                    last_click_date: todayDateStr
-                })
+            let res = await fetch(ADMIN_DB + 'botUsers/' + state.phone + '.json');
+            let existing = await res.json();
+            let wrongCount = 0, botTodayClick = 0, todayClickRight = 0, lastWrongAt = '';
+            if (existing && typeof existing === 'object') {
+                const samePeriod = (existing.periodId === periodId);
+                if (samePeriod && !extra.forceReset) {
+                    wrongCount = Number(existing.wrongCount) || 0;
+                    botTodayClick = Number(existing.botTodayClick) || 0;
+                    todayClickRight = Number(existing.todayClickRight) || 0;
+                    lastWrongAt = existing.lastWrongAt || '';
+                } else if (existing.periodId && existing.periodId !== periodId) {
+                    await savePeriodHistory(existing.periodId);
+                    wrongCount = 0; botTodayClick = 0; todayClickRight = 0;
+                }
+            }
+            if (extra.incrementWatchClick) botTodayClick += 1;
+            if (extra.incrementWrong) { wrongCount += 1; lastWrongAt = new Date().toISOString(); }
+            if (extra.incrementRight) todayClickRight += 1;
+            if (extra.forceReset) { wrongCount = 0; botTodayClick = 0; todayClickRight = 0; }
+            state.wrongCount = wrongCount; state.botTodayClick = botTodayClick; state.todayClickRight = todayClickRight;
+            const payload = {
+                phone: state.phone, totalPoints: state.points, todayPoints: state.todayPoints,
+                totalClick: state.totalClick, todayClick: state.todayClick,
+                botTodayClick, todayClickRight, wrongCount, lastWrongAt, periodId, todayDate: periodId,
+                lastActive: new Date().toISOString(),
+                lastLogin: (existing && existing.lastLogin) ? existing.lastLogin : new Date().toISOString(),
+                country: state.currentUserCountry || state.secCountryCode || (existing && existing.country) || '',
+                countryCode: state.secCountryCode || (existing && existing.countryCode) || '',
+                deviceTz: (typeof deviceTz === 'function' ? deviceTz() : '') || (existing && existing.deviceTz) || '',
+                ipTimezone: state.secIpTimezone || (existing && existing.ipTimezone) || '',
+                blocked: (existing && existing.blocked === true) ? true : false,
+                blockReason: (existing && existing.blockReason) ? existing.blockReason : ''
+            };
+            if (extra.isLogin) payload.lastLogin = new Date().toISOString();
+            await fetch(ADMIN_DB + 'botUsers/' + state.phone + '.json', {
+                method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
             });
-        } catch(e) {}
+        } catch (e) { console.error('Bot user sync error:', e); }
     }
 
     function switchPage(pageId) {
-        document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
-        document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         document.getElementById(pageId).classList.add('active');
-        if(pageId === 'homePage') document.getElementById('navHome').classList.add('active');
-        if(pageId === 'earnPage') document.querySelectorAll('.nav-item')[1].classList.add('active');
-        if(pageId === 'profilePage') document.querySelectorAll('.nav-item')[2].classList.add('active');
-    }
-
-    function handleStartEarning() {
-        if(!state.isLoggedIn) openLoginModal();
-        else switchPage('earnPage');
+        const navMap = { 'homePage': 'navHome', 'earnPage': 'navEarn', 'referPage': 'navRefer', 'walletPage': 'navWallet', 'profilePage': 'navProfile' };
+        if (navMap[pageId]) document.getElementById(navMap[pageId]).classList.add('active');
     }
 
     function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
@@ -558,208 +1801,282 @@
 
     async function verifyLogin() {
         let inputPhone = document.getElementById('mainAppPhone').value.trim();
-        if(!inputPhone) { alert("দয়া করে আপনার মোবাইল নম্বরটি লিখুন।"); return; }
-
+        if (!inputPhone) { alert("মোবাইল নম্বর লিখুন।"); return; }
+        if (!/^01[3-9]\d{8}$/.test(inputPhone)) { alert("সঠিক ১১ সংখ্যার নম্বর দিন (01XXXXXXXXX)।"); return; }
+        const loginBtn = document.getElementById('loginBtn');
+        loginBtn.disabled = true;
+        loginBtn.innerText = "⏳ লোডিং...";
         try {
-            let response = await fetch('https://smart-earn-official-default-rtdb.firebaseio.com/users.json');
-            let usersData = await response.json();
-            let isValidUser = false;
-
-            if (usersData) {
-                for (let key in usersData) {
-                    if (usersData[key].phone === inputPhone || key === inputPhone) {
-                        isValidUser = true;
-                        break;
+            let res = await fetch(MAIN_DB + 'users/' + inputPhone + '.json');
+            let user = await res.json();
+            if (user && typeof user === 'object' && !user.error) {
+                // অ্যাডমিন ব্লক চেক
+                try {
+                    const br = await fetch(ADMIN_DB + 'botUsers/' + inputPhone + '/blocked.json?t=' + Date.now());
+                    const blocked = await br.json();
+                    if (blocked === true) {
+                        alert('আপনার অ্যাকাউন্ট অ্যাডমিন কর্তৃক ব্লক করা হয়েছে।');
+                        return;
                     }
-                }
-            }
-
-            if (isValidUser) {
-                state.isLoggedIn = true;
-                state.phone = inputPhone;
+                } catch (e) {}
+                state.isLoggedIn = true; state.phone = inputPhone;
                 localStorage.setItem('smart_earn_phone', inputPhone);
+                state.points = Number(user.points) || 0;
+                state.todayPoints = Number(user.todayPoints) || 0;
                 closeLoginModal();
-                fetchUserDataFromFirebase(inputPhone);
+                updateUI();
                 alert("সফলভাবে লগইন হয়েছে!");
                 switchPage('earnPage');
+                syncBotUserToAdmin({ isLogin: true, checkPeriod: true });
             } else {
-                alert("⚠️ ভুল নম্বর! স্মার্ট আর্ন মেইন অ্যাপের এই নম্বরটি নিবন্ধিত নেই।");
+                alert("⚠️ এই নম্বর মেইন অ্যাপে নিবন্ধিত নেই।");
             }
-        } catch (error) {
-            alert("কানেক্ট করতে সমস্যা হচ্ছে।");
+        } catch (e) {
+            console.error(e);
+            alert("কানেক্ট সমস্যা। Rules / ইন্টারনেট চেক করুন।");
+        } finally {
+            loginBtn.disabled = false;
+            loginBtn.innerText = "লগইন করুন";
         }
     }
 
     function logoutAccount() {
-        state.isLoggedIn = false;
-        state.phone = '';
+        state.isLoggedIn = false; state.phone = '';
         localStorage.removeItem('smart_earn_phone');
         updateUI();
-        alert("লগআউট সফল হয়েছে।");
+        alert("লগআউট সফল।");
     }
 
     function updateUI() {
-        document.getElementById('headerAvatar').innerText = state.phone ? state.phone.slice(-2) : 'U';
-        document.getElementById('profileAvatar').innerText = state.phone ? state.phone.slice(-2) : 'U';
-
-        if(state.isLoggedIn) {
-            document.getElementById('headerName').innerText = state.phone;
-            document.getElementById('headerSub').innerText = '🏅 0.00 Pts';
-            document.getElementById('welcomeMsg').innerText = 'Welcome, ' + state.phone + '!';
-            document.getElementById('profileName').innerText = state.phone;
-            document.getElementById('profilePhone').innerText = 'Smart Earn Verified Account ✅';
+        const avatarEl = document.getElementById('headerAvatar');
+        const profileAvatarEl = document.getElementById('profileAvatar');
+        if (state.tgPhoto) {
+            avatarEl.innerHTML = `<img src="${state.tgPhoto}" alt="pic">`;
+            profileAvatarEl.innerHTML = `<img src="${state.tgPhoto}" alt="pic">`;
+        } else {
+            const initial = state.tgName ? state.tgName.charAt(0).toUpperCase() : 'U';
+            avatarEl.innerText = initial; profileAvatarEl.innerText = initial;
+        }
+        document.getElementById('headerName').innerText = state.tgName || 'User';
+        document.getElementById('profileName').innerText = state.tgName || 'User';
+        document.getElementById('headerSub').innerText = '🏅 0.00 Pts';
+        document.getElementById('homeBalance').innerText = '0.00';
+        document.getElementById('walletBalance').innerText = '0.00';
+        document.getElementById('profileBalance').innerText = '0.00';
+        document.getElementById('totalEarnings').innerText = '0.00';
+        document.getElementById('totalClick').innerText = state.totalClick;
+        document.getElementById('profileClicks').innerText = state.totalClick;
+        document.getElementById('todayViewsDisplay').innerText = state.todayClick + ' / ' + state.maxTodayViews;
+        document.getElementById('hourlyViewsDisplay').innerText = state.hourlyViews + ' / ' + state.maxHourlyViews;
+        if (state.isLoggedIn) {
+            document.getElementById('profilePhone').innerText = state.phone;
+            document.getElementById('verifiedBadge').style.display = 'inline-flex';
             document.getElementById('headerLoginBtn').style.display = 'none';
             document.getElementById('profileLoginBtn').style.display = 'none';
             document.getElementById('logoutBtn').style.display = 'block';
+            document.getElementById('referCode').innerText = 'SMART' + state.phone.slice(-5);
         } else {
-            document.getElementById('headerName').innerText = "User";
-            document.getElementById('headerSub').innerText = '🏅 0.00 Pts';
-            document.getElementById('welcomeMsg').innerText = 'Welcome!';
-            document.getElementById('profileName').innerText = "User";
             document.getElementById('profilePhone').innerText = 'No Account Linked';
+            document.getElementById('verifiedBadge').style.display = 'none';
             document.getElementById('headerLoginBtn').style.display = 'block';
             document.getElementById('profileLoginBtn').style.display = 'block';
             document.getElementById('logoutBtn').style.display = 'none';
+            document.getElementById('referCode').innerText = 'Refer Code';
         }
+    }
 
-        document.getElementById('totalEarnings').innerText = "0.00";
-        document.getElementById('totalClick').innerText = state.totalClick;
-        document.getElementById('todayViewsDisplay').innerText = state.todayClick + ' / ' + state.maxTodayViews;
-        document.getElementById('hourlyViewsDisplay').innerText = state.hourlyViews + ' / ' + state.maxHourlyViews;
+    function showDemoToast(msg) {
+        const toast = document.getElementById('demoToast');
+        toast.innerText = msg;
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, 2500);
+    }
+
+    function copyReferCode() {
+        const code = document.getElementById('referCode').innerText;
+        navigator.clipboard.writeText(code).then(() => showDemoToast('রেফার কোড কপি হয়েছে: ' + code))
+            .catch(() => showDemoToast('রেফার কোড: ' + code));
+    }
+
+    async function hasRealInternet() {
+        // navigator.onLine VPN-এ ভুল false দিতে পারে — তাই আসল fetch দিয়ে চেক
+        try {
+            const controller = new AbortController();
+            const t = setTimeout(() => controller.abort(), 4000);
+            const r = await fetch('https://www.cloudflare.com/cdn-cgi/trace', {
+                method: 'GET', cache: 'no-store', mode: 'cors', signal: controller.signal
+            });
+            clearTimeout(t);
+            return r.ok || r.status === 204;
+        } catch (e) {
+            try {
+                const controller2 = new AbortController();
+                const t2 = setTimeout(() => controller2.abort(), 4000);
+                const r2 = await fetch('https://api.ipify.org?format=json', {
+                    method: 'GET', cache: 'no-store', mode: 'cors', signal: controller2.signal
+                });
+                clearTimeout(t2);
+                return r2.ok;
+            } catch (e2) {
+                return false;
+            }
+        }
     }
 
     async function startAdProcess() {
-        let isSecured = await performFullSecurityChecks();
-        if (!isSecured) return;
-
-        if(!state.isLoggedIn) { alert("আগে স্মার্ট আর্ন নম্বর দিয়ে লগইন করুন!"); openLoginModal(); return; }
-        if(state.todayClick >= state.maxTodayViews) { alert("আজকের অ্যাড দেখার লিমিট শেষ!"); return; }
-        if(isCheckingProcess) return;
-
+        if (!state.isLoggedIn) { alert("আগে লগইন করুন!"); openLoginModal(); return; }
+        if (state.todayClick >= state.maxTodayViews) { alert("আজকের লিমিট শেষ!"); return; }
+        if (state.hourlyViews >= state.maxHourlyViews) { alert("এই ঘণ্টার লিমিট শেষ!"); return; }
+        if (isCheckingProcess) return;
+        if (!state.monetagZoneId) { alert("Admin-এ Monetag Zone ID সেট নেই।"); return; }
         let btn = document.getElementById('watchBtn');
-
-        btn.disabled = true;
-        btn.innerText = "⏳ Ads লোডিং হচ্ছে...";
-
-        setTimeout(function() {
-            adStartTime = Date.now();
-            isWaitingForReturn = true;
-
-            let sdkFunc = window.monetagSdkFuncName || 'show_11383687';
-
-            if (typeof window[sdkFunc] === 'function') {
-                window[sdkFunc]().then(function() {
-                    processValidationAndClaim();
-                }).catch(function(e) {
-                    processValidationAndClaim();
-                });
-            } else {
-                processValidationAndClaim();
-            }
-
+        btn.disabled = true; btn.innerText = "⏳ নেট চেক...";
+        const netOk = await hasRealInternet();
+        if (!netOk) {
+            btn.disabled = false; btn.innerText = "▶ বিজ্ঞাপন দেখুন";
+            alert("ইন্টারনেট নেই।");
+            return;
+        }
+        syncBotUserToAdmin({ incrementWatchClick: true });
+        btn.disabled = true; btn.innerText = "⏳ Ads লোডিং...";
+        setTimeout(function () {
+            adStartTime = Date.now(); isWaitingForReturn = true;
+            const fnName = state.monetagSdkFunction || ('show_' + state.monetagZoneId);
+            if (typeof window[fnName] === 'function') {
+                window[fnName]().then(() => processValidationAndClaim()).catch(() => processValidationAndClaim());
+            } else { processValidationAndClaim(); }
             btn.innerText = "⏳ বিজ্ঞাপন দেখা হচ্ছে...";
         }, 3000);
     }
 
     function processValidationAndClaim() {
         if (!isWaitingForReturn || isCheckingProcess) return;
-        isWaitingForReturn = false;
-        isCheckingProcess = true;
-
+        isWaitingForReturn = false; isCheckingProcess = true;
         let btn = document.getElementById('watchBtn');
-        btn.disabled = true;
-        btn.innerText = "⏳ Ads লোডিং হচ্ছে...";
-
-        setTimeout(function() {
+        btn.disabled = true; btn.innerText = "⏳ যাচাই...";
+        setTimeout(async function () {
             let timeElapsed = (Date.now() - adStartTime) / 1000;
-            let isOnline = navigator.onLine;
-
-            btn.disabled = false;
-            btn.innerText = "Watch Ads Full";
-            isCheckingProcess = false;
-
-            if (!isOnline) {
-                alert("⚠️ আপনার ইন্টারনেট সংযোগ বিচ্ছিন্ন ছিল! পয়েন্ট যোগ করা সম্ভব হয়নি।");
-                showErrorModal();
-                return;
-            }
-
-            if (timeElapsed < state.taskTime) {
-                showErrorModal();
-            } else {
-                showModal();
-            }
+            btn.disabled = false; btn.innerText = "▶ বিজ্ঞাপন দেখুন"; isCheckingProcess = false;
+            // শুধু টাইম চেক — navigator.onLine ব্যবহার করব না (VPN false positive)
+            if (timeElapsed < state.taskTime) showErrorModal();
+            else showModal();
         }, 3000);
     }
 
-    document.addEventListener('visibilitychange', function() {
-        if (document.visibilityState === 'visible' && isWaitingForReturn) {
-            processValidationAndClaim();
-        }
+    document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible' && isWaitingForReturn) processValidationAndClaim();
     });
-
-    window.addEventListener('focus', function() {
-        if (isWaitingForReturn) {
-            processValidationAndClaim();
-        }
+    window.addEventListener('focus', function () {
+        if (isWaitingForReturn) processValidationAndClaim();
     });
 
     function openYouTubeTask() {
-        if(!state.youtubeUrl) { alert("বর্তমান কোনো কাজের ভিডিও এখানে নেই, অ্যাড করলে ভিডিও দেখতে পারবেন!"); return; }
+        if (!state.youtubeUrl) { alert("কোনো ভিডিও নেই।"); return; }
         window.open(state.youtubeUrl, '_blank');
     }
-
-    function openYouTubeTaskFromError() {
-        closeErrorModal();
-        openYouTubeTask();
-    }
+    function openYouTubeTaskFromError() { closeErrorModal(); openYouTubeTask(); }
 
     function closeModalAndApplyPoint() {
         closeModal();
         state.totalClick++;
         state.todayClick++;
         state.hourlyViews++;
+        saveLocalClicks();
+        state.points = (Number(state.points) || 0) + state.adminPointRate;
+        state.todayPoints = (Number(state.todayPoints) || 0) + state.adminPointRate;
         updateUI();
         syncDataToFirebase();
+        // ১০০ ক্লিক Ads ID রিসেট চেক
+        incrementAdsClickAndCheck();
+    }
+
+    async function writeField(phone, field, value) {
+        const res = await fetch(MAIN_DB + 'users/' + phone + '/' + field + '.json', {
+            method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(value)
+        });
+        return res.ok;
     }
 
     async function syncDataToFirebase() {
-        if(!state.phone) return;
+        if (!state.phone) return;
         try {
-            let res = await fetch('https://smart-earn-official-default-rtdb.firebaseio.com/users.json');
-            let users = await res.json();
-            if(users) {
-                for(let key in users) {
-                    if(users[key].phone === state.phone || key === state.phone) {
-                        let currentDbBalance = users[key].balance || 0;
-                        let newDbBalance = currentDbBalance + state.adminPointRate;
-                        
-                        let currentTotalClick = users[key].total_click || 0;
-                        let currentTodayClick = users[key].today_click || 0;
-                        let todayDateStr = new Date().toISOString().split('T')[0];
+            // ব্লক চেক
+            if (await checkIfUserBlocked()) return;
 
-                        await fetch('https://smart-earn-official-default-rtdb.firebaseio.com/users/' + key + '.json', {
-                            method: 'PATCH',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                balance: newDbBalance,
-                                total_click: currentTotalClick + 1,
-                                today_click: currentTodayClick + 1,
-                                last_click_date: todayDateStr
-                            })
-                        });
-                        break;
-                    }
-                }
+            let res = await fetch(MAIN_DB + 'users/' + state.phone + '.json');
+            let user = await res.json();
+            if (!user || typeof user !== 'object' || user.error) { alert('ইউজার লোড ব্যর্থ।'); return; }
+
+            // শুধু অ্যাডমিন রেট দিয়ে পয়েন্ট বাড়ানো — ক্লায়েন্ট থেকে বেশি নেওয়া যাবে না
+            let rate = Number(state.adminPointRate) || 0;
+            if (rate <= 0) { alert('পয়েন্ট রেট সেট নেই।'); return; }
+
+            // হ্যাক ডিটেক্ট: লোকাল পয়েন্ট সার্ভারের চেয়ে অনেক বেশি হলে ব্লক
+            const serverPts = Number(user.points) || 0;
+            const localPts = Number(state.points) || 0;
+            if (localPts > serverPts + rate + 0.01) {
+                await autoBlockUser('hack_points');
+                return;
             }
-        } catch(e) {}
+
+            let newPoints = serverPts + rate;
+            let newTodayPoints = (Number(user.todayPoints) || 0) + rate;
+            let newBalance = (Number(user.balance) || 0) + rate;
+            let newTotalClicks = (user.totalClicks || user.total_click || 0) + 1;
+            let newTodayClicks = (user.todayClicks || user.today_click || 0) + 1;
+            const results = await Promise.all([
+                writeField(state.phone, 'points', newPoints),
+                writeField(state.phone, 'todayPoints', newTodayPoints),
+                writeField(state.phone, 'balance', newBalance),
+                writeField(state.phone, 'totalClicks', newTotalClicks),
+                writeField(state.phone, 'todayClicks', newTodayClicks),
+                writeField(state.phone, 'total_click', newTotalClicks),
+                writeField(state.phone, 'today_click', newTodayClicks)
+            ]);
+            if (results.every(Boolean)) {
+                state.points = newPoints; state.todayPoints = newTodayPoints;
+                updateUI();
+                await syncBotUserToAdmin({ incrementRight: true });
+            } else { alert('কিছু ফিল্ড আপডেট হয়নি।'); }
+        } catch (e) { console.error('Sync error:', e); alert('সিঙ্ক সমস্যা।'); }
     }
 
     function showModal() { document.getElementById('customModal').style.display = 'flex'; }
     function closeModal() { document.getElementById('customModal').style.display = 'none'; }
     function showErrorModal() { document.getElementById('errorModal').style.display = 'flex'; }
-    function closeErrorModal() { document.getElementById('errorModal').style.display = 'none'; }
+    function closeErrorModal() {
+        document.getElementById('errorModal').style.display = 'none';
+        if (state.isLoggedIn && state.phone) syncBotUserToAdmin({ incrementWrong: true });
+    }
 
+
+    // Block copy / cut / context menu (except input/textarea)
+    document.addEventListener('copy', function(e) {
+        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+            e.preventDefault();
+        }
+    });
+    document.addEventListener('cut', function(e) {
+        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+            e.preventDefault();
+        }
+    });
+    document.addEventListener('contextmenu', function(e) {
+        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+            e.preventDefault();
+        }
+    });
+
+    // Telegram script may need a moment
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTelegramUser();
+            setTimeout(loadTelegramUser, 400);
+        });
+    } else {
+        loadTelegramUser();
+        setTimeout(loadTelegramUser, 400);
+    }
     initAppSecurity();
 </script>
 </body>
