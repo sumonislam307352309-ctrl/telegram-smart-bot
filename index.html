@@ -905,30 +905,47 @@
         return COUNTRY_NAME_ONLY[upper] || upper;
     }
 
+    // Click/limit — প্রতি ফোন নম্বর আলাদা (লগআউট/অন্য নম্বরে পুরনো সংখ্যা যাবে না)
+    function getClickPhoneKey() {
+        return String(state.phone || localStorage.getItem('smart_earn_phone') || '').trim();
+    }
+    function clickKey(base) {
+        const phone = getClickPhoneKey();
+        return phone ? (base + '_' + phone) : base;
+    }
+
     function saveLocalClicks() {
         try {
-            localStorage.setItem('smart_earn_totalClick', String(state.totalClick || 0));
-            localStorage.setItem('smart_earn_todayClick', String(state.todayClick || 0));
-            localStorage.setItem('smart_earn_hourlyViews', String(state.hourlyViews || 0));
+            const phone = getClickPhoneKey();
+            if (!phone) return; // লগইন না থাকলে সেভ করবে না
+            localStorage.setItem(clickKey('smart_earn_totalClick'), String(state.totalClick || 0));
+            localStorage.setItem(clickKey('smart_earn_todayClick'), String(state.todayClick || 0));
+            localStorage.setItem(clickKey('smart_earn_hourlyViews'), String(state.hourlyViews || 0));
             const today = new Date();
             const dateStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
-            localStorage.setItem('smart_earn_todayDate', dateStr);
-            localStorage.setItem('smart_earn_lastHour', String(today.getHours()));
+            localStorage.setItem(clickKey('smart_earn_todayDate'), dateStr);
+            localStorage.setItem(clickKey('smart_earn_lastHour'), String(today.getHours()));
         } catch(e) {}
     }
 
     function loadLocalClicks() {
         try {
+            const phone = getClickPhoneKey();
+            if (!phone) {
+                // লগইন নেই → সংখ্যা ০
+                state.totalClick = 0; state.todayClick = 0; state.hourlyViews = 0;
+                return;
+            }
             const today = new Date();
             const dateStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
-            const savedDate = localStorage.getItem('smart_earn_todayDate') || '';
-            const savedHour = parseInt(localStorage.getItem('smart_earn_lastHour') || '-1', 10);
-            state.totalClick = parseInt(localStorage.getItem('smart_earn_totalClick') || '0', 10) || 0;
+            const savedDate = localStorage.getItem(clickKey('smart_earn_todayDate')) || '';
+            const savedHour = parseInt(localStorage.getItem(clickKey('smart_earn_lastHour')) || '-1', 10);
+            state.totalClick = parseInt(localStorage.getItem(clickKey('smart_earn_totalClick')) || '0', 10) || 0;
             if (savedDate === dateStr) {
-                state.todayClick = parseInt(localStorage.getItem('smart_earn_todayClick') || '0', 10) || 0;
+                state.todayClick = parseInt(localStorage.getItem(clickKey('smart_earn_todayClick')) || '0', 10) || 0;
             } else { state.todayClick = 0; }
             if (savedHour === today.getHours() && savedDate === dateStr) {
-                state.hourlyViews = parseInt(localStorage.getItem('smart_earn_hourlyViews') || '0', 10) || 0;
+                state.hourlyViews = parseInt(localStorage.getItem(clickKey('smart_earn_hourlyViews')) || '0', 10) || 0;
             } else { state.hourlyViews = 0; }
             lastHourChecked = today.getHours();
             saveLocalClicks();
@@ -936,11 +953,12 @@
     }
 
     function checkAndResetLimits() {
+        if (!getClickPhoneKey()) return;
         const now = new Date();
         const h = now.getHours();
         const m = now.getMinutes();
         const dateStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
-        const savedDate = localStorage.getItem('smart_earn_todayDate') || '';
+        const savedDate = localStorage.getItem(clickKey('smart_earn_todayDate')) || '';
         if (h === 23 && m === 59) {
             if (state.todayClick !== 0) { state.todayClick = 0; saveLocalClicks(); updateUI(); }
         }
@@ -1712,7 +1730,10 @@
         if (savedPhone) {
             state.isLoggedIn = true;
             state.phone = savedPhone;
+            loadLocalClicks(); // এই নম্বরের Click/limit
             fetchUserDataFromFirebase(savedPhone);
+        } else {
+            state.totalClick = 0; state.todayClick = 0; state.hourlyViews = 0;
         }
         updateUI();
     }
@@ -1823,6 +1844,9 @@
                 localStorage.setItem('smart_earn_phone', inputPhone);
                 state.points = Number(user.points) || 0;
                 state.todayPoints = Number(user.todayPoints) || 0;
+                // এই নম্বরের নিজস্ব Click/limit লোড (অন্য নম্বরের সংখ্যা আসবে না)
+                state.wrongCount = 0; state.botTodayClick = 0; state.todayClickRight = 0; state.periodId = '';
+                loadLocalClicks();
                 closeLoginModal();
                 updateUI();
                 alert("সফলভাবে লগইন হয়েছে!");
@@ -1841,7 +1865,19 @@
     }
 
     function logoutAccount() {
-        state.isLoggedIn = false; state.phone = '';
+        // আগের নম্বরের Click data localStorage-এ থাকে (একই নম্বরে পরে লগইন করলে লিমিট ঠিক থাকে)
+        // কিন্তু স্ক্রিন/state থেকে মুছে ফেলা হয় — অন্য নম্বরে পুরনো সংখ্যা দেখাবে না
+        state.isLoggedIn = false;
+        state.phone = '';
+        state.points = 0;
+        state.todayPoints = 0;
+        state.totalClick = 0;
+        state.todayClick = 0;
+        state.hourlyViews = 0;
+        state.wrongCount = 0;
+        state.botTodayClick = 0;
+        state.todayClickRight = 0;
+        state.periodId = '';
         localStorage.removeItem('smart_earn_phone');
         updateUI();
         alert("লগআউট সফল।");
