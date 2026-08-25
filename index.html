@@ -2055,19 +2055,30 @@
                 return;
             }
 
+            // নতুন দিন হলে today ০ থেকে শুরু; ?? দিয়ে ০ ignore হবে না (|| বাগ ফিক্স)
+            const periodId = getPeriodId();
+            const userDay = String(user.todayDate ?? user.today_date ?? '').trim();
+            const isNewDay = !userDay || userDay !== periodId;
+            const baseTodayPoints = isNewDay ? 0 : (Number(user.todayPoints ?? user.today_points ?? 0) || 0);
+            const baseTodayClicks = isNewDay ? 0 : (Number(user.todayClicks ?? user.today_click ?? user.todayClick ?? 0) || 0);
+
             let newPoints = serverPts + rate;
-            let newTodayPoints = (Number(user.todayPoints) || 0) + rate;
+            let newTodayPoints = baseTodayPoints + rate;
             let newBalance = (Number(user.balance) || 0) + rate;
-            let newTotalClicks = (user.totalClicks || user.total_click || 0) + 1;
-            let newTodayClicks = (user.todayClicks || user.today_click || 0) + 1;
+            let newTotalClicks = (Number(user.totalClicks ?? user.total_click ?? 0) || 0) + 1;
+            let newTodayClicks = baseTodayClicks + 1;
             const results = await Promise.all([
                 writeField(state.phone, 'points', newPoints),
                 writeField(state.phone, 'todayPoints', newTodayPoints),
+                writeField(state.phone, 'today_points', newTodayPoints),
                 writeField(state.phone, 'balance', newBalance),
                 writeField(state.phone, 'totalClicks', newTotalClicks),
                 writeField(state.phone, 'todayClicks', newTodayClicks),
                 writeField(state.phone, 'total_click', newTotalClicks),
-                writeField(state.phone, 'today_click', newTodayClicks)
+                writeField(state.phone, 'today_click', newTodayClicks),
+                writeField(state.phone, 'todayClick', newTodayClicks),
+                writeField(state.phone, 'todayDate', periodId),
+                writeField(state.phone, 'today_date', periodId)
             ]);
             if (results.every(Boolean)) {
                 state.points = newPoints; state.todayPoints = newTodayPoints;
