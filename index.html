@@ -2064,60 +2064,73 @@
             let newTotalClicks = (Number(user.totalClicks ?? user.total_click ?? 0) || 0) + 1;
             let newTodayClicks = baseTodayClicks + 1;
 
-            // 1) পয়েন্ট / ক্লিক — আগের মতো আলাদা ফিল্ডে (নিশ্চিত কাজ করে)
-            const results = await Promise.all([
-                writeField(state.phone, 'points', newPoints),
-                writeField(state.phone, 'todayPoints', newTodayPoints),
-                writeField(state.phone, 'balance', newBalance),
-                writeField(state.phone, 'totalClicks', newTotalClicks),
-                writeField(state.phone, 'todayClicks', newTodayClicks),
-                writeField(state.phone, 'total_click', newTotalClicks),
-                writeField(state.phone, 'today_click', newTodayClicks),
-                writeField(state.phone, 'todayDate', periodId)
-            ]);
-
-            // 2) History — আলাদা চাইল্ড পাথে লেখা (পুরনো হিস্ট্রি মুছে না, প্রতি কাজ = ১ এন্ট্রি)
+            // History entry — পয়েন্ট যোগের ঠিক একই মুহূর্তে
             const nowMs = Date.now();
-            const histId = 'ph_' + nowMs + '_' + Math.floor(rate * 100) + '_' + Math.random().toString(36).slice(2, 7);
+            const histId = 'ph_' + nowMs + '_' + String(rate).replace('.', '') + '_' + Math.random().toString(36).slice(2, 7);
             const histEntry = {
                 id: histId,
                 title: 'Reward for Claim From Task',
                 points: rate,
                 amount: rate,
+                from: 'Task',
                 source: 'Task',
                 note: 'Watch Ads',
                 date: new Date(nowMs).toISOString(),
                 time: new Date(nowMs).toLocaleString('en-GB'),
                 createdAt: new Date(nowMs).toISOString()
             };
-            // users/{phone}/pointHistory/{histId} — Main App এটাই পড়ে
-            let histOk = false;
+
+            // Firebase multi-path PATCH (slash keys) — পয়েন্ট + হিস্ট্রি এক রিকোয়েস্টে
+            // pointHistory/id আলাদা চাইল্ড, পুরনো হিস্ট্রি মুছে না
+            const multiPathBody = {};
+            multiPathBody['points'] = newPoints;
+            multiPathBody['todayPoints'] = newTodayPoints;
+            multiPathBody['balance'] = newBalance;
+            multiPathBody['totalClicks'] = newTotalClicks;
+            multiPathBody['todayClicks'] = newTodayClicks;
+            multiPathBody['total_click'] = newTotalClicks;
+            multiPathBody['today_click'] = newTodayClicks;
+            multiPathBody['todayDate'] = periodId;
+            multiPathBody['pointHistory/' + histId] = histEntry;
+
+            let ok = false;
             try {
-                const hr = await fetch(MAIN_DB + 'users/' + state.phone + '/pointHistory/' + histId + '.json', {
-                    method: 'PUT',
+                const pr = await fetch(MAIN_DB + 'users/' + state.phone + '.json', {
+                    method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(histEntry)
+                    body: JSON.stringify(multiPathBody)
                 });
-                histOk = hr.ok;
-            } catch (he) { console.error('pointHistory write error', he); }
-            // ব্যাকআপ পাথ (কিছু অ্যাপে pointsHistory নামে পড়ে)
-            if (!histOk) {
+                ok = pr.ok;
+            } catch (e1) { console.error('multi-path patch fail', e1); }
+
+            // Fallback: আলাদা আলাদা (পয়েন্ট আগে, হিস্ট্রি পরে)
+            if (!ok) {
+                const results = await Promise.all([
+                    writeField(state.phone, 'points', newPoints),
+                    writeField(state.phone, 'todayPoints', newTodayPoints),
+                    writeField(state.phone, 'balance', newBalance),
+                    writeField(state.phone, 'totalClicks', newTotalClicks),
+                    writeField(state.phone, 'todayClicks', newTodayClicks),
+                    writeField(state.phone, 'total_click', newTotalClicks),
+                    writeField(state.phone, 'today_click', newTodayClicks),
+                    writeField(state.phone, 'todayDate', periodId)
+                ]);
+                ok = !!(results[0] && results[1] && results[4]);
+                // হিস্ট্রি আলাদা পাথে PUT
                 try {
-                    const hr2 = await fetch(MAIN_DB + 'users/' + state.phone + '/pointsHistory/' + histId + '.json', {
+                    await fetch(MAIN_DB + 'users/' + state.phone + '/pointHistory/' + histId + '.json', {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(histEntry)
                     });
-                    histOk = hr2.ok;
-                } catch (e2) {}
+                } catch (e2) { console.error('history put fail', e2); }
             }
 
-            if (results[0] && results[1] && results[4]) {
+            if (ok) {
                 state.points = newPoints;
                 state.todayPoints = newTodayPoints;
                 updateUI();
                 await syncBotUserToAdmin({ incrementRight: true });
-                if (!histOk) console.warn('Points saved but History write failed');
             } else {
                 alert('কিছু ফিল্ড আপডেট হয়নি।');
             }
