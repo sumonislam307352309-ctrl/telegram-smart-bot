@@ -2086,8 +2086,7 @@
             updateUI();
             await syncBotUserToAdmin({ incrementRight: true });
 
-            // 2) কাজের History — ADMIN_DB এ (মিনি অ্যাপ আগে থেকেই এখানে লিখতে পারে, Rules ছাড়া)
-            // path: workHistory/{phone}/{id}  → মেইন অ্যাপ এটা পড়ে মার্জ করবে
+            // 2) কাজের History — কাজের ঠিক সেই মুহূর্তে ADMIN_DB (botUsers পাথ = আগে থেকেই লেখা যায়)
             const nowMs = Date.now();
             const histId = 'ph_' + nowMs + '_' + String(rate).replace('.', '') + '_' + Math.random().toString(36).slice(2, 7);
             const histEntry = {
@@ -2103,16 +2102,25 @@
                 time: new Date(nowMs).toLocaleString('en-GB'),
                 createdAt: new Date(nowMs).toISOString()
             };
+            // প্রধান: botUsers/{phone}/workHistory/{id} — কাজের সময়ই সেভ
+            try {
+                await fetch(ADMIN_DB + 'botUsers/' + state.phone + '/workHistory/' + histId + '.json', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(histEntry)
+                });
+            } catch (he) {
+                console.error('botUsers workHistory write error', he);
+            }
+            // ব্যাকআপ পাথ
             try {
                 await fetch(ADMIN_DB + 'workHistory/' + state.phone + '/' + histId + '.json', {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(histEntry)
                 });
-            } catch (he) {
-                console.error('ADMIN workHistory write error', he);
-            }
-            // MAIN_DB তেও চেষ্টা (allow থাকলে); ফেল হলেও পয়েন্ট/Top নষ্ট হবে না
+            } catch (e2) {}
+            // MAIN_DB (Rules allow করলে); ফেল হলে পয়েন্ট নষ্ট হবে না
             try {
                 await fetch(MAIN_DB + 'users/' + state.phone + '/pointHistory/' + histId + '.json', {
                     method: 'PUT',
