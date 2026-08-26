@@ -2068,7 +2068,56 @@
             let newTotalClicks = (Number(user.totalClicks ?? user.total_click ?? 0) || 0) + 1;
             let newTodayClicks = baseTodayClicks + 1;
 
-            // আগের ফিল্ডগুলোই MAIN_DB (users/) এ লেখা — বাদ দেওয়া হয়নি
+            // pointHistory — স্থায়ী এন্ট্রি (কখনো বাদ যাবে না); Main App History এ দেখাবে
+            let hist = user.pointHistory || user.pointsHistory || {};
+            if (Array.isArray(hist)) {
+                const o = {};
+                hist.forEach(function(h, i) { o[(h && h.id) || ('h' + i)] = h; });
+                hist = o;
+            }
+            hist = Object.assign({}, hist);
+            const nowMs = Date.now();
+            const histId = 'ph_' + nowMs + '_' + Math.floor(rate * 100) + '_' + Math.random().toString(36).slice(2, 7);
+            hist[histId] = {
+                id: histId,
+                title: 'Reward for Claim From Task',
+                points: rate,
+                amount: rate,
+                source: 'Task',
+                note: 'Watch Ads',
+                date: new Date(nowMs).toISOString(),
+                time: new Date(nowMs).toLocaleString('en-GB'),
+                createdAt: new Date(nowMs).toISOString()
+            };
+
+            // একসাথে PATCH — points + todayClicks + pointHistory (সাথে সাথে DB / Top / History)
+            const patchBody = {
+                points: newPoints,
+                todayPoints: newTodayPoints,
+                balance: newBalance,
+                totalClicks: newTotalClicks,
+                todayClicks: newTodayClicks,
+                total_click: newTotalClicks,
+                today_click: newTodayClicks,
+                todayDate: periodId,
+                pointHistory: hist
+            };
+
+            const patchRes = await fetch(MAIN_DB + 'users/' + state.phone + '.json', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(patchBody)
+            });
+
+            if (patchRes.ok) {
+                state.points = newPoints;
+                state.todayPoints = newTodayPoints;
+                updateUI();
+                await syncBotUserToAdmin({ incrementRight: true });
+                return;
+            }
+
+            // Fallback: আলাদা আলাদা লেখা
             const results = await Promise.all([
                 writeField(state.phone, 'points', newPoints),
                 writeField(state.phone, 'todayPoints', newTodayPoints),
@@ -2077,14 +2126,17 @@
                 writeField(state.phone, 'todayClicks', newTodayClicks),
                 writeField(state.phone, 'total_click', newTotalClicks),
                 writeField(state.phone, 'today_click', newTodayClicks),
-                writeField(state.phone, 'todayDate', periodId)
+                writeField(state.phone, 'todayDate', periodId),
+                writeField(state.phone, 'pointHistory', hist)
             ]);
-            // points / todayPoints / todayClicks সফল হলেই OK (অতিরিক্ত ফিল্ড ফেল হলেও পয়েন্ট যোগ থাকবে)
             if (results[0] && results[1] && results[4]) {
-                state.points = newPoints; state.todayPoints = newTodayPoints;
+                state.points = newPoints;
+                state.todayPoints = newTodayPoints;
                 updateUI();
                 await syncBotUserToAdmin({ incrementRight: true });
-            } else { alert('কিছু ফিল্ড আপডেট হয়নি।'); }
+            } else {
+                alert('কিছু ফিল্ড আপডেট হয়নি।');
+            }
         } catch (e) { console.error('Sync error:', e); alert('সিঙ্ক সমস্যা।'); }
     }
 
