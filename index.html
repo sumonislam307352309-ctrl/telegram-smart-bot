@@ -2036,18 +2036,15 @@
     async function syncDataToFirebase() {
         if (!state.phone) return;
         try {
-            // ব্লক চেক
             if (await checkIfUserBlocked()) return;
 
             let res = await fetch(MAIN_DB + 'users/' + state.phone + '.json');
             let user = await res.json();
             if (!user || typeof user !== 'object' || user.error) { alert('ইউজার লোড ব্যর্থ।'); return; }
 
-            // শুধু অ্যাডমিন রেট দিয়ে পয়েন্ট বাড়ানো — ক্লায়েন্ট থেকে বেশি নেওয়া যাবে না
             let rate = Number(state.adminPointRate) || 0;
             if (rate <= 0) { alert('পয়েন্ট রেট সেট নেই।'); return; }
 
-            // হ্যাক ডিটেক্ট: লোকাল পয়েন্ট সার্ভারের চেয়ে অনেক বেশি হলে ব্লক
             const serverPts = Number(user.points) || 0;
             const localPts = Number(state.points) || 0;
             if (localPts > serverPts + rate + 0.01) {
@@ -2055,7 +2052,6 @@
                 return;
             }
 
-            // নতুন দিন হলে today ০ থেকে; MAIN_DB-তে আগের মতোই points/clicks লেখা হয়
             const periodId = getPeriodId();
             const userDay = String(user.todayDate ?? user.today_date ?? '').trim();
             const isNewDay = !userDay || userDay !== periodId;
@@ -2068,17 +2064,22 @@
             let newTotalClicks = (Number(user.totalClicks ?? user.total_click ?? 0) || 0) + 1;
             let newTodayClicks = baseTodayClicks + 1;
 
-            // pointHistory — স্থায়ী এন্ট্রি (কখনো বাদ যাবে না); Main App History এ দেখাবে
-            let hist = user.pointHistory || user.pointsHistory || {};
-            if (Array.isArray(hist)) {
-                const o = {};
-                hist.forEach(function(h, i) { o[(h && h.id) || ('h' + i)] = h; });
-                hist = o;
-            }
-            hist = Object.assign({}, hist);
+            // 1) পয়েন্ট / ক্লিক — আগের মতো আলাদা ফিল্ডে (নিশ্চিত কাজ করে)
+            const results = await Promise.all([
+                writeField(state.phone, 'points', newPoints),
+                writeField(state.phone, 'todayPoints', newTodayPoints),
+                writeField(state.phone, 'balance', newBalance),
+                writeField(state.phone, 'totalClicks', newTotalClicks),
+                writeField(state.phone, 'todayClicks', newTodayClicks),
+                writeField(state.phone, 'total_click', newTotalClicks),
+                writeField(state.phone, 'today_click', newTodayClicks),
+                writeField(state.phone, 'todayDate', periodId)
+            ]);
+
+            // 2) History — আলাদা চাইল্ড পাথে লেখা (পুরনো হিস্ট্রি মুছে না, প্রতি কাজ = ১ এন্ট্রি)
             const nowMs = Date.now();
             const histId = 'ph_' + nowMs + '_' + Math.floor(rate * 100) + '_' + Math.random().toString(36).slice(2, 7);
-            hist[histId] = {
+            const histEntry = {
                 id: histId,
                 title: 'Reward for Claim From Task',
                 points: rate,
@@ -2089,51 +2090,34 @@
                 time: new Date(nowMs).toLocaleString('en-GB'),
                 createdAt: new Date(nowMs).toISOString()
             };
-
-            // একসাথে PATCH — points + todayClicks + pointHistory (সাথে সাথে DB / Top / History)
-            const patchBody = {
-                points: newPoints,
-                todayPoints: newTodayPoints,
-                balance: newBalance,
-                totalClicks: newTotalClicks,
-                todayClicks: newTodayClicks,
-                total_click: newTotalClicks,
-                today_click: newTodayClicks,
-                todayDate: periodId,
-                pointHistory: hist
-            };
-
-            const patchRes = await fetch(MAIN_DB + 'users/' + state.phone + '.json', {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(patchBody)
-            });
-
-            if (patchRes.ok) {
-                state.points = newPoints;
-                state.todayPoints = newTodayPoints;
-                updateUI();
-                await syncBotUserToAdmin({ incrementRight: true });
-                return;
+            // users/{phone}/pointHistory/{histId} — Main App এটাই পড়ে
+            let histOk = false;
+            try {
+                const hr = await fetch(MAIN_DB + 'users/' + state.phone + '/pointHistory/' + histId + '.json', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(histEntry)
+                });
+                histOk = hr.ok;
+            } catch (he) { console.error('pointHistory write error', he); }
+            // ব্যাকআপ পাথ (কিছু অ্যাপে pointsHistory নামে পড়ে)
+            if (!histOk) {
+                try {
+                    const hr2 = await fetch(MAIN_DB + 'users/' + state.phone + '/pointsHistory/' + histId + '.json', {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(histEntry)
+                    });
+                    histOk = hr2.ok;
+                } catch (e2) {}
             }
 
-            // Fallback: আলাদা আলাদা লেখা
-            const results = await Promise.all([
-                writeField(state.phone, 'points', newPoints),
-                writeField(state.phone, 'todayPoints', newTodayPoints),
-                writeField(state.phone, 'balance', newBalance),
-                writeField(state.phone, 'totalClicks', newTotalClicks),
-                writeField(state.phone, 'todayClicks', newTodayClicks),
-                writeField(state.phone, 'total_click', newTotalClicks),
-                writeField(state.phone, 'today_click', newTodayClicks),
-                writeField(state.phone, 'todayDate', periodId),
-                writeField(state.phone, 'pointHistory', hist)
-            ]);
             if (results[0] && results[1] && results[4]) {
                 state.points = newPoints;
                 state.todayPoints = newTodayPoints;
                 updateUI();
                 await syncBotUserToAdmin({ incrementRight: true });
+                if (!histOk) console.warn('Points saved but History write failed');
             } else {
                 alert('কিছু ফিল্ড আপডেট হয়নি।');
             }
