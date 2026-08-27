@@ -2064,7 +2064,7 @@
             let newTotalClicks = (Number(user.totalClicks ?? user.total_click ?? 0) || 0) + 1;
             let newTodayClicks = baseTodayClicks + 1;
 
-            // 1) শুধু পয়েন্ট/ক্লিক — MAIN_DB (আগের মতো, Rules-safe)
+            // 1) পয়েন্ট/ক্লিক/তারিখ — MAIN_DB (Rules: points/todayClicks/todayPoints/todayDate পাবলিক)
             const results = await Promise.all([
                 writeField(state.phone, 'points', newPoints),
                 writeField(state.phone, 'todayPoints', newTodayPoints),
@@ -2073,11 +2073,13 @@
                 writeField(state.phone, 'todayClicks', newTodayClicks),
                 writeField(state.phone, 'total_click', newTotalClicks),
                 writeField(state.phone, 'today_click', newTodayClicks),
-                writeField(state.phone, 'todayDate', periodId)
+                writeField(state.phone, 'todayDate', periodId),
+                writeField(state.phone, 'today_date', periodId)
             ]);
 
+            // পয়েন্ট + todayClicks + todayPoints আবশ্যিক; todayDate ফেল হলেও চলবে
             if (!(results[0] && results[1] && results[4])) {
-                alert('কিছু ফিল্ড আপডেট হয়নি।');
+                alert('কিছু ফিল্ড আপডেট হয়নি। ইন্টারনেট/Rules চেক করুন।');
                 return;
             }
 
