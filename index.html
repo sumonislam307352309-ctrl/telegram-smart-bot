@@ -1733,12 +1733,53 @@
         } catch (e) { console.error('History save error', e); }
     }
 
-    function loadSavedSession() {
+    async function loadSavedSession() {
         let savedPhone = localStorage.getItem('smart_earn_phone');
         if (savedPhone) {
+            // সেশন এখনো সক্রিয় কিনা + একই ডিভাইস কিনা
+            try {
+                const r = await fetch(ADMIN_DB + 'botUsers/' + savedPhone + '.json?t=' + Date.now());
+                const row = await r.json();
+                const deviceId = getBotDeviceId();
+                const localSes = getBotSessionId();
+                if (row && typeof row === 'object') {
+                    if (row.sessionActive === false || row.sessionActive === undefined) {
+                        // এডমিন force logout বা নিজে লগআউট
+                        try {
+                            localStorage.removeItem('smart_earn_phone');
+                            localStorage.removeItem('smart_earn_session_id');
+                        } catch (e) {}
+                        state.isLoggedIn = false;
+                        state.phone = '';
+                        updateUI();
+                        return;
+                    }
+                    if (row.deviceId && row.deviceId !== deviceId) {
+                        try {
+                            localStorage.removeItem('smart_earn_phone');
+                            localStorage.removeItem('smart_earn_session_id');
+                        } catch (e) {}
+                        state.isLoggedIn = false;
+                        state.phone = '';
+                        updateUI();
+                        alert('এই নম্বর অন্য ডিভাইসে লগইন আছে।');
+                        return;
+                    }
+                    if (row.sessionId && localSes && row.sessionId !== localSes) {
+                        try {
+                            localStorage.removeItem('smart_earn_phone');
+                            localStorage.removeItem('smart_earn_session_id');
+                        } catch (e) {}
+                        state.isLoggedIn = false;
+                        state.phone = '';
+                        updateUI();
+                        return;
+                    }
+                }
+            } catch (e) {}
             state.isLoggedIn = true;
             state.phone = savedPhone;
-            loadLocalClicks(); // এই নম্বরের Click/limit
+            loadLocalClicks();
             fetchUserDataFromFirebase(savedPhone);
         } else {
             state.totalClick = 0; state.todayClick = 0; state.hourlyViews = 0;
@@ -1844,9 +1885,17 @@
                 deviceTz: (typeof deviceTz === 'function' ? deviceTz() : '') || (existing && existing.deviceTz) || '',
                 ipTimezone: state.secIpTimezone || (existing && existing.ipTimezone) || '',
                 blocked: (existing && existing.blocked === true) ? true : false,
-                blockReason: (existing && existing.blockReason) ? existing.blockReason : ''
+                blockReason: (existing && existing.blockReason) ? existing.blockReason : '',
+                sessionActive: (existing && existing.sessionActive === true) ? true : (extra.isLogin ? true : !!(existing && existing.sessionActive)),
+                sessionId: (extra.isLogin ? (getBotSessionId() || (existing && existing.sessionId) || '') : ((existing && existing.sessionId) || getBotSessionId() || '')),
+                deviceId: (extra.isLogin ? getBotDeviceId() : ((existing && existing.deviceId) || getBotDeviceId() || ''))
             };
-            if (extra.isLogin) payload.lastLogin = new Date().toISOString();
+            if (extra.isLogin) {
+                payload.lastLogin = new Date().toISOString();
+                payload.sessionActive = true;
+                payload.sessionId = getBotSessionId() || payload.sessionId;
+                payload.deviceId = getBotDeviceId();
+            }
             await fetch(ADMIN_DB + 'botUsers/' + state.phone + '.json', {
                 method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
             });
@@ -1863,6 +1912,50 @@
 
     function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
     function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
+
+
+    function getBotDeviceId() {
+        try {
+            let id = localStorage.getItem('smart_earn_device_id');
+            if (!id) {
+                id = 'dev_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 10);
+                localStorage.setItem('smart_earn_device_id', id);
+            }
+            return id;
+        } catch (e) {
+            return 'dev_tmp_' + Date.now();
+        }
+    }
+
+    function getBotSessionId() {
+        try {
+            return localStorage.getItem('smart_earn_session_id') || '';
+        } catch (e) { return ''; }
+    }
+
+    function setBotSessionLocal(sessionId, phone) {
+        try {
+            if (sessionId) localStorage.setItem('smart_earn_session_id', sessionId);
+            else localStorage.removeItem('smart_earn_session_id');
+            if (phone) localStorage.setItem('smart_earn_phone', phone);
+        } catch (e) {}
+    }
+
+    async function clearServerSession(phone) {
+        if (!phone) return;
+        try {
+            await fetch(ADMIN_DB + 'botUsers/' + phone + '.json', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    sessionActive: false,
+                    sessionId: '',
+                    deviceId: '',
+                    forceLogoutAt: new Date().toISOString()
+                })
+            });
+        } catch (e) { console.error('clear session', e); }
+    }
 
     async function verifyLogin() {
         let inputPhone = document.getElementById('mainAppPhone').value.trim();
@@ -1884,17 +1977,57 @@
                         return;
                     }
                 } catch (e) {}
+
+                // এক নম্বর = এক ডিভাইস সেশন
+                const deviceId = getBotDeviceId();
+                let botRow = null;
+                try {
+                    const br2 = await fetch(ADMIN_DB + 'botUsers/' + inputPhone + '.json?t=' + Date.now());
+                    botRow = await br2.json();
+                } catch (e) {}
+                if (botRow && typeof botRow === 'object' && botRow.sessionActive === true) {
+                    const serverDevice = String(botRow.deviceId || '');
+                    const serverSession = String(botRow.sessionId || '');
+                    const localSession = getBotSessionId();
+                    // অন্য ডিভাইসে সক্রিয় সেশন থাকলে লগইন নয়
+                    if (serverDevice && serverDevice !== deviceId) {
+                        alert('এই নম্বর অন্য ডিভাইসে লগইন আছে।\nনিজে লগআউট করুন অথবা অ্যাডমিন Force Logout দিন।');
+                        return;
+                    }
+                    // একই ডিভাইস কিন্তু সেশন মিলছে না (clear data) → সার্ভার সেশন থাকলে ব্লক
+                    if (serverDevice === deviceId && serverSession && localSession && serverSession !== localSession) {
+                        // rare: allow rebind same device
+                    } else if (serverDevice === deviceId && serverSession && !localSession) {
+                        alert('সেশন অ্যাকটিভ আছে কিন্তু অ্যাপ ডেটা মুছে গেছে।\nঅ্যাডমিন Force Logout দিয়ে আবার লগইন করুন।');
+                        return;
+                    }
+                }
+
+                const newSessionId = 'ses_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 9);
                 state.isLoggedIn = true; state.phone = inputPhone;
-                localStorage.setItem('smart_earn_phone', inputPhone);
+                setBotSessionLocal(newSessionId, inputPhone);
                 state.points = Number(user.points) || 0;
                 state.todayPoints = Number(user.todayPoints) || 0;
-                // এই নম্বরের নিজস্ব Click/limit লোড (অন্য নম্বরের সংখ্যা আসবে না)
                 state.wrongCount = 0; state.botTodayClick = 0; state.todayClickRight = 0; state.periodId = '';
                 loadLocalClicks();
                 closeLoginModal();
                 updateUI();
                 alert("সফলভাবে লগইন হয়েছে!");
                 switchPage('earnPage');
+                // সেশন ফিল্ড সহ সিঙ্ক
+                try {
+                    await fetch(ADMIN_DB + 'botUsers/' + inputPhone + '.json', {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            sessionActive: true,
+                            sessionId: newSessionId,
+                            deviceId: deviceId,
+                            lastLogin: new Date().toISOString(),
+                            lastActive: new Date().toISOString()
+                        })
+                    });
+                } catch (e) {}
                 syncBotUserToAdmin({ isLogin: true, checkPeriod: true });
             } else {
                 alert("⚠️ এই নম্বর মেইন অ্যাপে নিবন্ধিত নেই।");
@@ -1908,9 +2041,10 @@
         }
     }
 
-    function logoutAccount() {
-        // আগের নম্বরের Click data localStorage-এ থাকে (একই নম্বরে পরে লগইন করলে লিমিট ঠিক থাকে)
-        // কিন্তু স্ক্রিন/state থেকে মুছে ফেলা হয় — অন্য নম্বরে পুরনো সংখ্যা দেখাবে না
+    async function logoutAccount() {
+        const phone = state.phone;
+        // সার্ভার সেশন মুছে → অন্য/একই ডিভাইসে আবার লগইন করা যাবে
+        if (phone) await clearServerSession(phone);
         state.isLoggedIn = false;
         state.phone = '';
         state.points = 0;
@@ -1922,7 +2056,10 @@
         state.botTodayClick = 0;
         state.todayClickRight = 0;
         state.periodId = '';
-        localStorage.removeItem('smart_earn_phone');
+        try {
+            localStorage.removeItem('smart_earn_phone');
+            localStorage.removeItem('smart_earn_session_id');
+        } catch (e) {}
         updateUI();
         alert("লগআউট সফল।");
     }
