@@ -838,6 +838,7 @@
         timezoneCheck: true, thirdPartyBlock: true, minWebAppVersion: 7.0, adsLimitEnabled: true, adsClickLimit: 100,
         monetagZoneId: '', monetagSdkFunction: '',
         wrongCount: 0, todayClickRight: 0, botTodayClick: 0, periodId: '',
+        totalRightClick: 0, totalWrongClick: 0,
         tgName: 'User', tgPhoto: '', currentUserCountry: '', allowedCountries: [],
         secIp: '', secCountry: '', secCountryCode: '', secIpTimezone: '',
         secTzOk: false, secReady: false,
@@ -1720,7 +1721,14 @@
             }
             await fetch(ADMIN_DB + 'botDailyHistory/' + periodId + '/' + state.phone + '.json', {
                 method: 'PUT', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone: state.phone, date: periodId, todayClick: botTodayClick, todayClickRight, wrongCount, totalClick, totalPoints, todayPoints, savedAt: new Date().toISOString() })
+                body: JSON.stringify({
+                    phone: state.phone, date: periodId,
+                    todayClick: botTodayClick, todayClickRight, wrongCount,
+                    totalClick, totalPoints, todayPoints,
+                    totalRightClick: Number(state.totalRightClick) || 0,
+                    totalWrongClick: Number(state.totalWrongClick) || 0,
+                    savedAt: new Date().toISOString()
+                })
             });
         } catch (e) { console.error('History save error', e); }
     }
@@ -1772,27 +1780,63 @@
             let res = await fetch(ADMIN_DB + 'botUsers/' + state.phone + '.json');
             let existing = await res.json();
             let wrongCount = 0, botTodayClick = 0, todayClickRight = 0, lastWrongAt = '';
+            // Total — কখনো অটো রিসেট নয় (শুধু এডমিন Reset All)
+            let totalRightClick = Number(state.totalRightClick) || 0;
+            let totalWrongClick = Number(state.totalWrongClick) || 0;
+            let totalClickVal = Number(state.totalClick) || 0;
             if (existing && typeof existing === 'object') {
-                const samePeriod = (existing.periodId === periodId);
+                totalRightClick = Number(existing.totalRightClick ?? existing.totalRight) || totalRightClick;
+                totalWrongClick = Number(existing.totalWrongClick ?? existing.totalWrong) || totalWrongClick;
+                totalClickVal = Math.max(totalClickVal, Number(existing.totalClick ?? existing.totalAdsClick) || 0);
+                const samePeriod = (existing.periodId === periodId || existing.todayDate === periodId);
                 if (samePeriod && !extra.forceReset) {
                     wrongCount = Number(existing.wrongCount) || 0;
                     botTodayClick = Number(existing.botTodayClick) || 0;
                     todayClickRight = Number(existing.todayClickRight) || 0;
                     lastWrongAt = existing.lastWrongAt || '';
-                } else if (existing.periodId && existing.periodId !== periodId) {
-                    await savePeriodHistory(existing.periodId);
+                } else if ((existing.periodId || existing.todayDate) && !samePeriod) {
+                    // পুরনো দিন → হিস্ট্রি সেভ, Today ০; Total অপরিবর্তিত
+                    await savePeriodHistory(existing.periodId || existing.todayDate);
                     wrongCount = 0; botTodayClick = 0; todayClickRight = 0;
                 }
             }
             if (extra.incrementWatchClick) botTodayClick += 1;
-            if (extra.incrementWrong) { wrongCount += 1; lastWrongAt = new Date().toISOString(); }
-            if (extra.incrementRight) todayClickRight += 1;
-            if (extra.forceReset) { wrongCount = 0; botTodayClick = 0; todayClickRight = 0; }
-            state.wrongCount = wrongCount; state.botTodayClick = botTodayClick; state.todayClickRight = todayClickRight;
+            if (extra.incrementWrong) {
+                wrongCount += 1;
+                totalWrongClick += 1;
+                lastWrongAt = new Date().toISOString();
+            }
+            if (extra.incrementRight) {
+                todayClickRight += 1;
+                totalRightClick += 1;
+            }
+            if (extra.forceReset) {
+                // শুধু Today ০ — Total নয়
+                wrongCount = 0; botTodayClick = 0; todayClickRight = 0;
+            }
+            state.wrongCount = wrongCount;
+            state.botTodayClick = botTodayClick;
+            state.todayClickRight = todayClickRight;
+            state.totalRightClick = totalRightClick;
+            state.totalWrongClick = totalWrongClick;
+            if (totalClickVal > (Number(state.totalClick) || 0)) state.totalClick = totalClickVal;
             const payload = {
-                phone: state.phone, totalPoints: state.points, todayPoints: state.todayPoints,
-                totalClick: state.totalClick, todayClick: state.todayClick,
-                botTodayClick, todayClickRight, wrongCount, lastWrongAt, periodId, todayDate: periodId,
+                phone: state.phone,
+                totalPoints: state.points,
+                todayPoints: state.todayPoints,
+                totalClick: state.totalClick,
+                totalAdsClick: state.totalClick,
+                totalRightClick: totalRightClick,
+                totalRight: totalRightClick,
+                totalWrongClick: totalWrongClick,
+                totalWrong: totalWrongClick,
+                todayClick: state.todayClick,
+                botTodayClick,
+                todayClickRight,
+                wrongCount,
+                lastWrongAt,
+                periodId,
+                todayDate: periodId,
                 lastActive: new Date().toISOString(),
                 lastLogin: (existing && existing.lastLogin) ? existing.lastLogin : new Date().toISOString(),
                 country: state.currentUserCountry || state.secCountryCode || (existing && existing.country) || '',
