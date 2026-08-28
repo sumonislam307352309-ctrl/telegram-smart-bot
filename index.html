@@ -1809,6 +1809,8 @@
                 state.todayPoints = Number(user.todayPoints) || 0;
             }
             await syncBotUserToAdmin({ checkPeriod: true });
+            // এডমিন রিসেটের পর Total ০ দেখাতে UI রিফ্রেশ
+            try { saveLocalClicks(); } catch (e) {}
         } catch (e) { console.error(e); }
         updateUI();
     }
@@ -1821,14 +1823,15 @@
             let res = await fetch(ADMIN_DB + 'botUsers/' + state.phone + '.json');
             let existing = await res.json();
             let wrongCount = 0, botTodayClick = 0, todayClickRight = 0, lastWrongAt = '';
-            // Total — কখনো অটো রিসেট নয় (শুধু এডমিন Reset All)
-            let totalRightClick = Number(state.totalRightClick) || 0;
-            let totalWrongClick = Number(state.totalWrongClick) || 0;
-            let totalClickVal = Number(state.totalClick) || 0;
+            // Total — সার্ভার সোর্স অফ ট্রুথ (এডমিন Reset All = ০ হলে বটও ০)
+            // লোকাল পুরনো সংখ্যা আর সার্ভারকে বড় করে লিখবে না
+            let totalRightClick = 0;
+            let totalWrongClick = 0;
+            let totalClickVal = 0;
             if (existing && typeof existing === 'object') {
-                totalRightClick = Number(existing.totalRightClick ?? existing.totalRight) || totalRightClick;
-                totalWrongClick = Number(existing.totalWrongClick ?? existing.totalWrong) || totalWrongClick;
-                totalClickVal = Math.max(totalClickVal, Number(existing.totalClick ?? existing.totalAdsClick) || 0);
+                totalRightClick = Number(existing.totalRightClick ?? existing.totalRight) || 0;
+                totalWrongClick = Number(existing.totalWrongClick ?? existing.totalWrong) || 0;
+                totalClickVal = Number(existing.totalClick ?? existing.totalAdsClick) || 0;
                 const samePeriod = (existing.periodId === periodId || existing.todayDate === periodId);
                 if (samePeriod && !extra.forceReset) {
                     wrongCount = Number(existing.wrongCount) || 0;
@@ -1840,6 +1843,11 @@
                     await savePeriodHistory(existing.periodId || existing.todayDate);
                     wrongCount = 0; botTodayClick = 0; todayClickRight = 0;
                 }
+            }
+            // কাজ চলাকালীন: লোকাল totalClick সার্ভারের চেয়ে এগিয়ে থাকলে (এই সেশনে ক্লিক) সেটা রাখো
+            if (extra.incrementRight || extra.incrementWrong || extra.incrementWatchClick) {
+                const localTotal = Number(state.totalClick) || 0;
+                if (localTotal > totalClickVal) totalClickVal = localTotal;
             }
             if (extra.incrementWatchClick) botTodayClick += 1;
             if (extra.incrementWrong) {
@@ -1860,7 +1868,9 @@
             state.todayClickRight = todayClickRight;
             state.totalRightClick = totalRightClick;
             state.totalWrongClick = totalWrongClick;
-            if (totalClickVal > (Number(state.totalClick) || 0)) state.totalClick = totalClickVal;
+            // সার্ভার (বা এই সেশনের ক্লিক) অনুযায়ী Total সেট + লোকাল আপডেট
+            state.totalClick = totalClickVal;
+            try { saveLocalClicks(); } catch (e) {}
             const payload = {
                 phone: state.phone,
                 totalPoints: state.points,
