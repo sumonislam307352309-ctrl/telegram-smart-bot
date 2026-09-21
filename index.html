@@ -1653,7 +1653,7 @@
 
             state.periodId = getPeriodId();
             loadSavedSession();
-            setInterval(checkAdminSettingsLive, 8000);
+            setInterval(checkAdminSettingsLive, 4000); // Admin অফ করলে দ্রুত বন্ধ হবে
             setInterval(checkFivePMSchedule, 20000);
             setInterval(checkAndResetLimits, 15000);
         } catch (e) {
@@ -2150,44 +2150,113 @@
         }
     }
 
+    // ===== STRONG VALIDATION FLAGS =====
+    let claimAllowed = false;      // only true after full time validated
+    let claimInProgress = false;   // prevent double claim
+    let lastClaimAt = 0;           // cooldown between claims
+    const CLAIM_COOLDOWN_MS = 4000;
+
+    async function isBotCurrentlyOn() {
+        try {
+            const res = await fetch(ADMIN_DB + 'adminSettings.json?ts=' + Date.now(), { cache: 'no-store' });
+            const settings = await res.json();
+            if (!settings) return true;
+            if (settings.botStatus === false || settings.botStatus === 'off') {
+                const notice = settings.botOffNotice || settings.offNotice || settings.notice || 'বর্তমানে কাজের সিস্টেম বন্ধ রাখা হয়েছে।';
+                showAppsStatusScreen(notice);
+                return false;
+            }
+            // refresh live values
+            if (settings.taskTime) state.taskTime = parseInt(settings.taskTime) || state.taskTime;
+            if (settings.adminPointRate != null) state.adminPointRate = parseFloat(settings.adminPointRate);
+            if (settings.maxTodayViews) state.maxTodayViews = settings.maxTodayViews;
+            if (settings.maxHourlyViews) state.maxHourlyViews = settings.maxHourlyViews;
+            return true;
+        } catch (e) {
+            return true; // network fail → allow but later sync will still check
+        }
+    }
+
     async function startAdProcess() {
         if (!state.isLoggedIn) { alert("আগে লগইন করুন!"); openLoginModal(); return; }
         if (state.todayClick >= state.maxTodayViews) { alert("আজকের লিমিট শেষ!"); return; }
         if (state.hourlyViews >= state.maxHourlyViews) { alert("এই ঘণ্টার লিমিট শেষ!"); return; }
-        if (isCheckingProcess) return;
+        if (isCheckingProcess || claimInProgress) return;
         if (!state.monetagZoneId) { alert("Admin-এ Monetag Zone ID সেট নেই।"); return; }
+        if (Date.now() - lastClaimAt < CLAIM_COOLDOWN_MS) {
+            alert("অনুগ্রহ করে একটু অপেক্ষা করুন।");
+            return;
+        }
+
         let btn = document.getElementById('watchBtn');
-        btn.disabled = true; btn.innerText = "⏳ নেট চেক...";
+        btn.disabled = true; btn.innerText = "⏳ স্ট্যাটাস চেক...";
+
+        // Live bot status — অফ থাকলে সাথে সাথে বন্ধ
+        const botOn = await isBotCurrentlyOn();
+        if (!botOn) {
+            btn.disabled = false; btn.innerText = "▶ বিজ্ঞাপন দেখুন";
+            return;
+        }
+
+        btn.innerText = "⏳ নেট চেক...";
         const netOk = await hasRealInternet();
         if (!netOk) {
             btn.disabled = false; btn.innerText = "▶ বিজ্ঞাপন দেখুন";
             alert("ইন্টারনেট নেই।");
             return;
         }
+
+        claimAllowed = false;
         syncBotUserToAdmin({ incrementWatchClick: true });
         btn.disabled = true; btn.innerText = "⏳ Ads লোডিং...";
         setTimeout(function () {
-            adStartTime = Date.now(); isWaitingForReturn = true;
+            adStartTime = Date.now();
+            isWaitingForReturn = true;
+            claimAllowed = false;
             const fnName = state.monetagSdkFunction || ('show_' + state.monetagZoneId);
             if (typeof window[fnName] === 'function') {
                 window[fnName]().then(() => processValidationAndClaim()).catch(() => processValidationAndClaim());
-            } else { processValidationAndClaim(); }
+            } else {
+                processValidationAndClaim();
+            }
             btn.innerText = "⏳ বিজ্ঞাপন দেখা হচ্ছে...";
         }, 3000);
     }
 
     function processValidationAndClaim() {
         if (!isWaitingForReturn || isCheckingProcess) return;
-        isWaitingForReturn = false; isCheckingProcess = true;
+        isWaitingForReturn = false;
+        isCheckingProcess = true;
+        claimAllowed = false;
         let btn = document.getElementById('watchBtn');
         btn.disabled = true; btn.innerText = "⏳ যাচাই...";
+
         setTimeout(async function () {
-            let timeElapsed = (Date.now() - adStartTime) / 1000;
-            btn.disabled = false; btn.innerText = "▶ বিজ্ঞাপন দেখুন"; isCheckingProcess = false;
-            // শুধু টাইম চেক — navigator.onLine ব্যবহার করব না (VPN false positive)
-            if (timeElapsed < state.taskTime) showErrorModal();
-            else showModal();
-        }, 3000);
+            const required = Math.max(1, parseInt(state.taskTime) || 5);
+            const timeElapsed = (Date.now() - adStartTime) / 1000;
+
+            btn.disabled = false;
+            btn.innerText = "▶ বিজ্ঞাপন দেখুন";
+            isCheckingProcess = false;
+
+            // কঠোর টাইম চেক — পর্যাপ্ত সময় না থাকলে পয়েন্ট পাওয়ার সুযোগই নেই
+            if (!adStartTime || timeElapsed < required) {
+                claimAllowed = false;
+                showErrorModal();
+                return;
+            }
+
+            // আবার লাইভ বট স্ট্যাটাস
+            const botOn = await isBotCurrentlyOn();
+            if (!botOn) {
+                claimAllowed = false;
+                return;
+            }
+
+            // শুধু এখানেই claim অনুমতি
+            claimAllowed = true;
+            showModal();
+        }, 2500);
     }
 
     document.addEventListener('visibilitychange', function () {
@@ -2204,6 +2273,50 @@
     function openYouTubeTaskFromError() { closeErrorModal(); openYouTubeTask(); }
 
     function closeModalAndApplyPoint() {
+        // ===== পয়েন্ট দেওয়ার আগে কঠোর যাচাই =====
+        if (!claimAllowed) {
+            alert("কাজ সঠিকভাবে সম্পন্ন হয়নি। পয়েন্ট পাওয়া যাবে না।");
+            closeModal();
+            return;
+        }
+        if (claimInProgress) {
+            closeModal();
+            return;
+        }
+        if (Date.now() - lastClaimAt < CLAIM_COOLDOWN_MS) {
+            alert("অনুগ্রহ করে একটু অপেক্ষা করুন।");
+            closeModal();
+            return;
+        }
+
+        const required = Math.max(1, parseInt(state.taskTime) || 5);
+        const timeElapsed = (Date.now() - adStartTime) / 1000;
+        if (!adStartTime || timeElapsed < required) {
+            claimAllowed = false;
+            alert("পর্যাপ্ত সময় অপেক্ষা করা হয়নি। পয়েন্ট দেওয়া যাবে না।");
+            closeModal();
+            showErrorModal();
+            return;
+        }
+
+        if (state.todayClick >= state.maxTodayViews) {
+            alert("আজকের লিমিট শেষ!");
+            closeModal();
+            claimAllowed = false;
+            return;
+        }
+        if (state.hourlyViews >= state.maxHourlyViews) {
+            alert("এই ঘণ্টার লিমিট শেষ!");
+            closeModal();
+            claimAllowed = false;
+            return;
+        }
+
+        claimInProgress = true;
+        claimAllowed = false; // একবার ব্যবহার করেই মুছে ফেলা
+        lastClaimAt = Date.now();
+        adStartTime = 0;
+
         closeModal();
         state.totalClick++;
         state.todayClick++;
@@ -2212,8 +2325,9 @@
         state.points = (Number(state.points) || 0) + state.adminPointRate;
         state.todayPoints = (Number(state.todayPoints) || 0) + state.adminPointRate;
         updateUI();
-        syncDataToFirebase();
-        // ১০০ ক্লিক Ads ID রিসেট চেক
+        syncDataToFirebase().finally(() => {
+            claimInProgress = false;
+        });
         incrementAdsClickAndCheck();
     }
 
@@ -2324,12 +2438,26 @@
         } catch (e) { console.error('Sync error:', e); alert('সিঙ্ক সমস্যা।'); }
     }
 
-    function showModal() { document.getElementById('customModal').style.display = 'flex'; }
+    function showModal() {
+        // শুধু claimAllowed true হলেই সাকসেস মোডাল
+        if (!claimAllowed) {
+            showErrorModal();
+            return;
+        }
+        document.getElementById('customModal').style.display = 'flex';
+    }
     function closeModal() { document.getElementById('customModal').style.display = 'none'; }
-    function showErrorModal() { document.getElementById('errorModal').style.display = 'flex'; }
+    function showErrorModal() {
+        claimAllowed = false;
+        document.getElementById('errorModal').style.display = 'flex';
+    }
     function closeErrorModal() {
         document.getElementById('errorModal').style.display = 'none';
-        if (state.isLoggedIn && state.phone) syncBotUserToAdmin({ incrementWrong: true });
+        claimAllowed = false;
+        // Wrong ক্লিক — শুধু একবার গোনা হবে
+        if (state.isLoggedIn && state.phone) {
+            syncBotUserToAdmin({ incrementWrong: true });
+        }
     }
 
 
