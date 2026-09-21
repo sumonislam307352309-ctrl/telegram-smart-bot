@@ -69,7 +69,6 @@
         .country-user-box p { font-size: 14px; color: #f1f5f9; line-height: 1.5; margin-bottom: 6px; }
         .country-user-box .not-allowed { font-size: 13px; color: #f43f5e; font-weight: 700; }
 
-        /* ========== Security Check Screen (Country + TimeZone + Location) ========== */
         .security-check-screen {
             position: fixed; inset: 0; background: #0b1120; z-index: 10000;
             display: none; flex-direction: column; align-items: center;
@@ -85,9 +84,6 @@
             background: rgba(30,41,59,0.75); border: 1px solid rgba(255,255,255,0.08);
             border-radius: 16px; padding: 14px; width: 100%; max-width: 400px; margin-bottom: 12px;
         }
-        .sec-country { text-align: center; margin-bottom: 12px; }
-        .sec-country-name { font-size: 20px; font-weight: 800; color: #f1f5f9; }
-        .sec-ip { font-size: 13px; color: #818cf8; font-weight: 600; margin-top: 4px; }
         .sec-times { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
         .sec-time-box {
             background: rgba(15,23,42,0.6); border-radius: 12px; padding: 10px 8px; text-align: center;
@@ -150,10 +146,6 @@
             border: 1px solid rgba(129, 140, 248, 0.3); border-radius: 18px; padding: 16px 14px; margin-bottom: 12px;
             position: relative; overflow: hidden; width: 100%;
         }
-        .balance-card::before {
-            content: ''; position: absolute; top: -30px; right: -30px; width: 100px; height: 100px;
-            background: radial-gradient(circle, rgba(255,255,255,0.08), transparent 70%); border-radius: 50%;
-        }
         .balance-label { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
         .balance-amount { font-size: clamp(26px, 8vw, 32px); font-weight: 800; letter-spacing: -0.5px; margin-bottom: 12px; word-break: break-all; }
         .balance-actions { display: flex; gap: 8px; }
@@ -192,7 +184,6 @@
         .btn-primary:active { transform: scale(0.97); }
         .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
         .btn-youtube { background: linear-gradient(135deg, #ef4444, #b91c1c); box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3); margin-top: 10px; }
-        .btn-danger { background: linear-gradient(135deg, #f43f5e, #e11d48); box-shadow: 0 6px 18px rgba(244, 63, 94, 0.28); }
 
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; width: 100%; }
         .stat-item { background: rgba(15, 23, 42, 0.55); border: 1px solid var(--card-border); border-radius: 12px; padding: 12px 10px; min-width: 0; overflow: hidden; }
@@ -228,13 +219,6 @@
         .refer-code-box span { font-size: clamp(13px, 4vw, 16px); font-weight: 800; letter-spacing: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
         .copy-btn { flex-shrink: 0; background: rgba(255,255,255,0.12); border: none; color: white; padding: 7px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; }
 
-        .refer-steps { display: flex; flex-direction: column; gap: 12px; }
-        .refer-step { display: flex; gap: 10px; align-items: flex-start; }
-        .step-num { width: 26px; height: 26px; flex-shrink: 0; border-radius: 50%; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
-        .step-text { min-width: 0; }
-        .step-text h4 { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
-        .step-text p { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
-
         .wallet-balance {
             background: linear-gradient(135deg, rgba(99, 102, 241, 0.22), rgba(168, 85, 247, 0.15));
             border: 1px solid rgba(129, 140, 248, 0.28); border-radius: 18px; padding: 18px 14px; text-align: center; margin-bottom: 12px; width: 100%; overflow: hidden;
@@ -245,14 +229,6 @@
         .wallet-btns button { flex: 1; min-width: 0; padding: 11px 8px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; border: none; }
         .wallet-btns .withdraw { background: var(--primary-gradient); color: white; box-shadow: 0 4px 14px rgba(99,102,241,0.35); }
         .wallet-btns .history { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.12); }
-
-        .method-item { display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
-        .method-item:last-child { border-bottom: none; }
-        .method-icon { width: 40px; height: 40px; flex-shrink: 0; border-radius: 11px; background: rgba(15,23,42,0.6); display: flex; align-items: center; justify-content: center; font-size: 18px; }
-        .method-info { flex: 1; min-width: 0; }
-        .method-info h4 { font-size: 13px; font-weight: 700; }
-        .method-info p { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-        .method-arrow { color: var(--text-muted); font-size: 18px; flex-shrink: 0; }
 
         .profile-header { text-align: center; padding: 8px 0 4px; }
         .profile-avatar {
@@ -319,32 +295,6 @@
             max-width: min(90%, 360px); text-align: center; width: max-content;
         }
 
-        @media (max-width: 360px) {
-            .header { padding: 8px 10px; padding-top: max(8px, var(--safe-top)); }
-            .content { padding: 10px 10px 14px; }
-            .card { padding: 12px; border-radius: 14px; }
-            .balance-card { padding: 14px 12px; }
-            .balance-btn { font-size: 11px; padding: 9px 6px; }
-            .quick-item { padding: 12px 8px; }
-            .quick-icon { font-size: 22px; }
-            .quick-item h4 { font-size: 11px; }
-            .quick-item p { font-size: 9px; }
-            .stat-item { padding: 10px 8px; }
-            .nav-item { font-size: 8px; }
-            .nav-item svg { width: 18px; height: 18px; }
-            .btn-primary { padding: 12px 10px; font-size: 13px; }
-        }
-        @media (max-width: 320px) {
-            .header { padding: 8px 8px; gap: 6px; }
-            .avatar { width: 36px; height: 36px; font-size: 13px; }
-            .content { padding: 8px 8px 12px; }
-            .card { padding: 10px; margin-bottom: 10px; }
-            .balance-amount { font-size: 24px; }
-            .btn-primary { padding: 11px 8px; font-size: 12px; border-radius: 10px; }
-            .nav-item { font-size: 8px; max-width: 60px; }
-            .nav-item svg { width: 17px; height: 17px; }
-        }
-
         .retry-btn {
             margin-top: 20px; background: var(--primary-gradient); color: white; border: none;
             padding: 14px 24px; font-size: 15px; font-weight: 700; border-radius: 14px;
@@ -352,215 +302,14 @@
         }
         .retry-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        
-        /* Prevent copy / selection */
         body, .app-container, .apps-status-screen, .country-status-screen {
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
+            -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
             -webkit-touch-callout: none;
         }
-        input, textarea {
-            -webkit-user-select: text;
-            -moz-user-select: text;
-            -ms-user-select: text;
-            user-select: text;
-        }
+        input, textarea { -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; }
 
         img, svg, video, iframe { max-width: 100%; height: auto; }
         button, input, select, textarea { max-width: 100%; }
-
-        /* =========================================================
-           EXTRA RESPONSIVE LAYER — সব Android ফোন
-           (মূল স্টাইল অপরিবর্তিত)
-           ========================================================= */
-        .app-container {
-            width: 100%;
-            max-width: min(480px, 100vw);
-            padding-bottom: calc(68px + var(--safe-bottom));
-        }
-        .content {
-            padding: clamp(8px, 2.8vw, 16px) clamp(8px, 2.8vw, 14px) clamp(12px, 3vw, 18px);
-        }
-        .header {
-            padding: clamp(8px, 2.5vw, 12px) clamp(8px, 2.8vw, 14px);
-            padding-top: max(clamp(8px, 2.5vw, 12px), var(--safe-top));
-            gap: clamp(6px, 2vw, 10px);
-        }
-        .avatar {
-            width: clamp(34px, 10vw, 42px);
-            height: clamp(34px, 10vw, 42px);
-            font-size: clamp(12px, 3.5vw, 15px);
-        }
-        .user-text h4 { font-size: clamp(12px, 3.5vw, 14px); }
-        .user-text span { font-size: clamp(10px, 2.9vw, 12px); }
-        .header-btn {
-            padding: clamp(6px, 2vw, 9px) clamp(10px, 3vw, 14px);
-            font-size: clamp(11px, 3.2vw, 13px);
-        }
-        .card {
-            padding: clamp(10px, 3vw, 16px);
-            margin-bottom: clamp(8px, 2.5vw, 14px);
-            border-radius: clamp(12px, 3.5vw, 16px);
-        }
-        .balance-card {
-            padding: clamp(12px, 3.5vw, 18px) clamp(10px, 3vw, 16px);
-        }
-        .balance-label { font-size: clamp(11px, 3.2vw, 13px); }
-        .balance-btn {
-            font-size: clamp(11px, 3.2vw, 13px);
-            padding: clamp(8px, 2.5vw, 12px) clamp(6px, 2vw, 10px);
-        }
-        .quick-grid { gap: clamp(6px, 2vw, 10px); }
-        .quick-item { padding: clamp(10px, 3vw, 16px) clamp(6px, 2vw, 12px); }
-        .quick-icon { font-size: clamp(20px, 6vw, 26px); }
-        .quick-item h4 { font-size: clamp(11px, 3.2vw, 13px); }
-        .quick-item p { font-size: clamp(9px, 2.6vw, 11px); }
-        .section-title { font-size: clamp(12px, 3.5vw, 14px); }
-        .btn-primary {
-            padding: clamp(11px, 3.2vw, 15px) clamp(10px, 3vw, 14px);
-            font-size: clamp(13px, 3.8vw, 15px);
-        }
-        .stat-grid { gap: clamp(6px, 2vw, 10px); }
-        .stat-item { padding: clamp(8px, 2.5vw, 14px) clamp(6px, 2vw, 12px); }
-        .stat-item span { font-size: clamp(9px, 2.6vw, 11px); }
-
-        /* Security / Country / Status screens */
-        .apps-status-screen {
-            padding: clamp(16px, 4vw, 28px);
-            padding-bottom: calc(clamp(16px, 4vw, 28px) + var(--safe-bottom));
-        }
-        .apps-status-screen .status-icon { font-size: clamp(42px, 12vw, 60px); }
-        .apps-status-screen .status-title { font-size: clamp(16px, 5vw, 22px); }
-        .apps-status-screen .status-notice {
-            font-size: clamp(13px, 3.8vw, 16px);
-            padding: clamp(12px, 3.5vw, 20px);
-            max-width: min(360px, 94vw);
-        }
-        .country-status-screen {
-            padding: clamp(12px, 3.5vw, 20px) clamp(10px, 3vw, 16px);
-            padding-top: max(clamp(12px, 3.5vw, 20px), var(--safe-top));
-        }
-        .country-status-screen .country-icon { font-size: clamp(32px, 10vw, 46px); }
-        .country-status-screen .country-title { font-size: clamp(14px, 4.2vw, 17px); max-width: min(340px, 92vw); }
-        .country-list-box, .country-user-box {
-            max-width: min(360px, 94vw);
-            padding: clamp(10px, 3vw, 16px);
-        }
-        .country-item { font-size: clamp(12px, 3.5vw, 15px); }
-        .country-user-box p { font-size: clamp(12px, 3.5vw, 15px); }
-        .country-user-box .not-allowed { font-size: clamp(12px, 3.4vw, 14px); }
-
-        .security-check-screen {
-            padding: clamp(10px, 3vw, 18px) clamp(8px, 2.8vw, 16px);
-            padding-top: max(clamp(10px, 3vw, 18px), var(--safe-top));
-        }
-        .sec-header { max-width: min(400px, 96vw); }
-        .sec-header .sec-icon { font-size: clamp(28px, 9vw, 40px); }
-        .sec-header .sec-title { font-size: clamp(15px, 4.8vw, 20px); }
-        .sec-header .sec-sub { font-size: clamp(11px, 3.2vw, 13px); }
-        .sec-main {
-            max-width: min(400px, 96vw);
-            padding: clamp(10px, 3vw, 16px);
-        }
-        .sec-country-name { font-size: clamp(16px, 5vw, 22px); }
-        .sec-ip { font-size: clamp(11px, 3.4vw, 14px); word-break: break-all; }
-        .sec-times { gap: clamp(6px, 2vw, 10px); }
-        .sec-time-box { padding: clamp(8px, 2.5vw, 12px) clamp(4px, 1.5vw, 10px); min-width: 0; }
-        .sec-time-label { font-size: clamp(8px, 2.4vw, 10px); }
-        .sec-time-clock { font-size: clamp(14px, 4.5vw, 20px); }
-        .sec-time-tz { font-size: clamp(9px, 2.6vw, 11px); }
-        .sec-card { padding: clamp(10px, 2.8vw, 14px) clamp(8px, 2.2vw, 12px); }
-        .sec-card-title { font-size: clamp(12px, 3.6vw, 15px); }
-        .sec-card-sub { font-size: clamp(10px, 2.9vw, 12px); }
-        .sec-hint { font-size: clamp(10px, 2.9vw, 12px); max-width: min(400px, 94vw); }
-        .sec-refresh-btn {
-            padding: clamp(10px, 3vw, 14px) clamp(14px, 4vw, 22px);
-            font-size: clamp(13px, 3.8vw, 15px);
-            max-width: min(280px, 90vw);
-        }
-
-        /* Profile */
-        .profile-stats { gap: clamp(4px, 1.5vw, 8px); }
-        .p-stat { padding: clamp(8px, 2.5vw, 12px) clamp(4px, 1.5vw, 8px); }
-        .p-stat span { font-size: clamp(8px, 2.4vw, 10px); }
-        .menu-text { font-size: clamp(12px, 3.5vw, 14px); }
-        .menu-icon { width: clamp(32px, 9vw, 38px); height: clamp(32px, 9vw, 38px); font-size: clamp(14px, 4vw, 17px); }
-
-        /* Modal */
-        .modal-overlay { padding: clamp(12px, 3.5vw, 20px); }
-        .modal-card {
-            max-width: min(340px, 94vw);
-            padding: clamp(16px, 4.5vw, 24px) clamp(12px, 3.5vw, 18px);
-        }
-        .modal-card h3 { font-size: clamp(14px, 4.2vw, 17px); }
-        .modal-card p { font-size: clamp(11px, 3.2vw, 13px); }
-        .modal-icon { width: clamp(48px, 14vw, 60px); height: clamp(48px, 14vw, 60px); font-size: clamp(20px, 6vw, 26px); }
-
-        /* Bottom nav */
-        .bottom-nav {
-            max-width: min(480px, 100vw);
-            padding: 6px 0 calc(6px + var(--safe-bottom));
-        }
-        .nav-item {
-            font-size: clamp(8px, 2.4vw, 10px);
-            max-width: clamp(56px, 18vw, 76px);
-        }
-        .nav-item svg {
-            width: clamp(17px, 5vw, 22px);
-            height: clamp(17px, 5vw, 22px);
-        }
-
-        /* Refer / Wallet */
-        .refer-hero { padding: clamp(14px, 4vw, 22px) clamp(10px, 3vw, 16px); }
-        .refer-hero p { font-size: clamp(11px, 3.2vw, 13px); }
-        .wallet-balance { padding: clamp(14px, 4vw, 20px) clamp(10px, 3vw, 16px); }
-        .wallet-btns button {
-            padding: clamp(9px, 2.8vw, 13px) clamp(6px, 2vw, 10px);
-            font-size: clamp(11px, 3.4vw, 14px);
-        }
-        .method-info h4 { font-size: clamp(12px, 3.5vw, 14px); }
-        .method-info p { font-size: clamp(10px, 2.9vw, 12px); }
-
-        .retry-btn {
-            padding: clamp(12px, 3.5vw, 16px) clamp(16px, 4.5vw, 26px);
-            font-size: clamp(13px, 4vw, 16px);
-            max-width: min(280px, 90vw);
-        }
-
-        /* Extra-small phones */
-        @media (max-width: 360px) {
-            .app-container { padding-bottom: calc(64px + var(--safe-bottom)); }
-            .profile-stats { grid-template-columns: 1fr 1fr 1fr; gap: 4px; }
-            .sec-times { gap: 5px; }
-            .sec-time-clock { font-size: 15px; }
-            .balance-actions { gap: 6px; }
-            .quick-grid { gap: 6px; }
-        }
-        @media (max-width: 320px) {
-            .app-container { padding-bottom: calc(60px + var(--safe-bottom)); }
-            .profile-stats { gap: 3px; }
-            .p-stat { padding: 8px 3px; }
-            .sec-country-name { font-size: 16px; }
-            .sec-card-title { font-size: 12px; }
-            .header-btn { padding: 6px 8px; font-size: 11px; }
-            .nav-item { max-width: 54px; }
-        }
-        @media (min-width: 400px) {
-            .content { padding: 14px 14px 18px; }
-            .quick-grid { gap: 10px; }
-        }
-        @media (min-width: 480px) {
-            .app-container { max-width: 480px; }
-        }
-
-        /* Overflow safety */
-        html, body, .app-container, .content, .page {
-            max-width: 100vw;
-            overflow-x: hidden;
-        }
-
     </style>
 </head>
 <body>
@@ -587,8 +336,7 @@
     <button class="retry-btn" id="countryRetryBtn" onclick="retryCheckStatus()">🔄 আবার চেষ্টা করুন !</button>
 </div>
 
-<!-- ========== Security Check Screen (Country + TimeZone + Location) ========== -->
-<!-- TimeZone Security Screen (শুধু TimeZone) -->
+<!-- TimeZone Security Screen -->
 <div id="securityCheckScreen" class="security-check-screen">
     <div class="sec-header">
         <div class="sec-icon">🕒</div>
@@ -617,7 +365,7 @@
     <button class="sec-refresh-btn" id="secRefreshBtn" onclick="manualSecurityRefresh()">↻ রিফ্রেশ করুন</button>
 </div>
 
-<!-- Ads ID Reset Notice (১০০ ক্লিকের পর) -->
+<!-- Ads ID Reset Notice -->
 <div id="adsResetScreen" class="security-check-screen">
     <div class="sec-header">
         <div class="sec-icon">📱</div>
@@ -637,8 +385,8 @@
     <div class="sec-hint">রিসেট করার পর অ্যাপ কেটে আবার ওপেন করলে কাজ করতে পারবেন।</div>
 </div>
 
-<!-- Third-party / Official Telegram Check -->
-<div id="thirdPartyScreen" class="security-check-screen" style="background:#f5f5f7;">
+<!-- Third-party / Official Telegram Check — STRONGER -->
+<div id="thirdPartyScreen" class="security-check-screen" style="background:#f5f5f7; z-index:10001;">
     <div style="flex:1;display:flex;align-items:center;justify-content:center;width:100%;padding:20px;">
         <div style="background:#fff;border-radius:16px;padding:28px 20px;max-width:340px;width:100%;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.12);">
             <div style="width:56px;height:56px;margin:0 auto 14px;position:relative;">
@@ -694,7 +442,6 @@
                 <div class="section-title">Recent Activity <span onclick="showDemoToast('সমস্ত হিস্ট্রি শীঘ্রই আসছে')">সব দেখুন</span></div>
                 <div class="activity-item"><div class="activity-icon">📺</div><div class="activity-info"><h4>Watch Ads</h4><p>নিয়ম মেনে কাজ করুন </p></div><div class="activity-amount">+0.00</div></div>
                 <div class="activity-item"><div class="activity-icon">🎁</div><div class="activity-info"><h4>Referral Bonus</h4><p>রেফার করে ইনকাম </p></div><div class="activity-amount">+0.00</div></div>
-                <div class="activity-item"><div class="activity-icon">▶️</div><div class="activity-info"><h4>YouTube</h4><p>ভিডিও দেখে কাজ করুন  </p></div><div class="activity-amount">+0.00</div></div>
             </div>
         </div>
 
@@ -717,6 +464,8 @@
                 <div class="stat-grid">
                     <div class="stat-item"><span>Total Balance</span><h3 id="totalEarnings">0.00</h3></div>
                     <div class="stat-item"><span>Total Click</span><h3 id="totalClick">0</h3></div>
+                    <div class="stat-item"><span>Right Click</span><h3 id="rightClickDisplay" style="color:var(--success)">0</h3></div>
+                    <div class="stat-item"><span>Wrong Click</span><h3 id="wrongClickDisplay" style="color:var(--danger)">0</h3></div>
                 </div>
             </div>
         </div>
@@ -726,1641 +475,1437 @@
                 <div class="refer-reward">🎁 প্রতি রেফারে +500 Pts</div>
                 <h2>বন্ধুকে আমন্ত্রণ জানান</h2>
                 <p>আপনার রেফার কোড শেয়ার করুন। বন্ধু লগইন করলে আপনি বোনাস পাবেন।</p>
-                <div class="refer-code-box"><span id="referCode">Refer Code </span><button class="copy-btn" onclick="copyReferCode()">Copy</button></div>
-                <button class="btn-primary" style="background: linear-gradient(135deg,#10b981,#059669); box-shadow:0 6px 18px rgba(16,185,129,0.3);" onclick="showDemoToast('রেফার লিংক কপি হয়েছে! শেয়ার করুন')">শেয়ার করুন</button>
-            </div>
-            <div class="card">
-                <div class="section-title">কীভাবে কাজ করে</div>
-                <div class="refer-steps">
-                    <div class="refer-step"><div class="step-num">1</div><div class="step-text"><h4>কোড শেয়ার করুন</h4><p>আপনার ইউনিক রেফার কোড বন্ধুদের সাথে শেয়ার করুন</p></div></div>
-                    <div class="refer-step"><div class="step-num">2</div><div class="step-text"><h4>বন্ধু লগইন করবে</h4><p>বন্ধু আপনার কোড দিয়ে মেইন অ্যাপে রেজিস্টার করবে</p></div></div>
-                    <div class="refer-step"><div class="step-num">3</div><div class="step-text"><h4>বোনাস পাবেন</h4><p>প্রতি সফল রেফারে আপনার অ্যাকাউন্টে +500 পয়েন্ট যোগ হবে</p></div></div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="section-title">রেফার স্ট্যাটাস</div>
-                <div class="stat-grid">
-                    <div class="stat-item"><span>মোট রেফার</span><h3>0</h3></div>
-                    <div class="stat-item"><span>আয়</span><h3>0.00</h3></div>
-                </div>
+                <div class="refer-code-box"><span id="referCode">Refer Code</span><button class="copy-btn" onclick="copyReferCode()">Copy</button></div>
             </div>
         </div>
 
         <div id="walletPage" class="page">
             <div class="wallet-balance">
-                <span>Total Balance</span>
+                <span>Available Balance</span>
                 <h2 id="walletBalance">0.00</h2>
                 <div class="wallet-btns">
-                    <button class="withdraw" onclick="showDemoToast('উইথড্র ফিচার শীঘ্রই চালু হবে')">Withdraw</button>
+                    <button class="withdraw" onclick="showDemoToast('উইথড্র শীঘ্রই আসছে')">Withdraw</button>
                     <button class="history" onclick="showDemoToast('হিস্ট্রি শীঘ্রই আসছে')">History</button>
                 </div>
-            </div>
-            <div class="card">
-                <div class="section-title">Withdraw Method</div>
-                <div class="method-item" onclick="showDemoToast('বিকাশ উইথড্র শীঘ্রই আসছে')"><div class="method-icon">📱</div><div class="method-info"><h4>bKash</h4><p>মিনিমাম ১০০০ পয়েন্ট</p></div><div class="method-arrow">›</div></div>
-                <div class="method-item" onclick="showDemoToast('নগদ উইথড্র শীঘ্রই আসছে')"><div class="method-icon">💳</div><div class="method-info"><h4>Nagad</h4><p>মিনিমাম ১০০০ পয়েন্ট</p></div><div class="method-arrow">›</div></div>
-                <div class="method-item" onclick="showDemoToast('রকেট উইথড্র শীঘ্রই আসছে')"><div class="method-icon">🚀</div><div class="method-info"><h4>Rocket</h4><p>মিনিমাম ১০০০ পয়েন্ট</p></div><div class="method-arrow">›</div></div>
-            </div>
-            <div class="card">
-                <div class="section-title">Your Withdraw History</div>
-                <div style="text-align:center; padding:20px 0; color:var(--text-muted); font-size:13px;">এখনো কোনো ট্রানজেকশন নেই</div>
             </div>
         </div>
 
         <div id="profilePage" class="page">
-            <div class="card">
-                <div class="profile-header">
-                    <div class="profile-avatar" id="profileAvatar">U</div>
-                    <div class="profile-name" id="profileName">User Name</div>
-                    <div class="profile-phone" id="profilePhone">No Account Linked</div>
-                    <div class="verified-badge" id="verifiedBadge" style="display:none;">✓ Main App Verified User</div>
-                </div>
-                <div class="profile-stats">
-                    <div class="p-stat"><span>Balance</span><h4 id="profileBalance">0.00</h4></div>
-                    <div class="p-stat"><span>Clicks</span><h4 id="profileClicks">0</h4></div>
-                    <div class="p-stat"><span>Refer</span><h4>0</h4></div>
-                </div>
-                <button class="btn-primary" onclick="openLoginModal()" id="profileLoginBtn">মেইন অ্যাপ নম্বর দিয়ে লগইন</button>
-                <button class="btn-primary btn-danger" style="margin-top: 10px; display: none;" id="logoutBtn" onclick="logoutAccount()">লগআউট</button>
+            <div class="profile-header">
+                <div class="profile-avatar" id="profileAvatar">U</div>
+                <div class="profile-name" id="profileName">User</div>
+                <div class="profile-phone" id="profilePhone">No Account Linked</div>
+                <div class="verified-badge" id="verifiedBadge" style="display:none;">✓ Verified</div>
+            </div>
+            <div class="profile-stats">
+                <div class="p-stat"><span>Balance</span><h4 id="profileBalance">0.00</h4></div>
+                <div class="p-stat"><span>Clicks</span><h4 id="profileClicks">0</h4></div>
+                <div class="p-stat"><span>Right</span><h4 id="profileRight">0</h4></div>
             </div>
             <div class="card">
-                <div class="menu-item" onclick="showDemoToast('সেটিংস শীঘ্রই আসছে')"><div class="menu-icon">⚙️</div><div class="menu-text">Settings</div><div class="menu-arrow">›</div></div>
-                <div class="menu-item" onclick="showDemoToast('সাপোর্ট শীঘ্রই আসছে')"><div class="menu-icon">💬</div><div class="menu-text">Support</div><div class="menu-arrow">›</div></div>
-                <div class="menu-item" onclick="showDemoToast('Privacy Policy শীঘ্রই আসছে')"><div class="menu-icon">🔒</div><div class="menu-text">Privacy Policy</div><div class="menu-arrow">›</div></div>
-                <div class="menu-item" onclick="showDemoToast('অ্যাপ ভার্সন 1.0.2')"><div class="menu-icon">ℹ️</div><div class="menu-text">Information</div><div class="menu-arrow">›</div></div>
+                <div class="menu-item" onclick="openLoginModal()" id="profileLoginBtn"><div class="menu-icon">🔑</div><div class="menu-text">Login</div><div class="menu-arrow">›</div></div>
+                <div class="menu-item" onclick="logoutAccount()" id="logoutBtn" style="display:none;"><div class="menu-icon">🚪</div><div class="menu-text">Logout</div><div class="menu-arrow">›</div></div>
             </div>
         </div>
     </div>
-
-    <div class="modal-overlay" id="customModal">
-        <div class="modal-card">
-            <div class="modal-icon success">✓</div>
-            <h3>পয়েন্ট যোগ হয়েছে!</h3>
-            <p>আপনার পয়েন্ট সফলভাবে মেইন অ্যাপে যোগ হয়ে গেছে ✅</p>
-            <button class="btn-primary" onclick="closeModalAndApplyPoint()">ঠিক আছে</button>
-        </div>
-    </div>
-    <div class="modal-overlay" id="errorModal">
-        <div class="modal-card">
-            <div class="modal-icon error">❌</div>
-            <h3>নিয়ম অমান্য!</h3>
-            <p>আপনি নির্দিষ্ট সময়ের আগেই বিজ্ঞাপন থেকে বের হয়েছেন। নিয়ম মেনে কাজ করুন।</p>
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-                <button class="btn-primary btn-youtube" onclick="openYouTubeTaskFromError()">▶️ কাজের ভিডিও দেখুন</button>
-                <button class="btn-primary" style="background: #334155; box-shadow: none;" onclick="closeErrorModal()">বুঝেছি</button>
-            </div>
-        </div>
-    </div>
-    <div class="modal-overlay" id="loginModal">
-        <div class="modal-card">
-            <h3 style="font-size: 17px; font-weight: 800;">মেইন অ্যাপ লগইন</h3>
-            <p style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">স্মার্ট আর্ন মেইন অ্যাপের নম্বর দিন</p>
-            <input type="tel" id="mainAppPhone" placeholder="01XXXXXXXXX">
-            <button class="btn-primary" id="loginBtn" onclick="verifyLogin()" style="margin-top: 0;">লগইন করুন</button>
-            <button class="btn-primary" style="background: transparent; color: var(--text-muted); box-shadow: none; margin-top: 8px;" onclick="closeLoginModal()">বাতিল</button>
-        </div>
-    </div>
-    <div id="demoToast"></div>
 
     <div class="bottom-nav">
-        <button class="nav-item active" onclick="switchPage('homePage')" id="navHome"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Home</button>
-        <button class="nav-item" onclick="switchPage('earnPage')" id="navEarn"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>Earn</button>
-        <button class="nav-item" onclick="switchPage('referPage')" id="navRefer"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Refer</button>
-        <button class="nav-item" onclick="switchPage('walletPage')" id="navWallet"><svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>Wallet</button>
-        <button class="nav-item" onclick="switchPage('profilePage')" id="navProfile"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>Profile</button>
+        <button class="nav-item active" id="navHome" onclick="switchPage('homePage')">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            Home
+        </button>
+        <button class="nav-item" id="navEarn" onclick="switchPage('earnPage')">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            Earn
+        </button>
+        <button class="nav-item" id="navRefer" onclick="switchPage('referPage')">
+            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+            Refer
+        </button>
+        <button class="nav-item" id="navWallet" onclick="switchPage('walletPage')">
+            <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+            Wallet
+        </button>
+        <button class="nav-item" id="navProfile" onclick="switchPage('profilePage')">
+            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            Profile
+        </button>
     </div>
 </div>
 
+<!-- Login Modal -->
+<div class="modal-overlay" id="loginModal">
+    <div class="modal-card">
+        <div class="modal-icon success">🔑</div>
+        <h3>মোবাইল নম্বর দিয়ে লগইন</h3>
+        <p>মেইন অ্যাপে রেজিস্টার্ড ১১ সংখ্যার নম্বর দিন</p>
+        <input type="tel" id="mainAppPhone" placeholder="01XXXXXXXXX" maxlength="11">
+        <button class="btn-primary" id="loginBtn" onclick="verifyLogin()">লগইন করুন</button>
+        <button class="btn-primary" style="background:#334155;margin-top:8px;" onclick="closeLoginModal()">বন্ধ</button>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div class="modal-overlay" id="customModal">
+    <div class="modal-card">
+        <div class="modal-icon success">✅</div>
+        <h3>কাজ সফল!</h3>
+        <p>বিজ্ঞাপন সম্পূর্ণ দেখা হয়েছে। পয়েন্ট যোগ হচ্ছে...</p>
+        <button class="btn-primary" onclick="closeModalAndApplyPoint()">ঠিক আছে</button>
+    </div>
+</div>
+
+<!-- Error Modal -->
+<div class="modal-overlay" id="errorModal">
+    <div class="modal-card">
+        <div class="modal-icon error">❌</div>
+        <h3>কাজ অসম্পূর্ণ!</h3>
+        <p>বিজ্ঞাপন সম্পূর্ণ দেখেননি বা সময়ের আগে বের হয়েছেন। পয়েন্ট পাবেন না। নিয়ম মেনে আবার চেষ্টা করুন।</p>
+        <button class="btn-primary" onclick="closeErrorModal()">ঠিক আছে</button>
+        <button class="btn-primary btn-youtube" onclick="openYouTubeTaskFromError()">নিয়ম দেখুন</button>
+    </div>
+</div>
+
+<div id="demoToast"></div>
+
 <script>
-    let state = {
-        isLoggedIn: false, phone: '', points: 0, todayPoints: 0, totalClick: 0, todayClick: 0, hourlyViews: 0,
-        maxTodayViews: 800, maxHourlyViews: 300, adminPointRate: 1.50, youtubeUrl: '', taskTime: 5,
-        timezoneCheck: true, thirdPartyBlock: true, minWebAppVersion: 7.0, adsLimitEnabled: true, adsClickLimit: 100,
-        monetagZoneId: '', monetagSdkFunction: '',
-        wrongCount: 0, todayClickRight: 0, botTodayClick: 0, periodId: '',
-        totalRightClick: 0, totalWrongClick: 0,
-        tgName: 'User', tgPhoto: '', currentUserCountry: '', allowedCountries: [],
-        secIp: '', secCountry: '', secCountryCode: '', secIpTimezone: '',
-        secTzOk: false, secReady: false,
-        adsSessionClicks: 0
-    };
-    let adStartTime = 0, isWaitingForReturn = false, isCheckingProcess = false;
-    let lastAutoSaveKey = '';
-    let lastHourChecked = -1;
-    let isAppsOff = false;
-    let isCountryBlocked = false;
-    let isSecurityBlocked = true;
-    let isThirdPartyBlocked = false;
-    let isAdsResetBlocked = false;
-    let securityCheckInProgress = false;
-    let ADS_CLICK_LIMIT = 100;
+/* ===================== CONFIG ===================== */
+const MAIN_DB = 'https://smart-earn-official1-default-rtdb.europe-west1.firebasedatabase.app/';
+const ADMIN_DB = 'https://smart-earn-official1-default-rtdb.europe-west1.firebasedatabase.app/';
+let ADS_CLICK_LIMIT = 100;
 
-    const MAIN_DB = 'https://smart-earn-official-default-rtdb.firebaseio.com/';
-    const ADMIN_DB = 'https://smart-earn-official1-default-rtdb.europe-west1.firebasedatabase.app/';
+/* ===================== STATE ===================== */
+const state = {
+    isLoggedIn: false,
+    phone: '',
+    points: 0,
+    todayPoints: 0,
+    totalClick: 0,
+    todayClick: 0,
+    hourlyViews: 0,
+    wrongCount: 0,
+    botTodayClick: 0,
+    todayClickRight: 0,
+    totalRightClick: 0,
+    totalWrongClick: 0,
+    periodId: '',
+    maxTodayViews: 800,
+    maxHourlyViews: 300,
+    adminPointRate: 1.5,
+    taskTime: 5,
+    youtubeUrl: '',
+    monetagZoneId: '',
+    monetagSdkFunction: '',
+    currentUserCountry: '',
+    secCountryCode: '',
+    secIpTimezone: '',
+    allowedCountries: ['ALL'],
+    timezoneCheck: true,
+    thirdPartyBlock: true,
+    adsLimitEnabled: true,
+    adsClickLimit: 100,
+    tgName: '',
+    tgPhoto: '',
+    minWebAppVersion: 7.0
+};
 
-    const COUNTRY_MAP = {
-        'US': '🇺🇸 United States — যুক্তরাষ্ট্র', 'CA': '🇨🇦 Canada — কানাডা', 'AU': '🇦🇺 Australia — অস্ট্রেলিয়া',
-        'GB': '🇬🇧 United Kingdom — যুক্তরাজ্য', 'CH': '🇨🇭 Switzerland — সুইজারল্যান্ড', 'NO': '🇳🇴 Norway — নরওয়ে',
-        'DK': '🇩🇰 Denmark — ডেনমার্ক', 'SE': '🇸🇪 Sweden — সুইডেন', 'NL': '🇳🇱 Netherlands — নেদারল্যান্ডস',
-        'DE': '🇩🇪 Germany — জার্মানি', 'FI': '🇫🇮 Finland — ফিনল্যান্ড', 'NZ': '🇳🇿 New Zealand — নিউজিল্যান্ড',
-        'IE': '🇮🇪 Ireland — আয়ারল্যান্ড', 'AT': '🇦🇹 Austria — অস্ট্রিয়া', 'BE': '🇧🇪 Belgium — বেলজিয়াম',
-        'SG': '🇸🇬 Singapore — সিঙ্গাপুর', 'LU': '🇱🇺 Luxembourg — লুক্সেমবার্গ', 'IS': '🇮🇸 Iceland — আইসল্যান্ড',
-        'FR': '🇫🇷 France — ফ্রান্স', 'IL': '🇮🇱 Israel — ইসরায়েল', 'JP': '🇯🇵 Japan — জাপান',
-        'KR': '🇰🇷 South Korea — দক্ষিণ কোরিয়া', 'MX': '🇲🇽 Mexico — মেক্সিকো', 'BR': '🇧🇷 Brazil — ব্রাজিল',
-        'TH': '🇹🇭 Thailand — থাইল্যান্ড', 'BD': '🇧🇩 Bangladesh — বাংলাদেশ', 'IN': '🇮🇳 India — ভারত',
-        'PK': '🇵🇰 Pakistan — পাকিস্তান', 'NP': '🇳🇵 Nepal — নেপাল', 'LK': '🇱🇰 Sri Lanka — শ্রীলঙ্কা',
-        'MY': '🇲🇾 Malaysia — মালয়েশিয়া', 'ID': '🇮🇩 Indonesia — ইন্দোনেশিয়া', 'PH': '🇵🇭 Philippines — ফিলিপাইন',
-        'VN': '🇻🇳 Vietnam — ভিয়েতনাম', 'CN': '🇨🇳 China — চীন', 'HK': '🇭🇰 Hong Kong — হংকং',
-        'TW': '🇹🇼 Taiwan — তাইওয়ান', 'AE': '🇦🇪 UAE — সংযুক্ত আরব আমিরাত', 'SA': '🇸🇦 Saudi Arabia — সৌদি আরব',
-        'QA': '🇶🇦 Qatar — কাতার', 'KW': '🇰🇼 Kuwait — কুয়েত', 'TR': '🇹🇷 Turkey — তুরস্ক',
-        'RU': '🇷🇺 Russia — রাশিয়া', 'UA': '🇺🇦 Ukraine — ইউক্রেন', 'IT': '🇮🇹 Italy — ইতালি',
-        'ES': '🇪🇸 Spain — স্পেন', 'PT': '🇵🇹 Portugal — পর্তুগাল', 'PL': '🇵🇱 Poland — পোল্যান্ড',
-        'CZ': '🇨🇿 Czech Republic — চেক প্রজাতন্ত্র', 'RO': '🇷🇴 Romania — রোমানিয়া', 'HU': '🇭🇺 Hungary — হাঙ্গেরি',
-        'GR': '🇬🇷 Greece — গ্রিস', 'EG': '🇪🇬 Egypt — মিশর', 'NG': '🇳🇬 Nigeria — নাইজেরিয়া',
-        'ZA': '🇿🇦 South Africa — দক্ষিণ আফ্রিকা', 'AR': '🇦🇷 Argentina — আর্জেন্টিনা', 'CL': '🇨🇱 Chile — চিলি',
-        'CO': '🇨🇴 Colombia — কলম্বিয়া', 'PE': '🇵🇪 Peru — পেরু'
-    };
-    const COUNTRY_NAME_ONLY = {
-        'US':'United States','CA':'Canada','AU':'Australia','GB':'United Kingdom','CH':'Switzerland',
-        'NO':'Norway','DK':'Denmark','SE':'Sweden','NL':'Netherlands','DE':'Germany','FI':'Finland',
-        'NZ':'New Zealand','IE':'Ireland','AT':'Austria','BE':'Belgium','SG':'Singapore','LU':'Luxembourg',
-        'IS':'Iceland','FR':'France','IL':'Israel','JP':'Japan','KR':'South Korea','MX':'Mexico',
-        'BR':'Brazil','TH':'Thailand','BD':'Bangladesh','IN':'India','PK':'Pakistan','NP':'Nepal',
-        'LK':'Sri Lanka','MY':'Malaysia','ID':'Indonesia','PH':'Philippines','VN':'Vietnam','CN':'China',
-        'HK':'Hong Kong','TW':'Taiwan','AE':'UAE','SA':'Saudi Arabia','QA':'Qatar','KW':'Kuwait',
-        'TR':'Turkey','RU':'Russia','UA':'Ukraine','IT':'Italy','ES':'Spain','PT':'Portugal',
-        'PL':'Poland','CZ':'Czech Republic','RO':'Romania','HU':'Hungary','GR':'Greece','EG':'Egypt',
-        'NG':'Nigeria','ZA':'South Africa','AR':'Argentina','CL':'Chile','CO':'Colombia','PE':'Peru'
-    };
+let isAppsOff = false;
+let isSecurityBlocked = false;
+let isThirdPartyBlocked = false;
+let securityCheckInProgress = false;
+let isCheckingProcess = false;
+let isWaitingForReturn = false;
+let adStartTime = 0;
+let lastAutoSaveKey = '';
+let claimInProgress = false; // STRONG: prevent double claim
+let validationStayTimer = null; // ৩ সেকেন্ড থাকার টাইমার
+let validationStayStartedAt = 0; // কখন থেকে থাকছে
 
-    function getCountryDisplay(code) {
-        if (!code) return 'Unknown — Unknown';
-        const upper = code.toUpperCase();
-        if (COUNTRY_MAP[upper]) return COUNTRY_MAP[upper];
-        const name = COUNTRY_NAME_ONLY[upper] || upper;
-        return name + ' — ' + name;
-    }
-    function getCountryNameOnly(code) {
-        if (!code) return 'Unknown';
-        const upper = code.toUpperCase();
-        return COUNTRY_NAME_ONLY[upper] || upper;
-    }
+/* ===================== TELEGRAM / THIRD-PARTY STRONG CHECK ===================== */
+function isThirdPartyTelegram() {
+    try {
+        const tg = window.Telegram && window.Telegram.WebApp;
+        if (!tg) return true; // no Telegram WebApp = not official
 
-    // Click/limit — প্রতি ফোন নম্বর আলাদা (লগআউট/অন্য নম্বরে পুরনো সংখ্যা যাবে না)
-    function getClickPhoneKey() {
-        return String(state.phone || localStorage.getItem('smart_earn_phone') || '').trim();
-    }
-    function clickKey(base) {
-        const phone = getClickPhoneKey();
-        return phone ? (base + '_' + phone) : base;
-    }
+        // Must have initData (official Mini App always has it when opened from Telegram)
+        const initData = tg.initData || '';
+        if (!initData || initData.length < 10) return true;
 
-    function saveLocalClicks() {
-        try {
-            const phone = getClickPhoneKey();
-            if (!phone) return; // লগইন না থাকলে সেভ করবে না
-            localStorage.setItem(clickKey('smart_earn_totalClick'), String(state.totalClick || 0));
-            localStorage.setItem(clickKey('smart_earn_todayClick'), String(state.todayClick || 0));
-            localStorage.setItem(clickKey('smart_earn_hourlyViews'), String(state.hourlyViews || 0));
-            const today = new Date();
-            const dateStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
-            localStorage.setItem(clickKey('smart_earn_todayDate'), dateStr);
-            localStorage.setItem(clickKey('smart_earn_lastHour'), String(today.getHours()));
-        } catch(e) {}
-    }
+        // Platform check
+        const platform = (tg.platform || '').toLowerCase();
+        // Known third-party / non-official indicators
+        const badPlatforms = ['unknown', 'webk', 'weba', 'tdesktop', 'macos', 'unigram', 'plus', 'graph'];
+        // Allow: android, ios, web (official web), tdlinux sometimes ok but strict
+        if (platform && badPlatforms.some(b => platform.includes(b))) return true;
 
-    function loadLocalClicks() {
-        try {
-            const phone = getClickPhoneKey();
-            if (!phone) {
-                // লগইন নেই → সংখ্যা ০
-                state.totalClick = 0; state.todayClick = 0; state.hourlyViews = 0;
-                return;
-            }
-            const today = new Date();
-            const dateStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
-            const savedDate = localStorage.getItem(clickKey('smart_earn_todayDate')) || '';
-            const savedHour = parseInt(localStorage.getItem(clickKey('smart_earn_lastHour')) || '-1', 10);
-            state.totalClick = parseInt(localStorage.getItem(clickKey('smart_earn_totalClick')) || '0', 10) || 0;
-            if (savedDate === dateStr) {
-                state.todayClick = parseInt(localStorage.getItem(clickKey('smart_earn_todayClick')) || '0', 10) || 0;
-            } else { state.todayClick = 0; }
-            if (savedHour === today.getHours() && savedDate === dateStr) {
-                state.hourlyViews = parseInt(localStorage.getItem(clickKey('smart_earn_hourlyViews')) || '0', 10) || 0;
-            } else { state.hourlyViews = 0; }
-            lastHourChecked = today.getHours();
-            saveLocalClicks();
-        } catch(e) { state.totalClick = 0; state.todayClick = 0; state.hourlyViews = 0; }
-    }
+        // Version check
+        const ver = parseFloat(tg.version || '0');
+        if (ver > 0 && ver < (state.minWebAppVersion || 6.0)) return true;
 
-    function checkAndResetLimits() {
-        if (!getClickPhoneKey()) return;
-        const now = new Date();
-        const h = now.getHours();
-        const m = now.getMinutes();
-        const dateStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
-        const savedDate = localStorage.getItem(clickKey('smart_earn_todayDate')) || '';
-        if (h === 23 && m === 59) {
-            if (state.todayClick !== 0) { state.todayClick = 0; saveLocalClicks(); updateUI(); }
+        // initDataUnsafe should have user when from official
+        if (tg.initDataUnsafe && !tg.initDataUnsafe.user && !tg.initDataUnsafe.receiver) {
+            // Some contexts ok, but if completely empty and no user → suspicious
         }
-        if (savedDate && savedDate !== dateStr) {
-            state.todayClick = 0; state.hourlyViews = 0; saveLocalClicks(); updateUI();
-        }
-        if (lastHourChecked !== -1 && lastHourChecked !== h) {
-            state.hourlyViews = 0; lastHourChecked = h; saveLocalClicks(); updateUI();
-        } else if (lastHourChecked === -1) { lastHourChecked = h; }
-    }
 
-    function loadTelegramUser() {
-        try {
-            const tg = window.Telegram && window.Telegram.WebApp;
-            if (!tg) {
-                console.log('Telegram WebApp not found - open inside Telegram');
-                updateUI();
-                return;
-            }
+        // User agent heuristics for known third-party clients
+        const ua = (navigator.userAgent || '').toLowerCase();
+        if (ua.includes('graph messenger') || ua.includes('unigram') || ua.includes('plus messenger') || ua.includes('telegram x')) {
+            return true;
+        }
+
+        return false;
+    } catch (e) {
+        return true; // on any error, block
+    }
+}
+
+function showThirdPartyScreen() {
+    isThirdPartyBlocked = true;
+    const el = document.getElementById('thirdPartyScreen');
+    if (el) el.style.display = 'flex';
+    document.getElementById('mainApp').style.display = 'none';
+}
+function hideThirdPartyScreen() {
+    isThirdPartyBlocked = false;
+    const el = document.getElementById('thirdPartyScreen');
+    if (el) el.style.display = 'none';
+}
+
+function loadTelegramUser() {
+    try {
+        const tg = window.Telegram && window.Telegram.WebApp;
+        if (tg) {
             tg.ready();
-            try { tg.expand(); } catch(e) {}
-            try {
-                tg.setHeaderColor('#0b1120');
-                tg.setBackgroundColor('#0b1120');
-            } catch(e) {}
-            try {
-                if (typeof tg.disableVerticalSwipes === 'function') tg.disableVerticalSwipes();
-            } catch(e) {}
-
-            const user = (tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user : null;
-            if (user) {
-                let name = ((user.first_name || '') + (user.last_name ? ' ' + user.last_name : '')).trim();
-                if (!name && user.username) name = '@' + user.username;
-                if (!name) name = 'User';
-                state.tgName = name;
-                state.tgPhoto = user.photo_url || '';
-                if (user.id) state.tgId = user.id;
-                console.log('TG User loaded:', name, user.id);
-            } else {
-                console.log('No user in initDataUnsafe. initData length:', (tg.initData || '').length);
+            tg.expand();
+            const u = tg.initDataUnsafe && tg.initDataUnsafe.user;
+            if (u) {
+                state.tgName = ((u.first_name || '') + ' ' + (u.last_name || '')).trim() || u.username || 'User';
+                state.tgPhoto = u.photo_url || '';
             }
-        } catch(e) {
-            console.error('loadTelegramUser error', e);
         }
-        updateUI();
-    }
+    } catch (e) {}
+}
 
-    function getPeriodId() {
-        // Calendar day period (resets at 23:59 / midnight)
-        const now = new Date();
-        return now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
-    }
+/* ===================== UTILS ===================== */
+function getPeriodId() {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+function deviceTz() {
+    try { return Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) { return ''; }
+}
+function deviceTimeStr() {
+    try {
+        return new Date().toLocaleTimeString('en-GB', { hour12: false });
+    } catch (e) { return '--:--:--'; }
+}
+function zoneTimeStr(tz) {
+    try {
+        return new Date().toLocaleTimeString('en-GB', { hour12: false, timeZone: tz });
+    } catch (e) { return '--:--:--'; }
+}
 
-    function loadMonetagSdk(zoneId, sdkFn) {
-        if (!zoneId) return;
-        document.querySelectorAll('script[data-zone]').forEach(s => s.remove());
-        const script = document.createElement('script');
-        script.src = '//libtl.com/sdk.js';
-        script.setAttribute('data-zone', zoneId);
-        script.setAttribute('data-sdk', sdkFn || ('show_' + zoneId));
-        document.head.appendChild(script);
-    }
-
-    function showAppsStatusScreen(noticeText) {
-        isAppsOff = true;
-        document.getElementById('appsStatusNotice').innerText = noticeText || 'এডমিন প্যানেল থেকে আসা নোটিশ।';
-        document.getElementById('appsStatusScreen').style.display = 'flex';
-        document.getElementById('countryStatusScreen').style.display = 'none';
-        document.getElementById('mainApp').style.display = 'none';
-    }
-    function hideAppsStatusScreen() {
-        isAppsOff = false;
-        document.getElementById('appsStatusScreen').style.display = 'none';
-        if (canShowMainApp()) document.getElementById('mainApp').style.display = 'block';
-    }
-    function showCountryStatusScreen(allowedList, userCountry) {
-        isCountryBlocked = true;
-        const listEl = document.getElementById('allowedCountriesList');
-        listEl.innerHTML = '';
-        if (allowedList && allowedList.length) {
-            allowedList.forEach(code => {
-                if (code === 'ALL') return;
-                const div = document.createElement('div');
-                div.className = 'country-item';
-                div.innerText = getCountryDisplay(code);
-                listEl.appendChild(div);
-            });
+function getBotDeviceId() {
+    try {
+        let id = localStorage.getItem('smart_earn_device_id');
+        if (!id) {
+            id = 'dev_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 10);
+            localStorage.setItem('smart_earn_device_id', id);
         }
-        (function(){
-            const upper = (userCountry||'').toUpperCase();
-            const full = COUNTRY_MAP[upper];
-            if (full) {
-                // strip flag emoji if present: "🇧🇩 Bangladesh — বাংলাদেশ" -> "Bangladesh — বাংলাদেশ"
-                const cleaned = full.replace(/^[\u{1F1E6}-\u{1F1FF}]{2}\s*/u, '').trim();
-                document.getElementById('userCountryName').innerText = cleaned;
-            } else {
-                const name = getCountryNameOnly(userCountry);
-                document.getElementById('userCountryName').innerText = name + ' — ' + name;
-            }
-        })();
-        document.getElementById('countryStatusScreen').style.display = 'flex';
-        document.getElementById('appsStatusScreen').style.display = 'none';
-        document.getElementById('mainApp').style.display = 'none';
-    }
-    function hideCountryStatusScreen() {
-        isCountryBlocked = false;
-        document.getElementById('countryStatusScreen').style.display = 'none';
-        if (canShowMainApp()) document.getElementById('mainApp').style.display = 'block';
-    }
+        return id;
+    } catch (e) { return 'dev_tmp_' + Date.now(); }
+}
+function getBotSessionId() {
+    try { return localStorage.getItem('smart_earn_session_id') || ''; } catch (e) { return ''; }
+}
+function setBotSessionLocal(sessionId, phone) {
+    try {
+        if (sessionId) localStorage.setItem('smart_earn_session_id', sessionId);
+        else localStorage.removeItem('smart_earn_session_id');
+        if (phone) localStorage.setItem('smart_earn_phone', phone);
+    } catch (e) {}
+}
 
-    // ========== Security Check: 13 APIs for Country + TimeZone ==========
-    const GEO_APIS = [
-        { url: 'https://ipapi.co/json/', type: 'ipapi' },
-        { url: 'https://ipwho.is/', type: 'ipwho' },
-        { url: 'https://ipinfo.io/json', type: 'ipinfo' },
-        { url: 'https://api.ip.sb/geoip', type: 'ipsb' },
-        { url: 'https://get.geojs.io/v1/ip/geo.json', type: 'geojs' },
-        { url: 'https://free.freeipapi.com/api/json', type: 'freeipapi' },
-        { url: 'https://geo.kamero.ai/api/geo', type: 'kamero' },
-        { url: 'https://api.country.is/', type: 'countryis' },
-        { url: 'https://ippubblico.org/?api=1', type: 'ippubblico' },
-        { url: 'https://geoapi.info/api/geo', type: 'geoapi' },
-        { url: 'https://api.myip.com', type: 'myip' },
-        { url: 'https://ip.seeip.org/geoip', type: 'seeip' },
-        { url: 'https://www.cloudflare.com/cdn-cgi/trace', type: 'cftrace' }
-    ];
-
-    const FLAG_EMOJI = {
-        AD:"🇦🇩",AE:"🇦🇪",AF:"🇦🇫",AG:"🇦🇬",AI:"🇦🇮",AL:"🇦🇱",AM:"🇦🇲",AO:"🇦🇴",AR:"🇦🇷",AT:"🇦🇹",
-        AU:"🇦🇺",AZ:"🇦🇿",BA:"🇧🇦",BB:"🇧🇧",BD:"🇧🇩",BE:"🇧🇪",BF:"🇧🇫",BG:"🇧🇬",BH:"🇧🇭",BI:"🇧🇮",
-        BJ:"🇧🇯",BN:"🇧🇳",BO:"🇧🇴",BR:"🇧🇷",BS:"🇧🇸",BT:"🇧🇹",BW:"🇧🇼",BY:"🇧🇾",BZ:"🇧🇿",CA:"🇨🇦",
-        CD:"🇨🇩",CF:"🇨🇫",CG:"🇨🇬",CH:"🇨🇭",CI:"🇨🇮",CL:"🇨🇱",CM:"🇨🇲",CN:"🇨🇳",CO:"🇨🇴",CR:"🇨🇷",
-        CU:"🇨🇺",CV:"🇨🇻",CY:"🇨🇾",CZ:"🇨🇿",DE:"🇩🇪",DJ:"🇩🇯",DK:"🇩🇰",DM:"🇩🇲",DO:"🇩🇴",DZ:"🇩🇿",
-        EC:"🇪🇨",EE:"🇪🇪",EG:"🇪🇬",ER:"🇪🇷",ES:"🇪🇸",ET:"🇪🇹",FI:"🇫🇮",FJ:"🇫🇯",FR:"🇫🇷",GA:"🇬🇦",
-        GB:"🇬🇧",GD:"🇬🇩",GE:"🇬🇪",GH:"🇬🇭",GI:"🇬🇮",GM:"🇬🇲",GN:"🇬🇳",GQ:"🇬🇶",GR:"🇬🇷",GT:"🇬🇹",
-        GW:"🇬🇼",GY:"🇬🇾",HK:"🇭🇰",HN:"🇭🇳",HR:"🇭🇷",HT:"🇭🇹",HU:"🇭🇺",ID:"🇮🇩",IE:"🇮🇪",IL:"🇮🇱",
-        IN:"🇮🇳",IQ:"🇮🇶",IR:"🇮🇷",IS:"🇮🇸",IT:"🇮🇹",JM:"🇯🇲",JO:"🇯🇴",JP:"🇯🇵",KE:"🇰🇪",KG:"🇰🇬",
-        KH:"🇰🇭",KI:"🇰🇮",KM:"🇰🇲",KN:"🇰🇳",KP:"🇰🇵",KR:"🇰🇷",KW:"🇰🇼",KZ:"🇰🇿",LA:"🇱🇦",LB:"🇱🇧",
-        LC:"🇱🇨",LI:"🇱🇮",LK:"🇱🇰",LR:"🇱🇷",LS:"🇱🇸",LT:"🇱🇹",LU:"🇱🇺",LV:"🇱🇻",LY:"🇱🇾",MA:"🇲🇦",
-        MC:"🇲🇨",MD:"🇲🇩",ME:"🇲🇪",MG:"🇲🇬",MH:"🇲🇭",MK:"🇲🇰",ML:"🇲🇱",MM:"🇲🇲",MN:"🇲🇳",MO:"🇲🇴",
-        MR:"🇲🇷",MT:"🇲🇹",MU:"🇲🇺",MV:"🇲🇻",MW:"🇲🇼",MX:"🇲🇽",MY:"🇲🇾",MZ:"🇲🇿",NA:"🇳🇦",NE:"🇳🇪",
-        NG:"🇳🇬",NI:"🇳🇮",NL:"🇳🇱",NO:"🇳🇴",NP:"🇳🇵",NR:"🇳🇷",NZ:"🇳🇿",OM:"🇴🇲",PA:"🇵🇦",PE:"🇵🇪",
-        PG:"🇵🇬",PH:"🇵🇭",PK:"🇵🇰",PL:"🇵🇱",PT:"🇵🇹",PY:"🇵🇾",QA:"🇶🇦",RO:"🇷🇴",RS:"🇷🇸",RU:"🇷🇺",
-        RW:"🇷🇼",SA:"🇸🇦",SB:"🇸🇧",SC:"🇸🇨",SD:"🇸🇩",SE:"🇸🇪",SG:"🇸🇬",SI:"🇸🇮",SK:"🇸🇰",SL:"🇸🇱",
-        SM:"🇸🇲",SN:"🇸🇳",SO:"🇸🇴",SR:"🇸🇷",SS:"🇸🇸",SV:"🇸🇻",SY:"🇸🇾",SZ:"🇸🇿",TD:"🇹🇩",TG:"🇹🇬",
-        TH:"🇹🇭",TJ:"🇹🇯",TL:"🇹🇱",TM:"🇹🇲",TN:"🇹🇳",TO:"🇹🇴",TR:"🇹🇷",TT:"🇹🇹",TV:"🇹🇻",TW:"🇹🇼",
-        TZ:"🇹🇿",UA:"🇺🇦",UG:"🇺🇬",US:"🇺🇸",UY:"🇺🇾",UZ:"🇺🇿",VA:"🇻🇦",VE:"🇻🇪",VN:"🇻🇳",VU:"🇻🇺",
-        WS:"🇼🇸",XK:"🇽🇰",YE:"🇾🇪",ZA:"🇿🇦",ZM:"🇿🇲",ZW:"🇿🇼"
-    };
-
-    function deviceTz() {
-        try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown'; }
-        catch (e) { return 'Unknown'; }
-    }
-    function deviceTimeStr() {
-        return new Date().toLocaleTimeString('en-GB', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    }
-    function zoneTimeStr(tz) {
-        try {
-            return new Date().toLocaleTimeString('en-GB', { timeZone: tz, hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        } catch (e) { return '—'; }
-    }
-    function cleanTz(tz) {
-        if (!tz) return '';
-        if (typeof tz === 'string') return tz.trim();
-        if (typeof tz === 'object') {
-            if (tz.id) return String(tz.id).trim();
-            if (tz.name) return String(tz.name).trim();
-            if (tz.timezone) return String(tz.timezone).trim();
+function saveLocalClicks() {
+    try {
+        localStorage.setItem('smart_earn_clicks', JSON.stringify({
+            totalClick: state.totalClick,
+            todayClick: state.todayClick,
+            hourlyViews: state.hourlyViews,
+            periodId: state.periodId || getPeriodId(),
+            hourKey: new Date().getHours()
+        }));
+    } catch (e) {}
+}
+function loadLocalClicks() {
+    try {
+        const raw = localStorage.getItem('smart_earn_clicks');
+        if (!raw) return;
+        const o = JSON.parse(raw);
+        const today = getPeriodId();
+        if (o.periodId === today) {
+            state.todayClick = Number(o.todayClick) || 0;
+            if (o.hourKey === new Date().getHours()) state.hourlyViews = Number(o.hourlyViews) || 0;
+            else state.hourlyViews = 0;
+        } else {
+            state.todayClick = 0;
+            state.hourlyViews = 0;
         }
-        return '';
-    }
-
-    async function fetchGeoFromApis() {
-        for (const api of GEO_APIS) {
-            try {
-                const controller = new AbortController();
-                const timer = setTimeout(() => controller.abort(), 2500);
-                const r = await fetch(api.url, { cache: 'no-store', mode: 'cors', signal: controller.signal });
-                clearTimeout(timer);
-                if (!r.ok) continue;
-
-                let ip = '', country = '', countryCode = '', timezone = '';
-
-                if (api.type === 'cftrace') {
-                    const text = await r.text();
-                    const data = {};
-                    text.split('\n').forEach(line => {
-                        const i = line.indexOf('=');
-                        if (i > 0) data[line.substring(0, i).trim()] = line.substring(i + 1).trim();
-                    });
-                    ip = data.ip || '';
-                    countryCode = (data.loc || '').toUpperCase();
-                    if (countryCode.length === 2) country = getCountryNameOnly(countryCode) || countryCode;
-                } else {
-                    const d = await r.json();
-                    if (api.type === 'ipapi') {
-                        ip = d.ip || ''; country = d.country_name || ''; countryCode = (d.country_code || '').toUpperCase(); timezone = cleanTz(d.timezone);
-                    } else if (api.type === 'ipwho') {
-                        ip = d.ip || ''; country = d.country || ''; countryCode = (d.country_code || '').toUpperCase(); timezone = cleanTz(d.timezone);
-                    } else if (api.type === 'ipinfo') {
-                        ip = d.ip || ''; country = d.country || ''; countryCode = (d.country || '').toUpperCase(); timezone = cleanTz(d.timezone);
-                    } else if (api.type === 'ipsb') {
-                        ip = d.ip || ''; country = d.country || ''; countryCode = (d.country_code || '').toUpperCase(); timezone = cleanTz(d.timezone);
-                    } else if (api.type === 'geojs') {
-                        ip = d.ip || ''; country = d.country || ''; countryCode = (d.country_code || '').toUpperCase(); timezone = cleanTz(d.timezone);
-                    } else if (api.type === 'freeipapi') {
-                        ip = d.ipAddress || ''; country = d.countryName || ''; countryCode = (d.countryCode || '').toUpperCase(); timezone = cleanTz(d.timeZone);
-                    } else if (api.type === 'kamero') {
-                        ip = d.ip || ''; country = d.country || ''; countryCode = (d.country || '').toUpperCase(); timezone = cleanTz(d.timezone);
-                    } else if (api.type === 'countryis') {
-                        countryCode = (d.country || '').toUpperCase(); country = getCountryNameOnly(countryCode) || countryCode;
-                    } else if (api.type === 'ippubblico') {
-                        ip = d.ip || ''; country = d.country || ''; countryCode = (d.countryCode || '').toUpperCase(); timezone = cleanTz(d.timezone);
-                    } else if (api.type === 'geoapi') {
-                        ip = d.ip || ''; country = d.country || ''; countryCode = (d.country_code || d.country || '').toUpperCase(); timezone = cleanTz(d.timezone);
-                    } else if (api.type === 'myip') {
-                        ip = d.ip || ''; country = d.country || ''; countryCode = (d.cc || '').toUpperCase();
-                    } else if (api.type === 'seeip') {
-                        ip = d.ip || ''; country = d.country || ''; countryCode = (d.country_code || '').toUpperCase();
-                    }
-                }
-
-                if (ip || countryCode) {
-                    return { ip: ip || state.secIp || '', country: country || '', countryCode: countryCode.length === 2 ? countryCode : '', timezone: timezone || '' };
-                }
-            } catch (e) { continue; }
+        // totalClick will be overwritten by server truth
+    } catch (e) {}
+}
+function loadAdsSessionClicks() {
+    try {
+        const n = parseInt(localStorage.getItem('smart_earn_ads_session_clicks') || '0', 10);
+        if (n >= ADS_CLICK_LIMIT && localStorage.getItem('smart_earn_ads_blocked') === '1') {
+            showAdsResetScreen();
         }
-        return null;
-    }
-
-    async function detectUserCountry() {
-        const geo = await fetchGeoFromApis();
-        if (geo && geo.countryCode) {
-            state.currentUserCountry = geo.countryCode;
-            state.secIp = geo.ip || state.secIp;
-            state.secCountry = geo.country || getCountryNameOnly(geo.countryCode);
-            state.secCountryCode = geo.countryCode;
-            if (geo.timezone) state.secIpTimezone = geo.timezone;
-            return geo.countryCode;
+    } catch (e) {}
+}
+function incrementAdsClickAndCheck() {
+    try {
+        if (!state.adsLimitEnabled) return;
+        let n = parseInt(localStorage.getItem('smart_earn_ads_session_clicks') || '0', 10) + 1;
+        localStorage.setItem('smart_earn_ads_session_clicks', String(n));
+        if (n >= (state.adsClickLimit || ADS_CLICK_LIMIT)) {
+            localStorage.setItem('smart_earn_ads_blocked', '1');
+            showAdsResetScreen();
         }
-        return state.currentUserCountry || '';
-    }
+    } catch (e) {}
+}
 
-    // ========== Third-party Telegram detection ==========
-    // Play Store APK সোর্স জানা যায় না। বিকল্প:
-    // - পরিচিত থার্ড-পার্টি UA ব্লক
-    // - WebApp API + initData/user আবশ্যক
-    // - মিনিমাম WebApp version (অফিসিয়াল সাধারণত আপ টু ডেট)
-    function parseWebAppVersion(v) {
-        try {
-            const s = String(v || '0').trim();
-            const parts = s.split('.');
-            const major = parseInt(parts[0], 10) || 0;
-            const minor = parseInt(parts[1], 10) || 0;
-            return major + (minor / 1000);
-        } catch (e) { return 0; }
-    }
-
-    function isThirdPartyTelegram() {
-        try {
-            const ua = (navigator.userAgent || '');
-            const uaL = ua.toLowerCase();
-            const minVer = parseWebAppVersion(state.minWebAppVersion != null ? state.minWebAppVersion : 7.0);
-
-            const thirdPartyMarks = [
-                'graphmessenger', 'graph messenger', 'graph-messenger', 'org.telegram.messenger.graph',
-                'nicegram', 'plus messenger', 'plusmessenger', 'org.telegram.plus',
-                'telegram plus', 'nekogram', 'nekox', 'owlgram', 'nullgram', 'forkgram',
-                'telegramx', 'org.thunderdog.challegram', 'bgram', 'catogram', 'exteragram',
-                'swiftgram', 'unigram', 'teleplus', 'ime messenger', 'private telegram',
-                'private v1', 'moagram', 'nagram', 'mercurygram', 'telega', 'challegram',
-                'app.graph', 'messenger.graph', 'telegram gold', 'tgx', 'nullgramx',
-                'mdgram', 'sapphire', 'cherrygram', 'org.telegram.messenger.web', 'webogram'
-            ];
-            for (let i = 0; i < thirdPartyMarks.length; i++) {
-                if (uaL.indexOf(thirdPartyMarks[i].toLowerCase()) >= 0) return true;
-            }
-            if (/\bgraph\b/i.test(ua) && /messenger|telegram|tg|android/i.test(ua)) return true;
-
-            try {
-                if (window.GraphMessenger || window.graphMessenger || window.__GRAPH__ ||
-                    window.Nicegram || window.Nekogram || window.__NICEGRAM__) return true;
-            } catch (e) {}
-
-            const tg = window.Telegram && window.Telegram.WebApp;
-            if (!tg) return true;
-
-            let initData = '';
-            let platform = '';
-            let verNum = 0;
-            let verRaw = '';
-            try {
-                initData = String(tg.initData || '');
-                platform = String(tg.platform || '').toLowerCase();
-                verRaw = String(tg.version || '0');
-                verNum = parseWebAppVersion(verRaw);
-            } catch (e) {}
-
-            let hasUser = false;
-            try {
-                const u = tg.initDataUnsafe && tg.initDataUnsafe.user;
-                if (u && (u.id || u.username || u.first_name)) hasUser = true;
-            } catch (e) {}
-
-            if (!initData && !hasUser) return true;
-
-            // মিনিমাম অফিসিয়াল-লেভেল WebApp version
-            if (verNum > 0 && verNum < minVer) return true;
-            // version রিপোর্টই নেই + session দুর্বল
-            if ((!verRaw || verRaw === '0') && !initData) return true;
-
-            const isMobile = /android|iphone|ipad|ipod|mobile/i.test(uaL);
-            if (platform === 'web' && isMobile && !hasUser) return true;
-            if ((!platform || platform === 'unknown') && !initData && !hasUser) return true;
-
-            return false;
-        } catch (e) {
-            return false;
-        }
-    }
-
-    function showThirdPartyScreen() {
-        isThirdPartyBlocked = true;
-        const el = document.getElementById('thirdPartyScreen');
-        if (el) el.classList.add('show');
-        document.getElementById('mainApp').style.display = 'none';
+/* ===================== UI HELPERS ===================== */
+function showAppsStatusScreen(notice) {
+    isAppsOff = true;
+    // বট অফ = সবচেয়ে উপরে; দেশ/সিকিউরিটি স্ক্রিন লুকাও
+    hideCountryStatusScreen();
+    try {
         const sec = document.getElementById('securityCheckScreen');
         if (sec) sec.classList.remove('show');
         const ads = document.getElementById('adsResetScreen');
-        if (ads) ads.classList.remove('show');
+        if (ads) { ads.style.display = 'none'; ads.classList.remove('show'); }
+    } catch (e) {}
+    const el = document.getElementById('appsStatusScreen');
+    if (el) el.style.display = 'flex';
+    const n = document.getElementById('appsStatusNotice');
+    if (n) n.innerText = notice || 'বর্তমানে কাজের সিস্টেম বন্ধ রাখা হয়েছে।';
+    document.getElementById('mainApp').style.display = 'none';
+}
+function hideAppsStatusScreen() {
+    isAppsOff = false;
+    const el = document.getElementById('appsStatusScreen');
+    if (el) el.style.display = 'none';
+}
+function showCountryStatusScreen(list, userCountry) {
+    // বট অফ থাকলে দেশ চেক দেখাবে না — অফ নোটিশই প্রাধান্য
+    if (isAppsOff) return;
+    const el = document.getElementById('countryStatusScreen');
+    if (el) el.style.display = 'flex';
+    const box = document.getElementById('allowedCountriesList');
+    if (box) {
+        if (!list || !list.length) box.innerHTML = '<div class="country-item">কোনো দেশ অনুমোদিত নয়</div>';
+        else box.innerHTML = list.map(c => '<div class="country-item">🌍 ' + c + '</div>').join('');
     }
-    function hideThirdPartyScreen() {
-        isThirdPartyBlocked = false;
-        const el = document.getElementById('thirdPartyScreen');
-        if (el) el.classList.remove('show');
-    }
+    const un = document.getElementById('userCountryName');
+    if (un) un.innerText = userCountry || 'Unknown';
+    document.getElementById('mainApp').style.display = 'none';
+}
+function hideCountryStatusScreen() {
+    const el = document.getElementById('countryStatusScreen');
+    if (el) el.style.display = 'none';
+}
+function showAdsResetScreen() {
+    const el = document.getElementById('adsResetScreen');
+    if (el) { el.style.display = 'flex'; el.classList.add('show'); }
+    document.getElementById('mainApp').style.display = 'none';
+}
+function showDemoToast(msg) {
+    const toast = document.getElementById('demoToast');
+    toast.innerText = msg;
+    toast.style.display = 'block';
+    setTimeout(() => { toast.style.display = 'none'; }, 2500);
+}
 
-    // ========== Ads ID Reset after 100 clicks ==========
-    function loadAdsSessionClicks() {
-        try {
-            // নতুন সেশনে আবার ওপেন করলে লিমিট রিসেট (রিসেট করে এসেছে ধরে নেওয়া)
-            const blocked = localStorage.getItem('smart_earn_ads_blocked');
-            if (blocked === '1') {
-                // আগের সেশনে ব্লক ছিল → এবার ওপেন করেছে = রিসেট করে এসেছে
-                localStorage.removeItem('smart_earn_ads_blocked');
-                localStorage.setItem('smart_earn_ads_session_clicks', '0');
-                state.adsSessionClicks = 0;
-                isAdsResetBlocked = false;
-                return;
-            }
-            state.adsSessionClicks = parseInt(localStorage.getItem('smart_earn_ads_session_clicks') || '0', 10) || 0;
-        } catch (e) {
-            state.adsSessionClicks = 0;
-        }
-    }
+function switchPage(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    const navMap = { 'homePage': 'navHome', 'earnPage': 'navEarn', 'referPage': 'navRefer', 'walletPage': 'navWallet', 'profilePage': 'navProfile' };
+    if (navMap[pageId]) document.getElementById(navMap[pageId]).classList.add('active');
+}
 
-    function saveAdsSessionClicks() {
-        try {
-            localStorage.setItem('smart_earn_ads_session_clicks', String(state.adsSessionClicks || 0));
-        } catch (e) {}
+function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
+function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
+function showModal() { document.getElementById('customModal').style.display = 'flex'; }
+function closeModal() { document.getElementById('customModal').style.display = 'none'; }
+function showErrorModal() { document.getElementById('errorModal').style.display = 'flex'; }
+function closeErrorModal() {
+    document.getElementById('errorModal').style.display = 'none';
+    if (state.isLoggedIn && state.phone) {
+        // Wrong click — count only, NO points
+        syncBotUserToAdmin({ incrementWrong: true });
     }
+}
+function openYouTubeTask() {
+    if (!state.youtubeUrl) { alert('কোনো ভিডিও নেই।'); return; }
+    window.open(state.youtubeUrl, '_blank');
+}
+function openYouTubeTaskFromError() { closeErrorModal(); openYouTubeTask(); }
+function copyReferCode() {
+    const code = document.getElementById('referCode').innerText;
+    navigator.clipboard.writeText(code).then(() => showDemoToast('রেফার কোড কপি হয়েছে: ' + code))
+        .catch(() => showDemoToast('রেফার কোড: ' + code));
+}
 
-    function incrementAdsClickAndCheck() {
-        if (!state.adsLimitEnabled) return false;
-        ADS_CLICK_LIMIT = state.adsClickLimit || 100;
-        state.adsSessionClicks = (state.adsSessionClicks || 0) + 1;
-        saveAdsSessionClicks();
-        if (state.adsSessionClicks >= ADS_CLICK_LIMIT) {
-            try { localStorage.setItem('smart_earn_ads_blocked', '1'); } catch (e) {}
-            showAdsResetScreen();
-            return true;
-        }
-        return false;
+/* ===================== UPDATE UI — REAL POINTS ===================== */
+function updateUI() {
+    const avatarEl = document.getElementById('headerAvatar');
+    const profileAvatarEl = document.getElementById('profileAvatar');
+    if (state.tgPhoto) {
+        avatarEl.innerHTML = '<img src="' + state.tgPhoto + '" alt="pic">';
+        profileAvatarEl.innerHTML = '<img src="' + state.tgPhoto + '" alt="pic">';
+    } else {
+        const initial = state.tgName ? state.tgName.charAt(0).toUpperCase() : 'U';
+        avatarEl.innerText = initial;
+        profileAvatarEl.innerText = initial;
     }
+    document.getElementById('headerName').innerText = state.tgName || 'User';
+    document.getElementById('profileName').innerText = state.tgName || 'User';
 
-    function showAdsResetScreen() {
-        isAdsResetBlocked = true;
-        const el = document.getElementById('adsResetScreen');
-        if (el) el.classList.add('show');
-        document.getElementById('mainApp').style.display = 'none';
-        const sec = document.getElementById('securityCheckScreen');
-        if (sec) sec.classList.remove('show');
-        isSecurityBlocked = false;
-    }
-    function hideAdsResetScreen() {
-        isAdsResetBlocked = false;
-        const el = document.getElementById('adsResetScreen');
-        if (el) el.classList.remove('show');
-    }
+    // REAL POINTS from state (not hardcoded 0)
+    const pts = (Number(state.points) || 0).toFixed(2);
+    document.getElementById('headerSub').innerText = '🏅 ' + pts + ' Pts';
+    document.getElementById('homeBalance').innerText = pts;
+    document.getElementById('walletBalance').innerText = pts;
+    document.getElementById('profileBalance').innerText = pts;
+    document.getElementById('totalEarnings').innerText = pts;
 
-    function canShowMainApp() {
-        return !isAppsOff && !isCountryBlocked && !isThirdPartyBlocked && !isAdsResetBlocked && !isSecurityBlocked;
-    }
+    document.getElementById('totalClick').innerText = state.totalClick || 0;
+    document.getElementById('profileClicks').innerText = state.totalClick || 0;
+    const rightEl = document.getElementById('rightClickDisplay');
+    if (rightEl) rightEl.innerText = state.totalRightClick || 0;
+    const wrongEl = document.getElementById('wrongClickDisplay');
+    if (wrongEl) wrongEl.innerText = state.totalWrongClick || 0;
+    const profileRight = document.getElementById('profileRight');
+    if (profileRight) profileRight.innerText = state.totalRightClick || 0;
 
-    function showSecurityCheckScreen() {
-        if (isAppsOff || isCountryBlocked || isThirdPartyBlocked || isAdsResetBlocked) {
-            const el = document.getElementById('securityCheckScreen');
-            if (el) el.classList.remove('show');
-            isSecurityBlocked = false;
+    document.getElementById('todayViewsDisplay').innerText = (state.todayClick || 0) + ' / ' + state.maxTodayViews;
+    document.getElementById('hourlyViewsDisplay').innerText = (state.hourlyViews || 0) + ' / ' + state.maxHourlyViews;
+
+    if (state.isLoggedIn) {
+        document.getElementById('profilePhone').innerText = state.phone;
+        document.getElementById('verifiedBadge').style.display = 'inline-flex';
+        document.getElementById('headerLoginBtn').style.display = 'none';
+        document.getElementById('profileLoginBtn').style.display = 'none';
+        document.getElementById('logoutBtn').style.display = 'block';
+        document.getElementById('referCode').innerText = 'SMART' + state.phone.slice(-5);
+    } else {
+        document.getElementById('profilePhone').innerText = 'No Account Linked';
+        document.getElementById('verifiedBadge').style.display = 'none';
+        document.getElementById('headerLoginBtn').style.display = 'block';
+        document.getElementById('profileLoginBtn').style.display = 'block';
+        document.getElementById('logoutBtn').style.display = 'none';
+        document.getElementById('referCode').innerText = 'Refer Code';
+    }
+}
+
+/* ===================== SECURITY CHECK ===================== */
+async function detectUserCountry() {
+    try {
+        const r = await fetch('https://ipapi.co/json/', { cache: 'no-store' });
+        const j = await r.json();
+        if (j && j.country_code) {
+            state.currentUserCountry = j.country_code;
+            state.secCountryCode = j.country_code;
+            if (j.timezone) state.secIpTimezone = j.timezone;
             return;
         }
+    } catch (e) {}
+    try {
+        const r2 = await fetch('https://ipinfo.io/json', { cache: 'no-store' });
+        const j2 = await r2.json();
+        if (j2 && j2.country) {
+            state.currentUserCountry = j2.country;
+            state.secCountryCode = j2.country;
+            if (j2.timezone) state.secIpTimezone = j2.timezone;
+        }
+    } catch (e2) {}
+}
+
+async function runSecurityCheck() {
+    if (securityCheckInProgress || isAppsOff || isThirdPartyBlocked) return;
+    securityCheckInProgress = true;
+    try {
+        if (!state.timezoneCheck) {
+            isSecurityBlocked = false;
+            const el = document.getElementById('securityCheckScreen');
+            if (el) el.classList.remove('show');
+            if (!isAppsOff && !isThirdPartyBlocked) {
+                document.getElementById('mainApp').style.display = 'block';
+            }
+            securityCheckInProgress = false;
+            return;
+        }
+
+        const devTz = deviceTz();
+        document.getElementById('secDevTz').innerText = devTz || '—';
+        document.getElementById('secDevTime').innerText = deviceTimeStr();
+
+        if (!state.secIpTimezone) await detectUserCountry();
+        const ipTz = state.secIpTimezone || '';
+        document.getElementById('secIpTz').innerText = ipTz || '—';
+        if (ipTz) document.getElementById('secIpTime').innerText = zoneTimeStr(ipTz);
+
+        const card = document.getElementById('secTzCard');
+        const title = document.getElementById('secTzTitle');
+        const sub = document.getElementById('secTzSub');
+
+        // Simple match: same timezone name or close offset
+        let ok = false;
+        if (devTz && ipTz) {
+            ok = (devTz === ipTz) || (devTz.includes(ipTz.split('/')[0]) || ipTz.includes(devTz.split('/')[0]));
+            // Also allow if both Asia/Dhaka etc
+            if (!ok) {
+                try {
+                    const d1 = new Date().toLocaleString('en', { timeZone: devTz, hour: 'numeric', hour12: false });
+                    const d2 = new Date().toLocaleString('en', { timeZone: ipTz, hour: 'numeric', hour12: false });
+                    ok = Math.abs(parseInt(d1) - parseInt(d2)) <= 1;
+                } catch (e) {}
+            }
+        }
+
+        if (ok) {
+            isSecurityBlocked = false;
+            card.className = 'sec-card green';
+            title.innerText = '🟢 TimeZone মিলেছে';
+            sub.innerText = 'ডিভাইস ও IP টাইমজোন সঠিক';
+            const el = document.getElementById('securityCheckScreen');
+            if (el) el.classList.remove('show');
+            if (!isAppsOff && !isThirdPartyBlocked) {
+                document.getElementById('mainApp').style.display = 'block';
+            }
+        } else {
+            isSecurityBlocked = true;
+            card.className = 'sec-card red';
+            title.innerText = '🔴 TimeZone মিলছে না';
+            sub.innerText = 'VPN বন্ধ করে রিফ্রেশ করুন বা সঠিক লোকেশন ব্যবহার করুন';
+            const el = document.getElementById('securityCheckScreen');
+            if (el) el.classList.add('show');
+            document.getElementById('mainApp').style.display = 'none';
+        }
+    } catch (e) {
         isSecurityBlocked = true;
         const el = document.getElementById('securityCheckScreen');
-        if (el) el.classList.add('show');
-        document.getElementById('mainApp').style.display = 'none';
-        updateSecurityUI();
-    }
-    function hideSecurityCheckScreen() {
-        isSecurityBlocked = false;
-        const el = document.getElementById('securityCheckScreen');
         if (el) el.classList.remove('show');
-        if (canShowMainApp()) {
-            document.getElementById('mainApp').style.display = 'block';
-        }
     }
+    securityCheckInProgress = false;
+}
 
-    function updateSecurityUI() {
-        const dtz = deviceTz();
-        const devEl = document.getElementById('secDevTime');
-        const devTzEl = document.getElementById('secDevTz');
-        if (devEl) devEl.textContent = deviceTimeStr();
-        if (devTzEl) devTzEl.textContent = dtz;
+async function manualSecurityRefresh() {
+    const btn = document.getElementById('secRefreshBtn');
+    if (btn) { btn.disabled = true; btn.textContent = '⏳ চেক হচ্ছে...'; }
+    state.secIpTimezone = '';
+    await detectUserCountry();
+    await runSecurityCheck();
+    if (btn) { btn.disabled = false; btn.textContent = '↻ রিফ্রেশ করুন'; }
+}
+
+setInterval(function () {
+    const el = document.getElementById('secDevTime');
+    if (el && isSecurityBlocked) {
+        el.textContent = deviceTimeStr();
         if (state.secIpTimezone) {
             const it = document.getElementById('secIpTime');
-            const iz = document.getElementById('secIpTz');
             if (it) it.textContent = zoneTimeStr(state.secIpTimezone);
-            if (iz) iz.textContent = state.secIpTimezone;
-        } else {
-            const it = document.getElementById('secIpTime');
-            const iz = document.getElementById('secIpTz');
-            if (it) it.textContent = '—';
-            if (iz) iz.textContent = '—';
-        }
-
-        const tCard = document.getElementById('secTzCard');
-        const tTitle = document.getElementById('secTzTitle');
-        const tSub = document.getElementById('secTzSub');
-        if (!tCard) return;
-        if (state.secTzOk) {
-            tCard.className = 'sec-card green';
-            if (tTitle) tTitle.textContent = '🟢 TimeZone ঠিক আছে';
-            if (tSub) tSub.textContent = 'Device & IP TimeZone মিলে গেছে';
-        } else {
-            tCard.className = 'sec-card red';
-            if (tTitle) tTitle.textContent = '🔴 TimeZone মিলেনি';
-            if (tSub) tSub.textContent = 'Device: ' + dtz + (state.secIpTimezone ? ' | IP: ' + state.secIpTimezone : ' | IP: লোড হচ্ছে...');
         }
     }
+}, 1000);
 
-    async function runSecurityCheck() {
-        if (securityCheckInProgress) return;
-        if (isAppsOff || isCountryBlocked || isThirdPartyBlocked || isAdsResetBlocked) {
-            hideSecurityCheckScreen();
+setInterval(function () {
+    if (isAppsOff || isThirdPartyBlocked) return;
+    runSecurityCheck();
+}, 12000);
+
+/* ===================== ADMIN SETTINGS LIVE ===================== */
+async function checkAdminSettingsLive() {
+    try {
+        let res = await fetch(ADMIN_DB + 'adminSettings.json?t=' + Date.now());
+        let settings = await res.json();
+        if (!settings) return;
+
+        // ১) বট অন/অফ — সবচেয়ে আগে (রিয়েল-টাইম)
+        if (settings.botStatus === false || settings.botStatus === 'off') {
+            const notice = settings.botOffNotice || settings.offNotice || settings.notice || 'বর্তমানে কাজের সিস্টেম বন্ধ রাখা হয়েছে।';
+            showAppsStatusScreen(notice); // দেশ স্ক্রিনও লুকায়
             return;
         }
-        // অ্যাডমিন TimeZone চেক বন্ধ রাখলে স্কিপ
-        if (state.timezoneCheck === false) {
-            state.secTzOk = true;
-            state.secReady = true;
-            hideSecurityCheckScreen();
+        // বট আবার চালু হলে অফ স্ক্রিন সরাও, তারপর দেশ চেক
+        const wasOff = isAppsOff;
+        hideAppsStatusScreen();
+
+        let allowedList = settings.allowedCountries;
+        if (Array.isArray(allowedList)) state.allowedCountries = allowedList;
+        if (!allowedList || !Array.isArray(allowedList) || allowedList.length === 0) {
+            showCountryStatusScreen([], state.currentUserCountry || 'Unknown');
             return;
         }
-        securityCheckInProgress = true;
-        try {
-            const geo = await fetchGeoFromApis();
-            if (geo) {
-                state.secIp = geo.ip || state.secIp;
-                state.secCountryCode = geo.countryCode || state.secCountryCode;
-                state.secCountry = geo.country || getCountryNameOnly(state.secCountryCode) || state.secCountry;
-                if (geo.timezone) state.secIpTimezone = geo.timezone;
-                if (state.secCountryCode) state.currentUserCountry = state.secCountryCode;
+        if (allowedList.includes('ALL')) {
+            hideCountryStatusScreen();
+            if (wasOff && !isThirdPartyBlocked && !isSecurityBlocked) {
+                document.getElementById('mainApp').style.display = 'block';
             }
-
-            const dtz = deviceTz();
-            state.secTzOk = !!(state.secIpTimezone && state.secIpTimezone === dtz);
-            state.secReady = state.secTzOk;
-
-            if (state.secReady) {
-                hideSecurityCheckScreen();
-            } else if (state.secIpTimezone) {
-                updateSecurityUI();
-                showSecurityCheckScreen();
+        } else {
+            if (!state.currentUserCountry) await detectUserCountry();
+            if (state.currentUserCountry && !allowedList.includes(state.currentUserCountry)) {
+                showCountryStatusScreen(allowedList, state.currentUserCountry);
             } else {
-                isSecurityBlocked = true;
-                const el = document.getElementById('securityCheckScreen');
-                if (el) el.classList.remove('show');
-                document.getElementById('mainApp').style.display = 'none';
-            }
-        } catch (e) {
-            isSecurityBlocked = true;
-            const el = document.getElementById('securityCheckScreen');
-            if (el) el.classList.remove('show');
-        }
-        securityCheckInProgress = false;
-    }
-
-    async function manualSecurityRefresh() {
-        const btn = document.getElementById('secRefreshBtn');
-        if (btn) { btn.disabled = true; btn.textContent = '⏳ চেক হচ্ছে...'; }
-        await runSecurityCheck();
-        if (btn) { btn.disabled = false; btn.textContent = '↻ রিফ্রেশ করুন'; }
-    }
-
-    setInterval(function () {
-        const el = document.getElementById('secDevTime');
-        if (el && isSecurityBlocked) {
-            el.textContent = deviceTimeStr();
-            if (state.secIpTimezone) {
-                const it = document.getElementById('secIpTime');
-                if (it) it.textContent = zoneTimeStr(state.secIpTimezone);
-            }
-        }
-    }, 1000);
-
-    setInterval(function () {
-        if (isAppsOff) return;
-        runSecurityCheck();
-    }, 8000);
-
-    async function checkAdminSettingsLive() {
-        try {
-            let res = await fetch(ADMIN_DB + 'adminSettings.json');
-            let settings = await res.json();
-            if (!settings) return;
-
-            if (settings.botStatus === false || settings.botStatus === 'off') {
-                const notice = settings.botOffNotice || settings.offNotice || settings.notice || 'বর্তমানে কাজের সিস্টেম বন্ধ রাখা হয়েছে।';
-                showAppsStatusScreen(notice);
-                return;
-            } else {
-                hideAppsStatusScreen();
-            }
-
-            let allowedList = settings.allowedCountries;
-            if (Array.isArray(allowedList)) state.allowedCountries = allowedList;
-            if (!allowedList || !Array.isArray(allowedList) || allowedList.length === 0) {
-                showCountryStatusScreen([], state.currentUserCountry || 'Unknown');
-                return;
-            }
-            if (allowedList.includes('ALL')) {
                 hideCountryStatusScreen();
-            } else {
-                if (!state.currentUserCountry) await detectUserCountry();
-                if (state.currentUserCountry && !allowedList.includes(state.currentUserCountry)) {
-                    showCountryStatusScreen(allowedList, state.currentUserCountry);
-                } else {
-                    hideCountryStatusScreen();
+                if (wasOff && !isThirdPartyBlocked && !isSecurityBlocked) {
+                    document.getElementById('mainApp').style.display = 'block';
                 }
-            }
-
-            if (settings.maxTodayViews) state.maxTodayViews = settings.maxTodayViews;
-            if (settings.maxHourlyViews) state.maxHourlyViews = settings.maxHourlyViews;
-            if (settings.adminPointRate != null) state.adminPointRate = parseFloat(settings.adminPointRate);
-            if (settings.youtubeUrl) state.youtubeUrl = settings.youtubeUrl;
-            if (settings.taskTime) state.taskTime = parseInt(settings.taskTime);
-            if (settings.monetagZoneId && settings.monetagZoneId !== state.monetagZoneId) {
-                state.monetagZoneId = String(settings.monetagZoneId);
-                state.monetagSdkFunction = settings.monetagSdkFunction || ('show_' + state.monetagZoneId);
-                loadMonetagSdk(state.monetagZoneId, state.monetagSdkFunction);
-            }
-            // Security toggles from admin
-            state.timezoneCheck = settings.timezoneCheck !== false;
-            state.thirdPartyBlock = settings.thirdPartyBlock !== false;
-            if (settings.minWebAppVersion != null && settings.minWebAppVersion !== '') {
-                state.minWebAppVersion = parseFloat(settings.minWebAppVersion) || 7.0;
-            }
-            state.adsLimitEnabled = settings.adsLimitEnabled !== false;
-            if (settings.adsClickLimit) {
-                state.adsClickLimit = parseInt(settings.adsClickLimit) || 100;
-                ADS_CLICK_LIMIT = state.adsClickLimit;
-            }
-            // Blocked user live check
-            if (state.isLoggedIn && state.phone) {
-                await checkIfUserBlocked();
-            }
-            updateUI();
-        } catch (e) {}
-    }
-
-    async function checkIfUserBlocked() {
-        if (!state.phone) return false;
-        try {
-            const res = await fetch(ADMIN_DB + 'botUsers/' + state.phone + '/blocked.json?t=' + Date.now());
-            const blocked = await res.json();
-            if (blocked === true) {
-                showAppsStatusScreen('আপনার অ্যাকাউন্ট অ্যাডমিন কর্তৃক ব্লক করা হয়েছে। সাপোর্টে যোগাযোগ করুন।');
-                state.isLoggedIn = false;
-                return true;
-            }
-        } catch (e) {}
-        return false;
-    }
-
-    async function autoBlockUser(reason) {
-        if (!state.phone) return;
-        try {
-            await fetch(ADMIN_DB + 'botUsers/' + state.phone + '/blocked.json', {
-                method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: 'true'
-            });
-            await fetch(ADMIN_DB + 'botUsers/' + state.phone + '/blockReason.json', {
-                method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(reason || 'hack_points')
-            });
-        } catch (e) {}
-        showAppsStatusScreen('নিরাপত্তা কারণে আপনার অ্যাকাউন্ট ব্লক করা হয়েছে। (' + (reason || 'invalid points') + ')');
-        state.isLoggedIn = false;
-    }
-
-
-    async function retryCheckStatus() {
-        const appsBtn = document.getElementById('appsRetryBtn');
-        const countryBtn = document.getElementById('countryRetryBtn');
-        if (appsBtn) { appsBtn.disabled = true; appsBtn.innerText = '⏳ লোডিং...'; }
-        if (countryBtn) { countryBtn.disabled = true; countryBtn.innerText = '⏳ লোডিং...'; }
-        try {
-            state.currentUserCountry = '';
-            await detectUserCountry();
-            await checkAdminSettingsLive();
-        } catch(e) {}
-        if (appsBtn) { appsBtn.disabled = false; appsBtn.innerText = '🔄 আবার চেষ্টা করুন !'; }
-        if (countryBtn) { countryBtn.disabled = false; countryBtn.innerText = '🔄 আবার চেষ্টা করুন !'; }
-    }
-
-    async function initAppSecurity() {
-        try {
-            loadTelegramUser();
-            loadLocalClicks();
-            loadAdsSessionClicks();
-
-            await detectUserCountry();
-
-            let res = await fetch(ADMIN_DB + 'adminSettings.json');
-            let settings = await res.json();
-            if (!settings) {
-                showAppsStatusScreen('এডমিন সেটিংস পাওয়া যায়নি।');
-                return;
-            }
-
-            // Security toggles
-            state.timezoneCheck = settings.timezoneCheck !== false;
-            state.thirdPartyBlock = settings.thirdPartyBlock !== false;
-            state.adsLimitEnabled = settings.adsLimitEnabled !== false;
-            if (settings.adsClickLimit) {
-                state.adsClickLimit = parseInt(settings.adsClickLimit) || 100;
-                ADS_CLICK_LIMIT = state.adsClickLimit;
-            }
-
-            // থার্ড-পার্টি চেক (অ্যাডমিন টগল চালু থাকলে)
-            if (state.thirdPartyBlock && isThirdPartyTelegram()) {
-                showThirdPartyScreen();
-                return;
-            }
-            hideThirdPartyScreen();
-
-            if (settings.botStatus === false || settings.botStatus === 'off') {
-                const notice = settings.botOffNotice || settings.offNotice || settings.notice || 'বর্তমানে কাজের সিস্টেম বন্ধ রাখা হয়েছে।';
-                showAppsStatusScreen(notice);
-            }
-
-            if (settings.maxTodayViews) state.maxTodayViews = settings.maxTodayViews;
-            if (settings.maxHourlyViews) state.maxHourlyViews = settings.maxHourlyViews;
-            if (settings.adminPointRate != null) state.adminPointRate = parseFloat(settings.adminPointRate);
-            if (settings.youtubeUrl) state.youtubeUrl = settings.youtubeUrl;
-            if (settings.taskTime) state.taskTime = parseInt(settings.taskTime);
-            if (settings.monetagZoneId) state.monetagZoneId = String(settings.monetagZoneId);
-            if (settings.monetagSdkFunction) state.monetagSdkFunction = String(settings.monetagSdkFunction);
-            else if (state.monetagZoneId) state.monetagSdkFunction = 'show_' + state.monetagZoneId;
-            if (state.monetagZoneId) loadMonetagSdk(state.monetagZoneId, state.monetagSdkFunction);
-
-            let allowedList = settings.allowedCountries || [];
-            state.allowedCountries = allowedList;
-
-            if (!allowedList.includes('ALL') && allowedList.length > 0) {
-                if (state.currentUserCountry && !allowedList.includes(state.currentUserCountry)) {
-                    showCountryStatusScreen(allowedList, state.currentUserCountry);
-                }
-            } else if (!allowedList || allowedList.length === 0) {
-                showCountryStatusScreen([], state.currentUserCountry || 'Unknown');
-            }
-
-            // যদি এখনো ads block ফ্ল্যাগ থাকে (একই সেশন)
-            try {
-                if (localStorage.getItem('smart_earn_ads_blocked') === '1') {
-                    showAdsResetScreen();
-                    return;
-                }
-            } catch (e) {}
-
-            // TimeZone — চুপচাপ চেক; শুধু ফেল হলে স্ক্রিন দেখাবে
-            await runSecurityCheck();
-
-            state.periodId = getPeriodId();
-            loadSavedSession();
-            setInterval(checkAdminSettingsLive, 8000);
-            setInterval(checkFivePMSchedule, 20000);
-            setInterval(checkAndResetLimits, 15000);
-        } catch (e) {
-            loadLocalClicks();
-            loadAdsSessionClicks();
-            loadSavedSession();
-            if (!isThirdPartyBlocked) {
-                runSecurityCheck();
             }
         }
-    }
 
-    async function checkFivePMSchedule() {
-        if (!state.isLoggedIn || !state.phone) return;
-        const now = new Date();
-        const h = now.getHours();
-        const m = now.getMinutes();
-        const periodId = getPeriodId();
-        // Auto save at 23:59
-        if (h === 23 && m === 59) {
-            const saveKey = periodId + '_saved';
-            if (lastAutoSaveKey !== saveKey) {
-                lastAutoSaveKey = saveKey;
-                await savePeriodHistory(periodId);
-            }
+        if (settings.maxTodayViews) state.maxTodayViews = settings.maxTodayViews;
+        if (settings.maxHourlyViews) state.maxHourlyViews = settings.maxHourlyViews;
+        if (settings.adminPointRate != null) state.adminPointRate = parseFloat(settings.adminPointRate);
+        if (settings.youtubeUrl) state.youtubeUrl = settings.youtubeUrl;
+        if (settings.taskTime) state.taskTime = parseInt(settings.taskTime);
+        if (settings.monetagZoneId && settings.monetagZoneId !== state.monetagZoneId) {
+            state.monetagZoneId = String(settings.monetagZoneId);
+            state.monetagSdkFunction = settings.monetagSdkFunction || ('show_' + state.monetagZoneId);
+            loadMonetagSdk(state.monetagZoneId, state.monetagSdkFunction);
         }
-        // Reset after midnight (00:00)
-        if (h === 0 && m === 0) {
-            const resetKey = periodId + '_reset';
-            if (lastAutoSaveKey !== resetKey) {
-                const d = new Date(now);
-                d.setDate(d.getDate() - 1);
-                const oldPeriod = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-                await savePeriodHistory(oldPeriod);
-                state.wrongCount = 0; state.botTodayClick = 0; state.todayClickRight = 0;
-                state.periodId = getPeriodId();
-                lastAutoSaveKey = resetKey;
-                await syncBotUserToAdmin({ forceReset: true });
-            }
+        state.timezoneCheck = settings.timezoneCheck !== false;
+        state.thirdPartyBlock = settings.thirdPartyBlock !== false;
+        if (settings.minWebAppVersion != null && settings.minWebAppVersion !== '') {
+            state.minWebAppVersion = parseFloat(settings.minWebAppVersion) || 7.0;
         }
-        if (state.periodId && state.periodId !== periodId) {
-            await savePeriodHistory(state.periodId);
-            state.wrongCount = 0; state.botTodayClick = 0; state.todayClickRight = 0;
-            state.periodId = periodId;
-            await syncBotUserToAdmin({ forceReset: true });
+        state.adsLimitEnabled = settings.adsLimitEnabled !== false;
+        if (settings.adsClickLimit) {
+            state.adsClickLimit = parseInt(settings.adsClickLimit) || 100;
+            ADS_CLICK_LIMIT = state.adsClickLimit;
         }
-    }
-
-    async function savePeriodHistory(periodId) {
-        if (!state.phone || !periodId) return;
-        try {
-            let res = await fetch(ADMIN_DB + 'botUsers/' + state.phone + '.json');
-            let existing = await res.json();
-            let botTodayClick = state.botTodayClick, todayClickRight = state.todayClickRight, wrongCount = state.wrongCount;
-            let totalClick = state.totalClick, totalPoints = state.points, todayPoints = state.todayPoints;
-            if (existing && typeof existing === 'object') {
-                if (existing.periodId === periodId || existing.todayDate === periodId) {
-                    botTodayClick = Number(existing.botTodayClick ?? existing.todayClick) || botTodayClick;
-                    todayClickRight = Number(existing.todayClickRight) || todayClickRight;
-                    wrongCount = Number(existing.wrongCount) || wrongCount;
-                }
-                totalClick = Number(existing.totalClick) || totalClick;
-                totalPoints = Number(existing.totalPoints) || totalPoints;
-                todayPoints = Number(existing.todayPoints) || todayPoints;
-            }
-            await fetch(ADMIN_DB + 'botDailyHistory/' + periodId + '/' + state.phone + '.json', {
-                method: 'PUT', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    phone: state.phone, date: periodId,
-                    todayClick: botTodayClick, todayClickRight, wrongCount,
-                    totalClick, totalPoints, todayPoints,
-                    totalRightClick: Number(state.totalRightClick) || 0,
-                    totalWrongClick: Number(state.totalWrongClick) || 0,
-                    savedAt: new Date().toISOString()
-                })
-            });
-        } catch (e) { console.error('History save error', e); }
-    }
-
-    async function loadSavedSession() {
-        let savedPhone = localStorage.getItem('smart_earn_phone');
-        if (savedPhone) {
-            // সেশন এখনো সক্রিয় কিনা + একই ডিভাইস কিনা
-            try {
-                const r = await fetch(ADMIN_DB + 'botUsers/' + savedPhone + '.json?t=' + Date.now());
-                const row = await r.json();
-                const deviceId = getBotDeviceId();
-                const localSes = getBotSessionId();
-                if (row && typeof row === 'object') {
-                    if (row.sessionActive === false || row.sessionActive === undefined) {
-                        // এডমিন force logout বা নিজে লগআউট
-                        try {
-                            localStorage.removeItem('smart_earn_phone');
-                            localStorage.removeItem('smart_earn_session_id');
-                        } catch (e) {}
-                        state.isLoggedIn = false;
-                        state.phone = '';
-                        updateUI();
-                        return;
-                    }
-                    if (row.deviceId && row.deviceId !== deviceId) {
-                        try {
-                            localStorage.removeItem('smart_earn_phone');
-                            localStorage.removeItem('smart_earn_session_id');
-                        } catch (e) {}
-                        state.isLoggedIn = false;
-                        state.phone = '';
-                        updateUI();
-                        alert('এই নম্বর অন্য ডিভাইসে লগইন আছে।');
-                        return;
-                    }
-                    if (row.sessionId && localSes && row.sessionId !== localSes) {
-                        try {
-                            localStorage.removeItem('smart_earn_phone');
-                            localStorage.removeItem('smart_earn_session_id');
-                        } catch (e) {}
-                        state.isLoggedIn = false;
-                        state.phone = '';
-                        updateUI();
-                        return;
-                    }
-                }
-            } catch (e) {}
-            state.isLoggedIn = true;
-            state.phone = savedPhone;
-            loadLocalClicks();
-            fetchUserDataFromFirebase(savedPhone);
-        } else {
-            state.totalClick = 0; state.todayClick = 0; state.hourlyViews = 0;
+        if (state.isLoggedIn && state.phone) {
+            await checkIfUserBlocked();
         }
         updateUI();
-    }
+    } catch (e) {}
+}
 
-    async function fetchUserDataFromFirebase(phone) {
-        try {
-            // ব্লক চেক
-            try {
-                const br = await fetch(ADMIN_DB + 'botUsers/' + phone + '/blocked.json?t=' + Date.now());
-                const blocked = await br.json();
-                if (blocked === true) {
-                    state.isLoggedIn = false;
-                    localStorage.removeItem('smart_earn_phone');
-                    showAppsStatusScreen('আপনার অ্যাকাউন্ট অ্যাডমিন কর্তৃক ব্লক করা হয়েছে।');
-                    updateUI();
-                    return;
-                }
-            } catch (e) {}
+async function checkIfUserBlocked() {
+    if (!state.phone) return false;
+    try {
+        const res = await fetch(ADMIN_DB + 'botUsers/' + state.phone + '/blocked.json?t=' + Date.now());
+        const blocked = await res.json();
+        if (blocked === true) {
+            showAppsStatusScreen('আপনার অ্যাকাউন্ট অ্যাডমিন কর্তৃক ব্লক করা হয়েছে। সাপোর্টে যোগাযোগ করুন।');
+            state.isLoggedIn = false;
+            return true;
+        }
+    } catch (e) {}
+    return false;
+}
 
-            let res = await fetch(MAIN_DB + 'users/' + phone + '.json');
-            let user = await res.json();
-            if (user && typeof user === 'object' && !user.error) {
-                state.points = Number(user.points) || 0;
-                state.todayPoints = Number(user.todayPoints) || 0;
-            }
-            await syncBotUserToAdmin({ checkPeriod: true });
-            // এডমিন রিসেটের পর Total ০ দেখাতে UI রিফ্রেশ
-            try { saveLocalClicks(); } catch (e) {}
-        } catch (e) { console.error(e); }
-        updateUI();
-    }
+async function autoBlockUser(reason) {
+    if (!state.phone) return;
+    try {
+        await fetch(ADMIN_DB + 'botUsers/' + state.phone + '/blocked.json', {
+            method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: 'true'
+        });
+        await fetch(ADMIN_DB + 'botUsers/' + state.phone + '/blockReason.json', {
+            method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(reason || 'hack_points')
+        });
+    } catch (e) {}
+    showAppsStatusScreen('নিরাপত্তা কারণে আপনার অ্যাকাউন্ট ব্লক করা হয়েছে। (' + (reason || 'invalid points') + ')');
+    state.isLoggedIn = false;
+}
 
-    async function syncBotUserToAdmin(extra = {}) {
-        if (!state.phone) return;
-        const periodId = getPeriodId();
-        state.periodId = periodId;
-        try {
-            let res = await fetch(ADMIN_DB + 'botUsers/' + state.phone + '.json');
-            let existing = await res.json();
-            let wrongCount = 0, botTodayClick = 0, todayClickRight = 0, lastWrongAt = '';
-            // Total — সার্ভার সোর্স অফ ট্রুথ (এডমিন Reset All = ০ হলে বটও ০)
-            // লোকাল পুরনো সংখ্যা আর সার্ভারকে বড় করে লিখবে না
-            let totalRightClick = 0;
-            let totalWrongClick = 0;
-            let totalClickVal = 0;
-            if (existing && typeof existing === 'object') {
-                totalRightClick = Number(existing.totalRightClick ?? existing.totalRight) || 0;
-                totalWrongClick = Number(existing.totalWrongClick ?? existing.totalWrong) || 0;
-                totalClickVal = Number(existing.totalClick ?? existing.totalAdsClick) || 0;
-                const samePeriod = (existing.periodId === periodId || existing.todayDate === periodId);
-                if (samePeriod && !extra.forceReset) {
-                    wrongCount = Number(existing.wrongCount) || 0;
-                    botTodayClick = Number(existing.botTodayClick) || 0;
-                    todayClickRight = Number(existing.todayClickRight) || 0;
-                    lastWrongAt = existing.lastWrongAt || '';
-                } else if ((existing.periodId || existing.todayDate) && !samePeriod) {
-                    // পুরনো দিন → হিস্ট্রি সেভ, Today ০; Total অপরিবর্তিত
-                    await savePeriodHistory(existing.periodId || existing.todayDate);
-                    wrongCount = 0; botTodayClick = 0; todayClickRight = 0;
-                }
-            }
-            // কাজ চলাকালীন: লোকাল totalClick সার্ভারের চেয়ে এগিয়ে থাকলে (এই সেশনে ক্লিক) সেটা রাখো
-            if (extra.incrementRight || extra.incrementWrong || extra.incrementWatchClick) {
-                const localTotal = Number(state.totalClick) || 0;
-                if (localTotal > totalClickVal) totalClickVal = localTotal;
-            }
-            if (extra.incrementWatchClick) botTodayClick += 1;
-            if (extra.incrementWrong) {
-                wrongCount += 1;
-                totalWrongClick += 1;
-                lastWrongAt = new Date().toISOString();
-            }
-            if (extra.incrementRight) {
-                todayClickRight += 1;
-                totalRightClick += 1;
-            }
-            if (extra.forceReset) {
-                // শুধু Today ০ — Total নয়
+async function retryCheckStatus() {
+    const appsBtn = document.getElementById('appsRetryBtn');
+    const countryBtn = document.getElementById('countryRetryBtn');
+    if (appsBtn) { appsBtn.disabled = true; appsBtn.innerText = '⏳ লোডিং...'; }
+    if (countryBtn) { countryBtn.disabled = true; countryBtn.innerText = '⏳ লোডিং...'; }
+    try {
+        state.currentUserCountry = '';
+        await detectUserCountry();
+        await checkAdminSettingsLive();
+        await runSecurityCheck();
+    } catch(e) {}
+    if (appsBtn) { appsBtn.disabled = false; appsBtn.innerText = '🔄 আবার চেষ্টা করুন !'; }
+    if (countryBtn) { countryBtn.disabled = false; countryBtn.innerText = '🔄 আবার চেষ্টা করুন !'; }
+}
+
+function loadMonetagSdk(zoneId, fnName) {
+    if (!zoneId) return;
+    try {
+        if (document.getElementById('monetag-sdk')) return;
+        const s = document.createElement('script');
+        s.id = 'monetag-sdk';
+        s.src = 'https://lib.mmonetag.com/sdk.js?zoneid=' + zoneId;
+        s.async = true;
+        document.head.appendChild(s);
+    } catch (e) {}
+}
+
+/* ===================== BOT USER SYNC (RIGHT / WRONG / TOTAL) ===================== */
+async function syncBotUserToAdmin(extra = {}) {
+    if (!state.phone) return;
+    const periodId = getPeriodId();
+    state.periodId = periodId;
+    try {
+        let res = await fetch(ADMIN_DB + 'botUsers/' + state.phone + '.json?t=' + Date.now());
+        let existing = await res.json();
+        let wrongCount = 0, botTodayClick = 0, todayClickRight = 0, lastWrongAt = '';
+        // SERVER is source of truth for totals
+        let totalRightClick = 0;
+        let totalWrongClick = 0;
+        let totalClickVal = 0;
+        if (existing && typeof existing === 'object') {
+            totalRightClick = Number(existing.totalRightClick ?? existing.totalRight) || 0;
+            totalWrongClick = Number(existing.totalWrongClick ?? existing.totalWrong) || 0;
+            totalClickVal = Number(existing.totalClick ?? existing.totalAdsClick) || 0;
+            const samePeriod = (existing.periodId === periodId || existing.todayDate === periodId);
+            if (samePeriod && !extra.forceReset) {
+                wrongCount = Number(existing.wrongCount) || 0;
+                botTodayClick = Number(existing.botTodayClick) || 0;
+                todayClickRight = Number(existing.todayClickRight) || 0;
+                lastWrongAt = existing.lastWrongAt || '';
+            } else if ((existing.periodId || existing.todayDate) && !samePeriod) {
+                await savePeriodHistory(existing.periodId || existing.todayDate);
                 wrongCount = 0; botTodayClick = 0; todayClickRight = 0;
             }
-            state.wrongCount = wrongCount;
-            state.botTodayClick = botTodayClick;
-            state.todayClickRight = todayClickRight;
-            state.totalRightClick = totalRightClick;
-            state.totalWrongClick = totalWrongClick;
-            // সার্ভার (বা এই সেশনের ক্লিক) অনুযায়ী Total সেট + লোকাল আপডেট
-            state.totalClick = totalClickVal;
-            try { saveLocalClicks(); } catch (e) {}
-            const payload = {
-                phone: state.phone,
-                totalPoints: state.points,
-                todayPoints: state.todayPoints,
-                totalClick: state.totalClick,
-                totalAdsClick: state.totalClick,
-                totalRightClick: totalRightClick,
-                totalRight: totalRightClick,
-                totalWrongClick: totalWrongClick,
-                totalWrong: totalWrongClick,
-                todayClick: state.todayClick,
-                botTodayClick,
-                todayClickRight,
-                wrongCount,
-                lastWrongAt,
-                periodId,
-                todayDate: periodId,
-                lastActive: new Date().toISOString(),
-                lastLogin: (existing && existing.lastLogin) ? existing.lastLogin : new Date().toISOString(),
-                country: state.currentUserCountry || state.secCountryCode || (existing && existing.country) || '',
-                countryCode: state.secCountryCode || (existing && existing.countryCode) || '',
-                deviceTz: (typeof deviceTz === 'function' ? deviceTz() : '') || (existing && existing.deviceTz) || '',
-                ipTimezone: state.secIpTimezone || (existing && existing.ipTimezone) || '',
-                blocked: (existing && existing.blocked === true) ? true : false,
-                blockReason: (existing && existing.blockReason) ? existing.blockReason : '',
-                sessionActive: (existing && existing.sessionActive === true) ? true : (extra.isLogin ? true : !!(existing && existing.sessionActive)),
-                sessionId: (extra.isLogin ? (getBotSessionId() || (existing && existing.sessionId) || '') : ((existing && existing.sessionId) || getBotSessionId() || '')),
-                deviceId: (extra.isLogin ? getBotDeviceId() : ((existing && existing.deviceId) || getBotDeviceId() || ''))
-            };
-            if (extra.isLogin) {
-                payload.lastLogin = new Date().toISOString();
-                payload.sessionActive = true;
-                payload.sessionId = getBotSessionId() || payload.sessionId;
-                payload.deviceId = getBotDeviceId();
-            }
-            await fetch(ADMIN_DB + 'botUsers/' + state.phone + '.json', {
-                method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
-            });
-        } catch (e) { console.error('Bot user sync error:', e); }
-    }
-
-    function switchPage(pageId) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
-        const navMap = { 'homePage': 'navHome', 'earnPage': 'navEarn', 'referPage': 'navRefer', 'walletPage': 'navWallet', 'profilePage': 'navProfile' };
-        if (navMap[pageId]) document.getElementById(navMap[pageId]).classList.add('active');
-    }
-
-    function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
-    function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
-
-
-    function getBotDeviceId() {
-        try {
-            let id = localStorage.getItem('smart_earn_device_id');
-            if (!id) {
-                id = 'dev_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 10);
-                localStorage.setItem('smart_earn_device_id', id);
-            }
-            return id;
-        } catch (e) {
-            return 'dev_tmp_' + Date.now();
         }
-    }
-
-    function getBotSessionId() {
-        try {
-            return localStorage.getItem('smart_earn_session_id') || '';
-        } catch (e) { return ''; }
-    }
-
-    function setBotSessionLocal(sessionId, phone) {
-        try {
-            if (sessionId) localStorage.setItem('smart_earn_session_id', sessionId);
-            else localStorage.removeItem('smart_earn_session_id');
-            if (phone) localStorage.setItem('smart_earn_phone', phone);
-        } catch (e) {}
-    }
-
-    async function clearServerSession(phone) {
-        if (!phone) return;
-        try {
-            await fetch(ADMIN_DB + 'botUsers/' + phone + '.json', {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    sessionActive: false,
-                    sessionId: '',
-                    deviceId: '',
-                    forceLogoutAt: new Date().toISOString()
-                })
-            });
-        } catch (e) { console.error('clear session', e); }
-    }
-
-    async function verifyLogin() {
-        let inputPhone = document.getElementById('mainAppPhone').value.trim();
-        if (!inputPhone) { alert("মোবাইল নম্বর লিখুন।"); return; }
-        if (!/^01[3-9]\d{8}$/.test(inputPhone)) { alert("সঠিক ১১ সংখ্যার নম্বর দিন (01XXXXXXXXX)।"); return; }
-        const loginBtn = document.getElementById('loginBtn');
-        loginBtn.disabled = true;
-        loginBtn.innerText = "⏳ লোডিং...";
-        try {
-            let res = await fetch(MAIN_DB + 'users/' + inputPhone + '.json');
-            let user = await res.json();
-            if (user && typeof user === 'object' && !user.error) {
-                // অ্যাডমিন ব্লক চেক
-                try {
-                    const br = await fetch(ADMIN_DB + 'botUsers/' + inputPhone + '/blocked.json?t=' + Date.now());
-                    const blocked = await br.json();
-                    if (blocked === true) {
-                        alert('আপনার অ্যাকাউন্ট অ্যাডমিন কর্তৃক ব্লক করা হয়েছে।');
-                        return;
-                    }
-                } catch (e) {}
-
-                // এক নম্বর = এক ডিভাইস সেশন
-                const deviceId = getBotDeviceId();
-                let botRow = null;
-                try {
-                    const br2 = await fetch(ADMIN_DB + 'botUsers/' + inputPhone + '.json?t=' + Date.now());
-                    botRow = await br2.json();
-                } catch (e) {}
-                if (botRow && typeof botRow === 'object' && botRow.sessionActive === true) {
-                    const serverDevice = String(botRow.deviceId || '');
-                    const serverSession = String(botRow.sessionId || '');
-                    const localSession = getBotSessionId();
-                    // অন্য ডিভাইসে সক্রিয় সেশন থাকলে লগইন নয়
-                    if (serverDevice && serverDevice !== deviceId) {
-                        alert('এই নম্বর অন্য ডিভাইসে লগইন আছে।\nনিজে লগআউট করুন অথবা অ্যাডমিন Force Logout দিন।');
-                        return;
-                    }
-                    // একই ডিভাইস কিন্তু সেশন মিলছে না (clear data) → সার্ভার সেশন থাকলে ব্লক
-                    if (serverDevice === deviceId && serverSession && localSession && serverSession !== localSession) {
-                        // rare: allow rebind same device
-                    } else if (serverDevice === deviceId && serverSession && !localSession) {
-                        alert('সেশন অ্যাকটিভ আছে কিন্তু অ্যাপ ডেটা মুছে গেছে।\nঅ্যাডমিন Force Logout দিয়ে আবার লগইন করুন।');
-                        return;
-                    }
-                }
-
-                const newSessionId = 'ses_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 9);
-                state.isLoggedIn = true; state.phone = inputPhone;
-                setBotSessionLocal(newSessionId, inputPhone);
-                state.points = Number(user.points) || 0;
-                state.todayPoints = Number(user.todayPoints) || 0;
-                state.wrongCount = 0; state.botTodayClick = 0; state.todayClickRight = 0; state.periodId = '';
-                loadLocalClicks();
-                closeLoginModal();
-                updateUI();
-                alert("সফলভাবে লগইন হয়েছে!");
-                switchPage('earnPage');
-                // সেশন ফিল্ড সহ সিঙ্ক
-                try {
-                    await fetch(ADMIN_DB + 'botUsers/' + inputPhone + '.json', {
-                        method: 'PATCH',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            sessionActive: true,
-                            sessionId: newSessionId,
-                            deviceId: deviceId,
-                            lastLogin: new Date().toISOString(),
-                            lastActive: new Date().toISOString()
-                        })
-                    });
-                } catch (e) {}
-                syncBotUserToAdmin({ isLogin: true, checkPeriod: true });
-            } else {
-                alert("⚠️ এই নম্বর মেইন অ্যাপে নিবন্ধিত নেই।");
-            }
-        } catch (e) {
-            console.error(e);
-            alert("কানেক্ট সমস্যা। Rules / ইন্টারনেট চেক করুন।");
-        } finally {
-            loginBtn.disabled = false;
-            loginBtn.innerText = "লগইন করুন";
+        // Only allow local total to increase when we just completed a real action
+        if (extra.incrementRight || extra.incrementWrong || extra.incrementWatchClick) {
+            const localTotal = Number(state.totalClick) || 0;
+            if (localTotal > totalClickVal) totalClickVal = localTotal;
         }
-    }
+        if (extra.incrementWatchClick) botTodayClick += 1;
+        if (extra.incrementWrong) {
+            wrongCount += 1;
+            totalWrongClick += 1;
+            lastWrongAt = new Date().toISOString();
+        }
+        if (extra.incrementRight) {
+            todayClickRight += 1;
+            totalRightClick += 1;
+            totalClickVal += 1; // successful work = total +1
+        }
+        if (extra.forceReset) {
+            wrongCount = 0; botTodayClick = 0; todayClickRight = 0;
+        }
+        state.wrongCount = wrongCount;
+        state.botTodayClick = botTodayClick;
+        state.todayClickRight = todayClickRight;
+        state.totalRightClick = totalRightClick;
+        state.totalWrongClick = totalWrongClick;
+        state.totalClick = totalClickVal;
+        try { saveLocalClicks(); } catch (e) {}
 
-    async function logoutAccount() {
-        const phone = state.phone;
-        // সার্ভার সেশন মুছে → অন্য/একই ডিভাইসে আবার লগইন করা যাবে
-        if (phone) await clearServerSession(phone);
-        state.isLoggedIn = false;
-        state.phone = '';
-        state.points = 0;
-        state.todayPoints = 0;
-        state.totalClick = 0;
-        state.todayClick = 0;
-        state.hourlyViews = 0;
-        state.wrongCount = 0;
-        state.botTodayClick = 0;
-        state.todayClickRight = 0;
-        state.periodId = '';
-        try {
-            localStorage.removeItem('smart_earn_phone');
-            localStorage.removeItem('smart_earn_session_id');
-        } catch (e) {}
+        const payload = {
+            phone: state.phone,
+            totalPoints: state.points,
+            todayPoints: state.todayPoints,
+            totalClick: state.totalClick,
+            totalAdsClick: state.totalClick,
+            totalRightClick: totalRightClick,
+            totalRight: totalRightClick,
+            totalWrongClick: totalWrongClick,
+            totalWrong: totalWrongClick,
+            todayClick: state.todayClick,
+            botTodayClick,
+            todayClickRight,
+            wrongCount,
+            lastWrongAt,
+            periodId,
+            todayDate: periodId,
+            lastActive: new Date().toISOString(),
+            lastLogin: (existing && existing.lastLogin) ? existing.lastLogin : new Date().toISOString(),
+            country: state.currentUserCountry || state.secCountryCode || (existing && existing.country) || '',
+            countryCode: state.secCountryCode || (existing && existing.countryCode) || '',
+            deviceTz: deviceTz() || (existing && existing.deviceTz) || '',
+            ipTimezone: state.secIpTimezone || (existing && existing.ipTimezone) || '',
+            blocked: (existing && existing.blocked === true) ? true : false,
+            blockReason: (existing && existing.blockReason) ? existing.blockReason : '',
+            sessionActive: (existing && existing.sessionActive === true) ? true : (extra.isLogin ? true : !!(existing && existing.sessionActive)),
+            sessionId: (extra.isLogin ? (getBotSessionId() || (existing && existing.sessionId) || '') : ((existing && existing.sessionId) || getBotSessionId() || '')),
+            deviceId: (extra.isLogin ? getBotDeviceId() : ((existing && existing.deviceId) || getBotDeviceId() || ''))
+        };
+        if (extra.isLogin) {
+            payload.lastLogin = new Date().toISOString();
+            payload.sessionActive = true;
+            payload.sessionId = getBotSessionId() || payload.sessionId;
+            payload.deviceId = getBotDeviceId();
+        }
+        await fetch(ADMIN_DB + 'botUsers/' + state.phone + '.json', {
+            method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+        });
         updateUI();
-        alert("লগআউট সফল।");
-    }
+    } catch (e) { console.error('Bot user sync error:', e); }
+}
 
-    function updateUI() {
-        const avatarEl = document.getElementById('headerAvatar');
-        const profileAvatarEl = document.getElementById('profileAvatar');
-        if (state.tgPhoto) {
-            avatarEl.innerHTML = `<img src="${state.tgPhoto}" alt="pic">`;
-            profileAvatarEl.innerHTML = `<img src="${state.tgPhoto}" alt="pic">`;
-        } else {
-            const initial = state.tgName ? state.tgName.charAt(0).toUpperCase() : 'U';
-            avatarEl.innerText = initial; profileAvatarEl.innerText = initial;
-        }
-        document.getElementById('headerName').innerText = state.tgName || 'User';
-        document.getElementById('profileName').innerText = state.tgName || 'User';
-        document.getElementById('headerSub').innerText = '🏅 0.00 Pts';
-        document.getElementById('homeBalance').innerText = '0.00';
-        document.getElementById('walletBalance').innerText = '0.00';
-        document.getElementById('profileBalance').innerText = '0.00';
-        document.getElementById('totalEarnings').innerText = '0.00';
-        document.getElementById('totalClick').innerText = state.totalClick;
-        document.getElementById('profileClicks').innerText = state.totalClick;
-        document.getElementById('todayViewsDisplay').innerText = state.todayClick + ' / ' + state.maxTodayViews;
-        document.getElementById('hourlyViewsDisplay').innerText = state.hourlyViews + ' / ' + state.maxHourlyViews;
-        if (state.isLoggedIn) {
-            document.getElementById('profilePhone').innerText = state.phone;
-            document.getElementById('verifiedBadge').style.display = 'inline-flex';
-            document.getElementById('headerLoginBtn').style.display = 'none';
-            document.getElementById('profileLoginBtn').style.display = 'none';
-            document.getElementById('logoutBtn').style.display = 'block';
-            document.getElementById('referCode').innerText = 'SMART' + state.phone.slice(-5);
-        } else {
-            document.getElementById('profilePhone').innerText = 'No Account Linked';
-            document.getElementById('verifiedBadge').style.display = 'none';
-            document.getElementById('headerLoginBtn').style.display = 'block';
-            document.getElementById('profileLoginBtn').style.display = 'block';
-            document.getElementById('logoutBtn').style.display = 'none';
-            document.getElementById('referCode').innerText = 'Refer Code';
-        }
-    }
-
-    function showDemoToast(msg) {
-        const toast = document.getElementById('demoToast');
-        toast.innerText = msg;
-        toast.style.display = 'block';
-        setTimeout(() => { toast.style.display = 'none'; }, 2500);
-    }
-
-    function copyReferCode() {
-        const code = document.getElementById('referCode').innerText;
-        navigator.clipboard.writeText(code).then(() => showDemoToast('রেফার কোড কপি হয়েছে: ' + code))
-            .catch(() => showDemoToast('রেফার কোড: ' + code));
-    }
-
-    async function hasRealInternet() {
-        // navigator.onLine VPN-এ ভুল false দিতে পারে — তাই আসল fetch দিয়ে চেক
-        try {
-            const controller = new AbortController();
-            const t = setTimeout(() => controller.abort(), 4000);
-            const r = await fetch('https://www.cloudflare.com/cdn-cgi/trace', {
-                method: 'GET', cache: 'no-store', mode: 'cors', signal: controller.signal
-            });
-            clearTimeout(t);
-            return r.ok || r.status === 204;
-        } catch (e) {
-            try {
-                const controller2 = new AbortController();
-                const t2 = setTimeout(() => controller2.abort(), 4000);
-                const r2 = await fetch('https://api.ipify.org?format=json', {
-                    method: 'GET', cache: 'no-store', mode: 'cors', signal: controller2.signal
-                });
-                clearTimeout(t2);
-                return r2.ok;
-            } catch (e2) {
-                return false;
+async function savePeriodHistory(periodId) {
+    if (!state.phone || !periodId) return;
+    try {
+        let res = await fetch(ADMIN_DB + 'botUsers/' + state.phone + '.json');
+        let existing = await res.json();
+        let botTodayClick = state.botTodayClick, todayClickRight = state.todayClickRight, wrongCount = state.wrongCount;
+        let totalClick = state.totalClick, totalPoints = state.points, todayPoints = state.todayPoints;
+        if (existing && typeof existing === 'object') {
+            if (existing.periodId === periodId || existing.todayDate === periodId) {
+                botTodayClick = Number(existing.botTodayClick ?? existing.todayClick) || botTodayClick;
+                todayClickRight = Number(existing.todayClickRight) || todayClickRight;
+                wrongCount = Number(existing.wrongCount) || wrongCount;
             }
+            totalClick = Number(existing.totalClick) || totalClick;
+            totalPoints = Number(existing.totalPoints) || totalPoints;
+            todayPoints = Number(existing.todayPoints) || todayPoints;
         }
+        await fetch(ADMIN_DB + 'botDailyHistory/' + periodId + '/' + state.phone + '.json', {
+            method: 'PUT', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                phone: state.phone, date: periodId,
+                todayClick: botTodayClick, todayClickRight, wrongCount,
+                totalClick, totalPoints, todayPoints,
+                totalRightClick: Number(state.totalRightClick) || 0,
+                totalWrongClick: Number(state.totalWrongClick) || 0,
+                savedAt: new Date().toISOString()
+            })
+        });
+    } catch (e) { console.error('History save error', e); }
+}
+
+/* ===================== LOGIN / LOGOUT ===================== */
+async function clearServerSession(phone) {
+    if (!phone) return;
+    try {
+        await fetch(ADMIN_DB + 'botUsers/' + phone + '.json', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                sessionActive: false,
+                sessionId: '',
+                deviceId: '',
+                forceLogoutAt: new Date().toISOString()
+            })
+        });
+    } catch (e) {}
+}
+
+async function verifyLogin() {
+    let inputPhone = document.getElementById('mainAppPhone').value.trim();
+    if (!inputPhone) { alert('মোবাইল নম্বর লিখুন।'); return; }
+    if (!/^01[3-9]\\d{8}$/.test(inputPhone)) { alert('সঠিক ১১ সংখ্যার নম্বর দিন (01XXXXXXXXX)।'); return; }
+    const loginBtn = document.getElementById('loginBtn');
+    loginBtn.disabled = true;
+    loginBtn.innerText = '⏳ লোডিং...';
+    try {
+        let res = await fetch(MAIN_DB + 'users/' + inputPhone + '.json?t=' + Date.now());
+        let user = await res.json();
+        if (user && typeof user === 'object' && !user.error) {
+            try {
+                const br = await fetch(ADMIN_DB + 'botUsers/' + inputPhone + '/blocked.json?t=' + Date.now());
+                const blocked = await br.json();
+                if (blocked === true) {
+                    alert('আপনার অ্যাকাউন্ট অ্যাডমিন কর্তৃক ব্লক করা হয়েছে।');
+                    return;
+                }
+            } catch (e) {}
+
+            const deviceId = getBotDeviceId();
+            let botRow = null;
+            try {
+                const br2 = await fetch(ADMIN_DB + 'botUsers/' + inputPhone + '.json?t=' + Date.now());
+                botRow = await br2.json();
+            } catch (e) {}
+            if (botRow && typeof botRow === 'object' && botRow.sessionActive === true) {
+                const serverDevice = String(botRow.deviceId || '');
+                if (serverDevice && serverDevice !== deviceId) {
+                    alert('এই নম্বর অন্য ডিভাইসে লগইন আছে।\\nনিজে লগআউট করুন অথবা অ্যাডমিন Force Logout দিন।');
+                    return;
+                }
+            }
+
+            const newSessionId = 'ses_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 9);
+            state.isLoggedIn = true;
+            state.phone = inputPhone;
+            setBotSessionLocal(newSessionId, inputPhone);
+            state.points = Number(user.points) || 0;
+            state.todayPoints = Number(user.todayPoints) || 0;
+            state.wrongCount = 0; state.botTodayClick = 0; state.todayClickRight = 0; state.periodId = '';
+            loadLocalClicks();
+            closeLoginModal();
+            updateUI();
+            alert('সফলভাবে লগইন হয়েছে!');
+            switchPage('earnPage');
+            try {
+                await fetch(ADMIN_DB + 'botUsers/' + inputPhone + '.json', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        sessionActive: true,
+                        sessionId: newSessionId,
+                        deviceId: deviceId,
+                        lastLogin: new Date().toISOString(),
+                        lastActive: new Date().toISOString()
+                    })
+                });
+            } catch (e) {}
+            await syncBotUserToAdmin({ isLogin: true, checkPeriod: true });
+            await fetchUserDataFromFirebase(inputPhone);
+        } else {
+            alert('⚠️ এই নম্বর মেইন অ্যাপে নিবন্ধিত নেই।');
+        }
+    } catch (e) {
+        console.error(e);
+        alert('কানেক্ট সমস্যা। ইন্টারনেট চেক করুন।');
+    } finally {
+        loginBtn.disabled = false;
+        loginBtn.innerText = 'লগইন করুন';
+    }
+}
+
+async function logoutAccount() {
+    const phone = state.phone;
+    if (phone) await clearServerSession(phone);
+    state.isLoggedIn = false;
+    state.phone = '';
+    state.points = 0;
+    state.todayPoints = 0;
+    state.totalClick = 0;
+    state.todayClick = 0;
+    state.hourlyViews = 0;
+    state.wrongCount = 0;
+    state.botTodayClick = 0;
+    state.todayClickRight = 0;
+    state.totalRightClick = 0;
+    state.totalWrongClick = 0;
+    state.periodId = '';
+    try {
+        localStorage.removeItem('smart_earn_phone');
+        localStorage.removeItem('smart_earn_session_id');
+    } catch (e) {}
+    updateUI();
+    alert('লগআউট সফল।');
+}
+
+async function loadSavedSession() {
+    let savedPhone = localStorage.getItem('smart_earn_phone');
+    if (savedPhone) {
+        try {
+            const r = await fetch(ADMIN_DB + 'botUsers/' + savedPhone + '.json?t=' + Date.now());
+            const row = await r.json();
+            const deviceId = getBotDeviceId();
+            const localSes = getBotSessionId();
+            if (row && typeof row === 'object') {
+                if (row.sessionActive === false || row.sessionActive === undefined) {
+                    try { localStorage.removeItem('smart_earn_phone'); localStorage.removeItem('smart_earn_session_id'); } catch (e) {}
+                    state.isLoggedIn = false; state.phone = ''; updateUI(); return;
+                }
+                if (row.deviceId && row.deviceId !== deviceId) {
+                    try { localStorage.removeItem('smart_earn_phone'); localStorage.removeItem('smart_earn_session_id'); } catch (e) {}
+                    state.isLoggedIn = false; state.phone = ''; updateUI();
+                    alert('এই নম্বর অন্য ডিভাইসে লগইন আছে।'); return;
+                }
+            }
+        } catch (e) {}
+        state.isLoggedIn = true;
+        state.phone = savedPhone;
+        loadLocalClicks();
+        await fetchUserDataFromFirebase(savedPhone);
+    }
+    updateUI();
+}
+
+async function fetchUserDataFromFirebase(phone) {
+    try {
+        try {
+            const br = await fetch(ADMIN_DB + 'botUsers/' + phone + '/blocked.json?t=' + Date.now());
+            const blocked = await br.json();
+            if (blocked === true) {
+                state.isLoggedIn = false;
+                localStorage.removeItem('smart_earn_phone');
+                showAppsStatusScreen('আপনার অ্যাকাউন্ট অ্যাডমিন কর্তৃক ব্লক করা হয়েছে।');
+                updateUI(); return;
+            }
+        } catch (e) {}
+
+        let res = await fetch(MAIN_DB + 'users/' + phone + '.json?t=' + Date.now());
+        let user = await res.json();
+        if (user && typeof user === 'object' && !user.error) {
+            state.points = Number(user.points) || 0;
+            state.todayPoints = Number(user.todayPoints) || 0;
+        }
+        await syncBotUserToAdmin({ checkPeriod: true });
+        try { saveLocalClicks(); } catch (e) {}
+    } catch (e) { console.error(e); }
+    updateUI();
+}
+
+/* ===================== AD PROCESS — POINTS ONLY AFTER FULL COMPLETE + SERVER WRITE ===================== */
+async function hasRealInternet() {
+    try {
+        const controller = new AbortController();
+        const t = setTimeout(() => controller.abort(), 4000);
+        const r = await fetch('https://www.cloudflare.com/cdn-cgi/trace', { method: 'GET', cache: 'no-store', mode: 'cors', signal: controller.signal });
+        clearTimeout(t);
+        return r.ok || r.status === 204;
+    } catch (e) {
+        try {
+            const controller2 = new AbortController();
+            const t2 = setTimeout(() => controller2.abort(), 4000);
+            const r2 = await fetch('https://api.ipify.org?format=json', { method: 'GET', cache: 'no-store', mode: 'cors', signal: controller2.signal });
+            clearTimeout(t2);
+            return r2.ok;
+        } catch (e2) { return false; }
+    }
+}
+
+async function startAdProcess() {
+    if (!state.isLoggedIn) { alert('আগে লগইন করুন!'); openLoginModal(); return; }
+    if (claimInProgress || isCheckingProcess) return;
+    if (state.todayClick >= state.maxTodayViews) { alert('আজকের লিমিট শেষ!'); return; }
+    if (state.hourlyViews >= state.maxHourlyViews) { alert('এই ঘণ্টার লিমিট শেষ!'); return; }
+    if (!state.monetagZoneId) { alert('Admin-এ Monetag Zone ID সেট নেই।'); return; }
+
+    let btn = document.getElementById('watchBtn');
+    btn.disabled = true; btn.innerText = '⏳ নেট চেক...';
+    const netOk = await hasRealInternet();
+    if (!netOk) {
+        btn.disabled = false; btn.innerText = '▶ বিজ্ঞাপন দেখুন';
+        alert('ইন্টারনেট নেই।');
+        return;
+    }
+    // Only count as "watch started" — not right yet
+    await syncBotUserToAdmin({ incrementWatchClick: true });
+    btn.disabled = true; btn.innerText = '⏳ Ads লোডিং...';
+    setTimeout(function () {
+        cancelValidationStay();
+        adStartTime = Date.now();
+        isWaitingForReturn = true;
+        const fnName = state.monetagSdkFunction || ('show_' + state.monetagZoneId);
+        if (typeof window[fnName] === 'function') {
+            window[fnName]().then(() => processValidationAndClaim()).catch(() => processValidationAndClaim());
+        } else {
+            processValidationAndClaim();
+        }
+        btn.innerText = '⏳ বিজ্ঞাপন দেখা হচ্ছে...';
+    }, 2500);
+}
+
+/* 
+  যাচাই লজিক:
+  - ইউজার ফিরে এলে অন্তত ৩ সেকেন্ড অ্যাপে থাকতে হবে
+  - ১–২ সেকেন্ড এসে আবার চলে গেলে → কিছুই ধরা হবে না (ভুলও না, সঠিকও না)
+  - ৩ সেকেন্ড+ থাকলে → ad elapsed vs admin taskTime চেক
+    - কম হলে Wrong (পয়েন্ট নেই)
+    - যথেষ্ট হলে Right (পয়েন্ট পাবে)
+*/
+function cancelValidationStay() {
+    if (validationStayTimer) {
+        clearTimeout(validationStayTimer);
+        validationStayTimer = null;
+    }
+    validationStayStartedAt = 0;
+    const btn = document.getElementById('watchBtn');
+    if (btn && isWaitingForReturn && !isCheckingProcess && !claimInProgress) {
+        btn.disabled = true;
+        btn.innerText = '⏳ বিজ্ঞাপন দেখা হচ্ছে...';
+    }
+}
+
+function startValidationStayCheck() {
+    // ইতিমধ্যে যাচাই চলছে বা অপেক্ষা নেই
+    if (!isWaitingForReturn || isCheckingProcess || claimInProgress) return;
+    // ইতিমধ্যে ৩ সেকেন্ড টাইমার চলছে
+    if (validationStayTimer) return;
+
+    validationStayStartedAt = Date.now();
+    const btn = document.getElementById('watchBtn');
+    if (btn) {
+        btn.disabled = true;
+        btn.innerText = '⏳ যাচাই (৩ সেকেন্ড)...';
     }
 
-    async function startAdProcess() {
-        if (!state.isLoggedIn) { alert("আগে লগইন করুন!"); openLoginModal(); return; }
-        if (state.todayClick >= state.maxTodayViews) { alert("আজকের লিমিট শেষ!"); return; }
-        if (state.hourlyViews >= state.maxHourlyViews) { alert("এই ঘণ্টার লিমিট শেষ!"); return; }
-        if (isCheckingProcess) return;
-        if (!state.monetagZoneId) { alert("Admin-এ Monetag Zone ID সেট নেই।"); return; }
-        let btn = document.getElementById('watchBtn');
-        btn.disabled = true; btn.innerText = "⏳ নেট চেক...";
-        const netOk = await hasRealInternet();
-        if (!netOk) {
-            btn.disabled = false; btn.innerText = "▶ বিজ্ঞাপন দেখুন";
-            alert("ইন্টারনেট নেই।");
+    validationStayTimer = setTimeout(function () {
+        validationStayTimer = null;
+        // এখনো কি দৃশ্যমান / ফোকাসে আছে?
+        const stillVisible = document.visibilityState === 'visible';
+        if (!stillVisible || !isWaitingForReturn || isCheckingProcess || claimInProgress) {
+            // মাঝপথে চলে গেছে → ভুল ধরব না
+            cancelValidationStay();
             return;
         }
-        syncBotUserToAdmin({ incrementWatchClick: true });
-        btn.disabled = true; btn.innerText = "⏳ Ads লোডিং...";
-        setTimeout(function () {
-            adStartTime = Date.now(); isWaitingForReturn = true;
-            const fnName = state.monetagSdkFunction || ('show_' + state.monetagZoneId);
-            if (typeof window[fnName] === 'function') {
-                window[fnName]().then(() => processValidationAndClaim()).catch(() => processValidationAndClaim());
-            } else { processValidationAndClaim(); }
-            btn.innerText = "⏳ বিজ্ঞাপন দেখা হচ্ছে...";
-        }, 3000);
+        // ৩ সেকেন্ড পূর্ণ → এখন টাইম চেক
+        finishValidationAfterStay();
+    }, 3000);
+}
+
+function finishValidationAfterStay() {
+    if (!isWaitingForReturn || isCheckingProcess || claimInProgress) return;
+    isWaitingForReturn = false;
+    isCheckingProcess = true;
+    const btn = document.getElementById('watchBtn');
+    if (btn) {
+        btn.disabled = true;
+        btn.innerText = '⏳ ফলাফল...';
     }
 
-    function processValidationAndClaim() {
-        if (!isWaitingForReturn || isCheckingProcess) return;
-        isWaitingForReturn = false; isCheckingProcess = true;
-        let btn = document.getElementById('watchBtn');
-        btn.disabled = true; btn.innerText = "⏳ যাচাই...";
-        setTimeout(async function () {
-            let timeElapsed = (Date.now() - adStartTime) / 1000;
-            btn.disabled = false; btn.innerText = "▶ বিজ্ঞাপন দেখুন"; isCheckingProcess = false;
-            // শুধু টাইম চেক — navigator.onLine ব্যবহার করব না (VPN false positive)
-            if (timeElapsed < state.taskTime) showErrorModal();
-            else showModal();
-        }, 3000);
+    const timeElapsed = (Date.now() - adStartTime) / 1000;
+    const need = Number(state.taskTime) || 5;
+
+    // ছোট ডিলে UI আপডেটের জন্য
+    setTimeout(function () {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerText = '▶ বিজ্ঞাপন দেখুন';
+        }
+        isCheckingProcess = false;
+
+        if (timeElapsed < need) {
+            // অ্যাডমিন টাইমের আগে ফিরে এসেছে → Wrong, পয়েন্ট নেই
+            showErrorModal();
+        } else {
+            // টাইম পূরণ → Right path (পয়েন্ট সার্ভার সেভের পর)
+            showModal();
+        }
+    }, 400);
+}
+
+function processValidationAndClaim() {
+    // পুরনো নাম রাখা — ভিতরে নতুন ৩ সেকেন্ড stay লজিক
+    startValidationStayCheck();
+}
+
+document.addEventListener('visibilitychange', function () {
+    if (!isWaitingForReturn) return;
+    if (document.visibilityState === 'visible') {
+        // ফিরে এসেছে → ৩ সেকেন্ড থাকার চেক শুরু
+        startValidationStayCheck();
+    } else {
+        // আবার চলে গেছে (১–২ সেকেন্ডে) → টাইমার বাতিল, ভুল ধরব না
+        cancelValidationStay();
     }
-
-    document.addEventListener('visibilitychange', function () {
-        if (document.visibilityState === 'visible' && isWaitingForReturn) processValidationAndClaim();
-    });
-    window.addEventListener('focus', function () {
-        if (isWaitingForReturn) processValidationAndClaim();
-    });
-
-    function openYouTubeTask() {
-        if (!state.youtubeUrl) { alert("কোনো ভিডিও নেই।"); return; }
-        window.open(state.youtubeUrl, '_blank');
+});
+window.addEventListener('focus', function () {
+    if (isWaitingForReturn && document.visibilityState === 'visible') {
+        startValidationStayCheck();
     }
-    function openYouTubeTaskFromError() { closeErrorModal(); openYouTubeTask(); }
-
-    function closeModalAndApplyPoint() {
-        closeModal();
-        state.totalClick++;
-        state.todayClick++;
-        state.hourlyViews++;
-        saveLocalClicks();
-        state.points = (Number(state.points) || 0) + state.adminPointRate;
-        state.todayPoints = (Number(state.todayPoints) || 0) + state.adminPointRate;
-        updateUI();
-        syncDataToFirebase();
-        // ১০০ ক্লিক Ads ID রিসেট চেক
-        incrementAdsClickAndCheck();
+});
+window.addEventListener('blur', function () {
+    if (isWaitingForReturn) {
+        cancelValidationStay();
     }
+});
 
-    async function writeField(phone, field, value) {
+/* ===================== POINTS: ONLY AFTER SERVER SUCCESS ===================== */
+async function writeField(phone, field, value) {
+    try {
         const res = await fetch(MAIN_DB + 'users/' + phone + '/' + field + '.json', {
             method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(value)
         });
         return res.ok;
+    } catch (e) { return false; }
+}
+
+async function syncDataToFirebaseStrict() {
+    if (!state.phone) return false;
+    if (await checkIfUserBlocked()) return false;
+
+    const rate = Number(state.adminPointRate) || 0;
+    if (rate <= 0) { alert('পয়েন্ট রেট সেট নেই।'); return false; }
+
+    // Always read fresh from server
+    let res = await fetch(MAIN_DB + 'users/' + state.phone + '.json?t=' + Date.now());
+    let user = await res.json();
+    if (!user || typeof user !== 'object' || user.error) {
+        alert('ইউজার লোড ব্যর্থ।');
+        return false;
     }
 
-    async function syncDataToFirebase() {
-        if (!state.phone) return;
-        try {
-            if (await checkIfUserBlocked()) return;
-
-            let res = await fetch(MAIN_DB + 'users/' + state.phone + '.json');
-            let user = await res.json();
-            if (!user || typeof user !== 'object' || user.error) { alert('ইউজার লোড ব্যর্থ।'); return; }
-
-            let rate = Number(state.adminPointRate) || 0;
-            if (rate <= 0) { alert('পয়েন্ট রেট সেট নেই।'); return; }
-
-            const serverPts = Number(user.points) || 0;
-            const localPts = Number(state.points) || 0;
-            if (localPts > serverPts + rate + 0.01) {
-                await autoBlockUser('hack_points');
-                return;
-            }
-
-            const periodId = getPeriodId();
-            const userDay = String(user.todayDate ?? user.today_date ?? '').trim();
-            const isNewDay = !userDay || userDay !== periodId;
-            const baseTodayPoints = isNewDay ? 0 : (Number(user.todayPoints ?? user.today_points ?? 0) || 0);
-            const baseTodayClicks = isNewDay ? 0 : (Number(user.todayClicks ?? user.today_click ?? 0) || 0);
-
-            let newPoints = serverPts + rate;
-            let newTodayPoints = baseTodayPoints + rate;
-            let newBalance = (Number(user.balance) || 0) + rate;
-            let newTotalClicks = (Number(user.totalClicks ?? user.total_click ?? 0) || 0) + 1;
-            let newTodayClicks = baseTodayClicks + 1;
-
-            // 1) পয়েন্ট/ক্লিক/তারিখ — MAIN_DB (Rules: points/todayClicks/todayPoints/todayDate পাবলিক)
-            const results = await Promise.all([
-                writeField(state.phone, 'points', newPoints),
-                writeField(state.phone, 'todayPoints', newTodayPoints),
-                writeField(state.phone, 'balance', newBalance),
-                writeField(state.phone, 'totalClicks', newTotalClicks),
-                writeField(state.phone, 'todayClicks', newTodayClicks),
-                writeField(state.phone, 'total_click', newTotalClicks),
-                writeField(state.phone, 'today_click', newTodayClicks),
-                writeField(state.phone, 'todayDate', periodId),
-                writeField(state.phone, 'today_date', periodId)
-            ]);
-
-            // পয়েন্ট + todayClicks + todayPoints আবশ্যিক; todayDate ফেল হলেও চলবে
-            if (!(results[0] && results[1] && results[4])) {
-                alert('কিছু ফিল্ড আপডেট হয়নি। ইন্টারনেট/Rules চেক করুন।');
-                return;
-            }
-
-            state.points = newPoints;
-            state.todayPoints = newTodayPoints;
-            updateUI();
-            await syncBotUserToAdmin({ incrementRight: true });
-
-            // 2) কাজের History — কাজের ঠিক সেই মুহূর্তে ADMIN_DB (botUsers পাথ = আগে থেকেই লেখা যায়)
-            const nowMs = Date.now();
-            const histId = 'ph_' + nowMs + '_' + String(rate).replace('.', '') + '_' + Math.random().toString(36).slice(2, 7);
-            const histEntry = {
-                id: histId,
-                title: 'Reward for Claim From Task',
-                points: rate,
-                amount: rate,
-                from: 'Task',
-                source: 'Task',
-                note: 'Watch Ads',
-                phone: state.phone,
-                date: new Date(nowMs).toISOString(),
-                time: new Date(nowMs).toLocaleString('en-GB'),
-                createdAt: new Date(nowMs).toISOString()
-            };
-            // প্রধান: botUsers/{phone}/workHistory/{id} — কাজের সময়ই সেভ
-            try {
-                await fetch(ADMIN_DB + 'botUsers/' + state.phone + '/workHistory/' + histId + '.json', {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(histEntry)
-                });
-            } catch (he) {
-                console.error('botUsers workHistory write error', he);
-            }
-            // ব্যাকআপ পাথ
-            try {
-                await fetch(ADMIN_DB + 'workHistory/' + state.phone + '/' + histId + '.json', {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(histEntry)
-                });
-            } catch (e2) {}
-            // MAIN_DB (Rules allow করলে); ফেল হলে পয়েন্ট নষ্ট হবে না
-            try {
-                await fetch(MAIN_DB + 'users/' + state.phone + '/pointHistory/' + histId + '.json', {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(histEntry)
-                });
-            } catch (e3) {}
-        } catch (e) { console.error('Sync error:', e); alert('সিঙ্ক সমস্যা।'); }
+    const serverPts = Number(user.points) || 0;
+    // Anti-hack: local must not be much higher than server
+    if ((Number(state.points) || 0) > serverPts + rate + 0.05) {
+        await autoBlockUser('hack_points');
+        return false;
     }
 
-    function showModal() { document.getElementById('customModal').style.display = 'flex'; }
-    function closeModal() { document.getElementById('customModal').style.display = 'none'; }
-    function showErrorModal() { document.getElementById('errorModal').style.display = 'flex'; }
-    function closeErrorModal() {
-        document.getElementById('errorModal').style.display = 'none';
-        if (state.isLoggedIn && state.phone) syncBotUserToAdmin({ incrementWrong: true });
+    const periodId = getPeriodId();
+    const userDay = String(user.todayDate ?? user.today_date ?? '').trim();
+    const isNewDay = !userDay || userDay !== periodId;
+    const baseTodayPoints = isNewDay ? 0 : (Number(user.todayPoints ?? user.today_points ?? 0) || 0);
+    const baseTodayClicks = isNewDay ? 0 : (Number(user.todayClicks ?? user.today_click ?? 0) || 0);
+
+    const newPoints = serverPts + rate;
+    const newTodayPoints = baseTodayPoints + rate;
+    const newBalance = (Number(user.balance) || 0) + rate;
+    const newTotalClicks = (Number(user.totalClicks ?? user.total_click ?? 0) || 0) + 1;
+    const newTodayClicks = baseTodayClicks + 1;
+
+    const results = await Promise.all([
+        writeField(state.phone, 'points', newPoints),
+        writeField(state.phone, 'todayPoints', newTodayPoints),
+        writeField(state.phone, 'balance', newBalance),
+        writeField(state.phone, 'totalClicks', newTotalClicks),
+        writeField(state.phone, 'todayClicks', newTodayClicks),
+        writeField(state.phone, 'total_click', newTotalClicks),
+        writeField(state.phone, 'today_click', newTodayClicks),
+        writeField(state.phone, 'todayDate', periodId),
+        writeField(state.phone, 'today_date', periodId)
+    ]);
+
+    // Must have points + todayPoints + todayClicks success
+    if (!(results[0] && results[1] && results[4])) {
+        return false;
     }
 
+    // ONLY NOW update local points
+    state.points = newPoints;
+    state.todayPoints = newTodayPoints;
 
-    // Block copy / cut / context menu (except input/textarea)
-    document.addEventListener('copy', function(e) {
-        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-            e.preventDefault();
-        }
-    });
-    document.addEventListener('cut', function(e) {
-        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-            e.preventDefault();
-        }
-    });
-    document.addEventListener('contextmenu', function(e) {
-        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-            e.preventDefault();
-        }
-    });
-
-    // Telegram script may need a moment
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function() {
-            loadTelegramUser();
-            setTimeout(loadTelegramUser, 400);
+    // History write (best effort)
+    const nowMs = Date.now();
+    const histId = 'ph_' + nowMs + '_' + String(rate).replace('.', '') + '_' + Math.random().toString(36).slice(2, 7);
+    const histEntry = {
+        id: histId,
+        title: 'Reward for Claim From Task',
+        points: rate,
+        amount: rate,
+        from: 'Task',
+        source: 'Task',
+        note: 'Watch Ads',
+        phone: state.phone,
+        date: new Date(nowMs).toISOString(),
+        time: new Date(nowMs).toLocaleString('en-GB'),
+        createdAt: new Date(nowMs).toISOString()
+    };
+    try {
+        await fetch(ADMIN_DB + 'botUsers/' + state.phone + '/workHistory/' + histId + '.json', {
+            method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(histEntry)
         });
-    } else {
+    } catch (he) {}
+    try {
+        await fetch(MAIN_DB + 'users/' + state.phone + '/pointHistory/' + histId + '.json', {
+            method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(histEntry)
+        });
+    } catch (e3) {}
+
+    return true;
+}
+
+async function closeModalAndApplyPoint() {
+    closeModal();
+    if (!state.isLoggedIn || !state.phone) return;
+    if (claimInProgress) return;
+    claimInProgress = true;
+
+    const btn = document.getElementById('watchBtn');
+    if (btn) { btn.disabled = true; btn.innerText = '⏳ পয়েন্ট সেভ হচ্ছে...'; }
+
+    try {
+        // 1) Server write FIRST — only if success we give points & count as Right
+        const ok = await syncDataToFirebaseStrict();
+        if (!ok) {
+            alert('পয়েন্ট সেভ হয়নি। আবার চেষ্টা করুন। (নেট/Rules চেক করুন)');
+            return;
+        }
+        // 2) Success → count as Right + update local counters
+        state.totalClick = (Number(state.totalClick) || 0) + 1;
+        state.todayClick = (Number(state.todayClick) || 0) + 1;
+        state.hourlyViews = (Number(state.hourlyViews) || 0) + 1;
+        saveLocalClicks();
+        await syncBotUserToAdmin({ incrementRight: true });
+        updateUI();
+        incrementAdsClickAndCheck();
+        showDemoToast('✅ +' + (Number(state.adminPointRate) || 0).toFixed(2) + ' Pts যোগ হয়েছে');
+    } catch (e) {
+        console.error(e);
+        alert('নেটওয়ার্ক সমস্যা। পয়েন্ট সেভ হয়নি।');
+    } finally {
+        claimInProgress = false;
+        if (btn) { btn.disabled = false; btn.innerText = '▶ বিজ্ঞাপন দেখুন'; }
+    }
+}
+
+/* ===================== SCHEDULE / LIMITS ===================== */
+async function checkFivePMSchedule() {
+    if (!state.isLoggedIn || !state.phone) return;
+    const now = new Date();
+    const h = now.getHours();
+    const m = now.getMinutes();
+    const periodId = getPeriodId();
+    if (h === 23 && m === 59) {
+        const saveKey = periodId + '_saved';
+        if (lastAutoSaveKey !== saveKey) {
+            lastAutoSaveKey = saveKey;
+            await savePeriodHistory(periodId);
+        }
+    }
+    if (h === 0 && m === 0) {
+        const resetKey = periodId + '_reset';
+        if (lastAutoSaveKey !== resetKey) {
+            const d = new Date(now);
+            d.setDate(d.getDate() - 1);
+            const oldPeriod = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+            await savePeriodHistory(oldPeriod);
+            state.wrongCount = 0; state.botTodayClick = 0; state.todayClickRight = 0;
+            state.periodId = getPeriodId();
+            lastAutoSaveKey = resetKey;
+            await syncBotUserToAdmin({ forceReset: true });
+        }
+    }
+    if (state.periodId && state.periodId !== periodId) {
+        await savePeriodHistory(state.periodId);
+        state.wrongCount = 0; state.botTodayClick = 0; state.todayClickRight = 0;
+        state.periodId = periodId;
+        await syncBotUserToAdmin({ forceReset: true });
+    }
+}
+
+function checkAndResetLimits() {
+    const hour = new Date().getHours();
+    try {
+        const raw = localStorage.getItem('smart_earn_clicks');
+        if (raw) {
+            const o = JSON.parse(raw);
+            if (o.hourKey !== hour) {
+                state.hourlyViews = 0;
+                saveLocalClicks();
+            }
+        }
+    } catch (e) {}
+    const today = getPeriodId();
+    if (state.periodId && state.periodId !== today) {
+        state.todayClick = 0;
+        state.hourlyViews = 0;
+        state.periodId = today;
+        saveLocalClicks();
+    }
+}
+
+/* ===================== INIT ===================== */
+async function initAppSecurity() {
+    try {
+        loadTelegramUser();
+        loadLocalClicks();
+        loadAdsSessionClicks();
+
+        // STRONG third-party block first
+        if (state.thirdPartyBlock !== false && isThirdPartyTelegram()) {
+            showThirdPartyScreen();
+            return;
+        }
+        hideThirdPartyScreen();
+
+        await detectUserCountry();
+
+        let res = await fetch(ADMIN_DB + 'adminSettings.json?t=' + Date.now());
+        let settings = await res.json();
+        if (!settings) {
+            showAppsStatusScreen('এডমিন সেটিংস পাওয়া যায়নি।');
+            return;
+        }
+
+        state.timezoneCheck = settings.timezoneCheck !== false;
+        state.thirdPartyBlock = settings.thirdPartyBlock !== false;
+        state.adsLimitEnabled = settings.adsLimitEnabled !== false;
+        if (settings.adsClickLimit) {
+            state.adsClickLimit = parseInt(settings.adsClickLimit) || 100;
+            ADS_CLICK_LIMIT = state.adsClickLimit;
+        }
+        if (settings.minWebAppVersion != null) {
+            state.minWebAppVersion = parseFloat(settings.minWebAppVersion) || 7.0;
+        }
+
+        // Re-check third-party with admin setting
+        if (state.thirdPartyBlock && isThirdPartyTelegram()) {
+            showThirdPartyScreen();
+            return;
+        }
+        hideThirdPartyScreen();
+
+        // সেটিংস লোড (বট অফ হলেও রেট/জোন রাখি, লাইভ আপডেটের জন্য)
+        if (settings.maxTodayViews) state.maxTodayViews = settings.maxTodayViews;
+        if (settings.maxHourlyViews) state.maxHourlyViews = settings.maxHourlyViews;
+        if (settings.adminPointRate != null) state.adminPointRate = parseFloat(settings.adminPointRate);
+        if (settings.youtubeUrl) state.youtubeUrl = settings.youtubeUrl;
+        if (settings.taskTime) state.taskTime = parseInt(settings.taskTime);
+        if (settings.monetagZoneId) state.monetagZoneId = String(settings.monetagZoneId);
+        if (settings.monetagSdkFunction) state.monetagSdkFunction = String(settings.monetagSdkFunction);
+        else if (state.monetagZoneId) state.monetagSdkFunction = 'show_' + state.monetagZoneId;
+        if (state.monetagZoneId) loadMonetagSdk(state.monetagZoneId, state.monetagSdkFunction);
+
+        let allowedList = settings.allowedCountries || [];
+        state.allowedCountries = allowedList;
+
+        // রিয়েল-টাইম পোল — বট অন/অফ দ্রুত দেখানোর জন্য (৩ সেকেন্ড)
+        setInterval(checkAdminSettingsLive, 3000);
+        setInterval(checkFivePMSchedule, 20000);
+        setInterval(checkAndResetLimits, 15000);
+
+        // বট অফ থাকলে: শুধু অফ নোটিশ, দেশ চেক নয়
+        if (settings.botStatus === false || settings.botStatus === 'off') {
+            const notice = settings.botOffNotice || settings.offNotice || settings.notice || 'বর্তমানে কাজের সিস্টেম বন্ধ রাখা হয়েছে।';
+            showAppsStatusScreen(notice);
+            state.periodId = getPeriodId();
+            return;
+        }
+
+        // বট অন — এখন দেশ চেক
+        if (!allowedList.includes('ALL') && allowedList.length > 0) {
+            if (state.currentUserCountry && !allowedList.includes(state.currentUserCountry)) {
+                showCountryStatusScreen(allowedList, state.currentUserCountry);
+                state.periodId = getPeriodId();
+                return;
+            }
+        } else if (!allowedList || allowedList.length === 0) {
+            showCountryStatusScreen([], state.currentUserCountry || 'Unknown');
+            state.periodId = getPeriodId();
+            return;
+        }
+
+        try {
+            if (localStorage.getItem('smart_earn_ads_blocked') === '1') {
+                showAdsResetScreen();
+                return;
+            }
+        } catch (e) {}
+
+        await runSecurityCheck();
+
+        state.periodId = getPeriodId();
+        await loadSavedSession();
+    } catch (e) {
+        loadLocalClicks();
+        loadAdsSessionClicks();
+        loadSavedSession();
+        if (!isThirdPartyBlocked) runSecurityCheck();
+    }
+}
+
+// Block copy / cut / context menu
+document.addEventListener('copy', function(e) {
+    if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault();
+});
+document.addEventListener('cut', function(e) {
+    if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault();
+});
+document.addEventListener('contextmenu', function(e) {
+    if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault();
+});
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
         loadTelegramUser();
         setTimeout(loadTelegramUser, 400);
-    }
+        initAppSecurity();
+    });
+} else {
+    loadTelegramUser();
+    setTimeout(loadTelegramUser, 400);
     initAppSecurity();
+}
 </script>
 </body>
 </html>
