@@ -6,562 +6,7 @@
     <title>Smart Earn Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        :root {
-            --bg: #0b1120;
-            --card: rgba(30, 41, 59, 0.75);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --text: #f1f5f9;
-            --text-muted: #94a3b8;
-            --primary: #818cf8;
-            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            --danger: #f43f5e;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --nav-bg: rgba(11, 17, 32, 0.96);
-            --safe-bottom: env(safe-area-inset-bottom, 0px);
-            --safe-top: env(safe-area-inset-top, 0px);
-        }
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
-        html, body { width: 100%; max-width: 100%; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
-        body {
-            background: var(--bg); color: var(--text); min-height: 100vh; min-height: 100dvh;
-            display: flex; justify-content: center;
-            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-            background-image: radial-gradient(ellipse at top, rgba(99, 102, 241, 0.15), transparent 55%), radial-gradient(ellipse at bottom right, rgba(168, 85, 247, 0.1), transparent 50%);
-        }
-        .app-container { width: 100%; max-width: 480px; min-height: 100vh; min-height: 100dvh; position: relative; padding-bottom: calc(72px + var(--safe-bottom)); overflow-x: hidden; }
-
-        .apps-status-screen {
-            position: fixed; inset: 0; background: #0b1120; z-index: 9999;
-            display: none; flex-direction: column; align-items: center; justify-content: center;
-            padding: 24px; padding-bottom: calc(24px + var(--safe-bottom)); text-align: center;
-        }
-        .apps-status-screen .status-icon { font-size: 56px; margin-bottom: 16px; }
-        .apps-status-screen .status-title { font-size: 20px; font-weight: 800; margin-bottom: 16px; color: #f1f5f9; }
-        .apps-status-screen .status-notice {
-            font-size: 16px; color: #94a3b8; line-height: 1.6;
-            background: rgba(30,41,59,0.7); border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 16px; padding: 18px 16px; max-width: 360px; width: 100%;
-        }
-
-        .country-status-screen {
-            position: fixed; inset: 0; background: #0b1120; z-index: 9999;
-            display: none; flex-direction: column; align-items: center;
-            padding: 20px 16px; padding-top: max(20px, var(--safe-top));
-            padding-bottom: calc(20px + var(--safe-bottom)); overflow-y: auto; -webkit-overflow-scrolling: touch;
-        }
-        .country-status-screen .country-header { text-align: center; margin-bottom: 18px; width: 100%; }
-        .country-status-screen .country-icon { font-size: 42px; margin-bottom: 8px; }
-        .country-status-screen .country-title { font-size: 16px; font-weight: 800; color: #f1f5f9; line-height: 1.45; max-width: 340px; margin: 0 auto; }
-        .country-list-box {
-            background: rgba(30,41,59,0.75); border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 16px; padding: 14px; width: 100%; max-width: 360px; margin-bottom: 16px;
-        }
-        .country-item { font-size: 14px; padding: 8px 6px; border-bottom: 1px solid rgba(255,255,255,0.06); color: #e2e8f0; display: flex; align-items: center; gap: 8px; }
-        .country-item:last-child { border-bottom: none; }
-        .country-user-box {
-            background: rgba(244, 63, 94, 0.12); border: 1px solid rgba(244, 63, 94, 0.3);
-            border-radius: 14px; padding: 14px; width: 100%; max-width: 360px; text-align: center;
-        }
-        .country-user-box p { font-size: 14px; color: #f1f5f9; line-height: 1.5; margin-bottom: 6px; }
-        .country-user-box .not-allowed { font-size: 13px; color: #f43f5e; font-weight: 700; }
-
-        /* ========== Security Check Screen (Country + TimeZone + Location) ========== */
-        .security-check-screen {
-            position: fixed; inset: 0; background: #0b1120; z-index: 10000;
-            display: none; flex-direction: column; align-items: center;
-            padding: 16px 14px; padding-top: max(16px, var(--safe-top));
-            padding-bottom: calc(16px + var(--safe-bottom)); overflow-y: auto; -webkit-overflow-scrolling: touch;
-        }
-        .security-check-screen.show { display: flex; }
-        .sec-header { text-align: center; margin-bottom: 14px; width: 100%; max-width: 400px; }
-        .sec-header .sec-icon { font-size: 36px; margin-bottom: 6px; }
-        .sec-header .sec-title { font-size: 18px; font-weight: 800; color: #f1f5f9; }
-        .sec-header .sec-sub { font-size: 12px; color: #94a3b8; margin-top: 4px; line-height: 1.4; }
-        .sec-main {
-            background: rgba(30,41,59,0.75); border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 16px; padding: 14px; width: 100%; max-width: 400px; margin-bottom: 12px;
-        }
-        .sec-country { text-align: center; margin-bottom: 12px; }
-        .sec-country-name { font-size: 20px; font-weight: 800; color: #f1f5f9; }
-        .sec-ip { font-size: 13px; color: #818cf8; font-weight: 600; margin-top: 4px; }
-        .sec-times { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-        .sec-time-box {
-            background: rgba(15,23,42,0.6); border-radius: 12px; padding: 10px 8px; text-align: center;
-        }
-        .sec-time-label { font-size: 9px; color: #94a3b8; font-weight: 700; letter-spacing: 0.5px; }
-        .sec-time-clock { font-size: 18px; font-weight: 800; margin-top: 3px; color: #f1f5f9; }
-        .sec-time-tz { font-size: 10px; color: #94a3b8; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .sec-card {
-            width: 100%; border-radius: 12px; padding: 12px 10px; border: 1px solid; text-align: center;
-            margin-bottom: 8px; cursor: default;
-        }
-        .sec-card.green { background: rgba(16,185,129,0.12); border-color: #10b981; color: #6ee7b7; }
-        .sec-card.red { background: rgba(244,63,94,0.12); border-color: #f43f5e; color: #fda4af; }
-        .sec-card-title { font-size: 14px; font-weight: 800; }
-        .sec-card-sub { font-size: 11px; margin-top: 3px; opacity: 0.9; }
-        .sec-hint {
-            font-size: 11px; color: #94a3b8; text-align: center; line-height: 1.45;
-            margin-top: 8px; max-width: 400px;
-        }
-        .sec-refresh-btn {
-            margin-top: 14px; background: var(--primary-gradient); color: white; border: none;
-            padding: 12px 20px; font-size: 14px; font-weight: 700; border-radius: 12px;
-            cursor: pointer; width: 100%; max-width: 280px; box-shadow: 0 6px 20px rgba(99,102,241,0.35);
-        }
-        .sec-refresh-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-
-        .header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 12px; padding-top: max(10px, var(--safe-top));
-            background: rgba(15, 23, 42, 0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--card-border); position: sticky; top: 0; z-index: 100; gap: 8px;
-        }
-        .profile-info { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
-        .avatar {
-            width: 40px; height: 40px; flex-shrink: 0; border-radius: 12px; background: var(--primary-gradient);
-            display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4); overflow: hidden;
-        }
-        .avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .user-text { min-width: 0; overflow: hidden; }
-        .user-text h4 { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .user-text span { font-size: 11px; color: var(--text-muted); margin-top: 1px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .header-btn {
-            flex-shrink: 0; background: var(--primary-gradient); color: white; border: none;
-            padding: 7px 12px; font-size: 12px; font-weight: 600; border-radius: 10px; cursor: pointer;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
-        }
-
-        .content { padding: 12px 12px 16px; width: 100%; overflow-x: hidden; }
-        .page { display: none; animation: fadeUp 0.28s ease; }
-        .page.active { display: block; }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
-        .card {
-            background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; padding: 14px; margin-bottom: 12px;
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 6px 24px rgba(0,0,0,0.2); width: 100%; overflow: hidden;
-        }
-        .balance-card {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(168, 85, 247, 0.18));
-            border: 1px solid rgba(129, 140, 248, 0.3); border-radius: 18px; padding: 16px 14px; margin-bottom: 12px;
-            position: relative; overflow: hidden; width: 100%;
-        }
-        .balance-card::before {
-            content: ''; position: absolute; top: -30px; right: -30px; width: 100px; height: 100px;
-            background: radial-gradient(circle, rgba(255,255,255,0.08), transparent 70%); border-radius: 50%;
-        }
-        .balance-label { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
-        .balance-amount { font-size: clamp(26px, 8vw, 32px); font-weight: 800; letter-spacing: -0.5px; margin-bottom: 12px; word-break: break-all; }
-        .balance-actions { display: flex; gap: 8px; }
-        .balance-btn {
-            flex: 1; min-width: 0; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.15);
-            color: white; padding: 10px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 4px;
-        }
-        .balance-btn.primary { background: var(--primary-gradient); border: none; box-shadow: 0 4px 14px rgba(99,102,241,0.35); }
-
-        .quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; width: 100%; }
-        .quick-item {
-            background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; padding: 14px 10px;
-            text-align: center; cursor: pointer; min-width: 0; overflow: hidden;
-        }
-        .quick-item:active { transform: scale(0.97); }
-        .quick-icon { font-size: 24px; margin-bottom: 6px; }
-        .quick-item h4 { font-size: 12px; font-weight: 700; margin-bottom: 2px; }
-        .quick-item p { font-size: 10px; color: var(--text-muted); line-height: 1.3; }
-
-        .section-title { font-size: 13px; font-weight: 700; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-        .section-title span { font-size: 11px; color: var(--primary); font-weight: 600; flex-shrink: 0; }
-
-        .activity-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .activity-item:last-child { border-bottom: none; }
-        .activity-icon { width: 36px; height: 36px; flex-shrink: 0; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; background: rgba(99,102,241,0.15); }
-        .activity-info { flex: 1; min-width: 0; }
-        .activity-info h4 { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .activity-info p { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-        .activity-amount { font-size: 13px; font-weight: 700; color: var(--success); flex-shrink: 0; }
-
-        .btn-primary {
-            background: var(--primary-gradient); color: white; border: none; padding: 13px 12px; font-size: 14px; font-weight: 700;
-            border-radius: 12px; cursor: pointer; width: 100%; box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
-        }
-        .btn-primary:active { transform: scale(0.97); }
-        .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
-        .btn-youtube { background: linear-gradient(135deg, #ef4444, #b91c1c); box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3); margin-top: 10px; }
-        .btn-danger { background: linear-gradient(135deg, #f43f5e, #e11d48); box-shadow: 0 6px 18px rgba(244, 63, 94, 0.28); }
-
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; width: 100%; }
-        .stat-item { background: rgba(15, 23, 42, 0.55); border: 1px solid var(--card-border); border-radius: 12px; padding: 12px 10px; min-width: 0; overflow: hidden; }
-        .stat-item span { font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 4px; }
-        .stat-item h3 { font-size: clamp(15px, 4.5vw, 18px); font-weight: 800; word-break: break-all; }
-
-        .live-badge {
-            background: rgba(16, 185, 129, 0.15); color: var(--success); font-size: 10px; font-weight: 700;
-            padding: 3px 8px; border-radius: 20px; display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0;
-        }
-        .live-badge::before { content: ''; width: 6px; height: 6px; background: var(--success); border-radius: 50%; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-        .notice {
-            font-size: 11px; color: var(--warning); text-align: center; margin-top: 10px; line-height: 1.5;
-            background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2); padding: 10px; border-radius: 10px;
-        }
-
-        .refer-hero {
-            background: linear-gradient(145deg, rgba(16, 185, 129, 0.18), rgba(6, 182, 212, 0.12));
-            border: 1px solid rgba(16, 185, 129, 0.28); border-radius: 18px; padding: 20px 14px; text-align: center; margin-bottom: 12px; width: 100%; overflow: hidden;
-        }
-        .refer-hero h2 { font-size: clamp(18px, 5.5vw, 22px); font-weight: 800; margin-bottom: 6px; }
-        .refer-hero p { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.5; }
-        .refer-reward {
-            display: inline-flex; align-items: center; gap: 6px; background: rgba(16,185,129,0.15); color: var(--success);
-            padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-bottom: 14px;
-        }
-        .refer-code-box {
-            background: rgba(15, 23, 42, 0.6); border: 1px dashed rgba(255,255,255,0.18); border-radius: 12px; padding: 12px 10px;
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px; width: 100%;
-        }
-        .refer-code-box span { font-size: clamp(13px, 4vw, 16px); font-weight: 800; letter-spacing: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
-        .copy-btn { flex-shrink: 0; background: rgba(255,255,255,0.12); border: none; color: white; padding: 7px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; }
-
-        .refer-steps { display: flex; flex-direction: column; gap: 12px; }
-        .refer-step { display: flex; gap: 10px; align-items: flex-start; }
-        .step-num { width: 26px; height: 26px; flex-shrink: 0; border-radius: 50%; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
-        .step-text { min-width: 0; }
-        .step-text h4 { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
-        .step-text p { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
-
-        .wallet-balance {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.22), rgba(168, 85, 247, 0.15));
-            border: 1px solid rgba(129, 140, 248, 0.28); border-radius: 18px; padding: 18px 14px; text-align: center; margin-bottom: 12px; width: 100%; overflow: hidden;
-        }
-        .wallet-balance span { font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px; }
-        .wallet-balance h2 { font-size: clamp(28px, 9vw, 36px); font-weight: 800; letter-spacing: -0.5px; margin-bottom: 14px; word-break: break-all; }
-        .wallet-btns { display: flex; gap: 8px; }
-        .wallet-btns button { flex: 1; min-width: 0; padding: 11px 8px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; border: none; }
-        .wallet-btns .withdraw { background: var(--primary-gradient); color: white; box-shadow: 0 4px 14px rgba(99,102,241,0.35); }
-        .wallet-btns .history { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.12); }
-
-        .method-item { display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
-        .method-item:last-child { border-bottom: none; }
-        .method-icon { width: 40px; height: 40px; flex-shrink: 0; border-radius: 11px; background: rgba(15,23,42,0.6); display: flex; align-items: center; justify-content: center; font-size: 18px; }
-        .method-info { flex: 1; min-width: 0; }
-        .method-info h4 { font-size: 13px; font-weight: 700; }
-        .method-info p { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-        .method-arrow { color: var(--text-muted); font-size: 18px; flex-shrink: 0; }
-
-        .profile-header { text-align: center; padding: 8px 0 4px; }
-        .profile-avatar {
-            width: clamp(72px, 22vw, 90px); height: clamp(72px, 22vw, 90px); border-radius: 22px; margin: 0 auto 10px;
-            background: var(--primary-gradient); display: flex; align-items: center; justify-content: center;
-            font-size: clamp(24px, 8vw, 32px); font-weight: 800; box-shadow: 0 8px 24px rgba(99,102,241,0.4); overflow: hidden;
-        }
-        .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .profile-name { font-size: clamp(17px, 5vw, 20px); font-weight: 800; margin-bottom: 4px; word-break: break-word; }
-        .profile-phone { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
-        .verified-badge {
-            display: inline-flex; align-items: center; gap: 5px; background: rgba(16,185,129,0.12); color: var(--success);
-            padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; margin-bottom: 14px;
-        }
-        .profile-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 14px; width: 100%; }
-        .p-stat { background: rgba(15, 23, 42, 0.5); border-radius: 12px; padding: 10px 6px; text-align: center; min-width: 0; overflow: hidden; }
-        .p-stat span { font-size: 9px; color: var(--text-muted); display: block; margin-bottom: 3px; }
-        .p-stat h4 { font-size: clamp(13px, 3.8vw, 15px); font-weight: 800; word-break: break-all; }
-
-        .menu-item { display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
-        .menu-item:last-child { border-bottom: none; }
-        .menu-icon { width: 36px; height: 36px; flex-shrink: 0; border-radius: 10px; background: rgba(99,102,241,0.12); display: flex; align-items: center; justify-content: center; font-size: 16px; }
-        .menu-text { flex: 1; font-size: 13px; font-weight: 600; min-width: 0; }
-        .menu-arrow { color: var(--text-muted); flex-shrink: 0; }
-
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.72); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            display: none; justify-content: center; align-items: center; z-index: 1000; padding: 16px; padding-bottom: calc(16px + var(--safe-bottom));
-        }
-        .modal-card {
-            background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 20px; padding: 22px 16px; width: 100%; max-width: 340px; text-align: center;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5); overflow: hidden;
-        }
-        .modal-icon { width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
-        .modal-icon.success { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 2px solid rgba(16, 185, 129, 0.4); }
-        .modal-icon.error { background: rgba(244, 63, 94, 0.15); color: var(--danger); border: 2px solid rgba(244, 63, 94, 0.4); }
-        .modal-card h3 { font-size: 16px; font-weight: 800; margin-bottom: 8px; }
-        .modal-card p { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-bottom: 16px; }
-
-        input[type="tel"] {
-            width: 100%; padding: 12px 14px; background: #0f172a; border: 1px solid var(--card-border);
-            border-radius: 12px; color: white; font-size: 16px; outline: none; text-align: center; margin: 12px 0;
-        }
-        input[type="tel"]:focus { border-color: var(--primary); }
-
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px;
-            background: var(--nav-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-            display: flex; justify-content: space-around; align-items: center; padding: 6px 0 calc(8px + var(--safe-bottom));
-            border-top: 1px solid var(--card-border); z-index: 100;
-        }
-        .nav-item {
-            background: none; border: none; color: var(--text-muted); font-size: 9px; font-weight: 600; cursor: pointer;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; flex: 1; min-width: 0; max-width: 72px; padding: 4px 2px;
-        }
-        .nav-item svg { width: 20px; height: 20px; fill: currentColor; flex-shrink: 0; }
-        .nav-item.active { color: var(--primary); }
-
-        #demoToast {
-            position: fixed; bottom: calc(90px + var(--safe-bottom)); left: 50%; transform: translateX(-50%);
-            background: #1e293b; color: white; padding: 10px 16px; border-radius: 12px; font-size: 12px; font-weight: 600;
-            display: none; z-index: 2000; box-shadow: 0 10px 30px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);
-            max-width: min(90%, 360px); text-align: center; width: max-content;
-        }
-
-        @media (max-width: 360px) {
-            .header { padding: 8px 10px; padding-top: max(8px, var(--safe-top)); }
-            .content { padding: 10px 10px 14px; }
-            .card { padding: 12px; border-radius: 14px; }
-            .balance-card { padding: 14px 12px; }
-            .balance-btn { font-size: 11px; padding: 9px 6px; }
-            .quick-item { padding: 12px 8px; }
-            .quick-icon { font-size: 22px; }
-            .quick-item h4 { font-size: 11px; }
-            .quick-item p { font-size: 9px; }
-            .stat-item { padding: 10px 8px; }
-            .nav-item { font-size: 8px; }
-            .nav-item svg { width: 18px; height: 18px; }
-            .btn-primary { padding: 12px 10px; font-size: 13px; }
-        }
-        @media (max-width: 320px) {
-            .header { padding: 8px 8px; gap: 6px; }
-            .avatar { width: 36px; height: 36px; font-size: 13px; }
-            .content { padding: 8px 8px 12px; }
-            .card { padding: 10px; margin-bottom: 10px; }
-            .balance-amount { font-size: 24px; }
-            .btn-primary { padding: 11px 8px; font-size: 12px; border-radius: 10px; }
-            .nav-item { font-size: 8px; max-width: 60px; }
-            .nav-item svg { width: 17px; height: 17px; }
-        }
-
-        .retry-btn {
-            margin-top: 20px; background: var(--primary-gradient); color: white; border: none;
-            padding: 14px 24px; font-size: 15px; font-weight: 700; border-radius: 14px;
-            cursor: pointer; box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35); width: 100%; max-width: 280px;
-        }
-        .retry-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-
-        
-        /* Prevent copy / selection */
-        body, .app-container, .apps-status-screen, .country-status-screen {
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-            -webkit-touch-callout: none;
-        }
-        input, textarea {
-            -webkit-user-select: text;
-            -moz-user-select: text;
-            -ms-user-select: text;
-            user-select: text;
-        }
-
-        img, svg, video, iframe { max-width: 100%; height: auto; }
-        button, input, select, textarea { max-width: 100%; }
-
-        /* =========================================================
-           EXTRA RESPONSIVE LAYER — সব Android ফোন
-           (মূল স্টাইল অপরিবর্তিত)
-           ========================================================= */
-        .app-container {
-            width: 100%;
-            max-width: min(480px, 100vw);
-            padding-bottom: calc(68px + var(--safe-bottom));
-        }
-        .content {
-            padding: clamp(8px, 2.8vw, 16px) clamp(8px, 2.8vw, 14px) clamp(12px, 3vw, 18px);
-        }
-        .header {
-            padding: clamp(8px, 2.5vw, 12px) clamp(8px, 2.8vw, 14px);
-            padding-top: max(clamp(8px, 2.5vw, 12px), var(--safe-top));
-            gap: clamp(6px, 2vw, 10px);
-        }
-        .avatar {
-            width: clamp(34px, 10vw, 42px);
-            height: clamp(34px, 10vw, 42px);
-            font-size: clamp(12px, 3.5vw, 15px);
-        }
-        .user-text h4 { font-size: clamp(12px, 3.5vw, 14px); }
-        .user-text span { font-size: clamp(10px, 2.9vw, 12px); }
-        .header-btn {
-            padding: clamp(6px, 2vw, 9px) clamp(10px, 3vw, 14px);
-            font-size: clamp(11px, 3.2vw, 13px);
-        }
-        .card {
-            padding: clamp(10px, 3vw, 16px);
-            margin-bottom: clamp(8px, 2.5vw, 14px);
-            border-radius: clamp(12px, 3.5vw, 16px);
-        }
-        .balance-card {
-            padding: clamp(12px, 3.5vw, 18px) clamp(10px, 3vw, 16px);
-        }
-        .balance-label { font-size: clamp(11px, 3.2vw, 13px); }
-        .balance-btn {
-            font-size: clamp(11px, 3.2vw, 13px);
-            padding: clamp(8px, 2.5vw, 12px) clamp(6px, 2vw, 10px);
-        }
-        .quick-grid { gap: clamp(6px, 2vw, 10px); }
-        .quick-item { padding: clamp(10px, 3vw, 16px) clamp(6px, 2vw, 12px); }
-        .quick-icon { font-size: clamp(20px, 6vw, 26px); }
-        .quick-item h4 { font-size: clamp(11px, 3.2vw, 13px); }
-        .quick-item p { font-size: clamp(9px, 2.6vw, 11px); }
-        .section-title { font-size: clamp(12px, 3.5vw, 14px); }
-        .btn-primary {
-            padding: clamp(11px, 3.2vw, 15px) clamp(10px, 3vw, 14px);
-            font-size: clamp(13px, 3.8vw, 15px);
-        }
-        .stat-grid { gap: clamp(6px, 2vw, 10px); }
-        .stat-item { padding: clamp(8px, 2.5vw, 14px) clamp(6px, 2vw, 12px); }
-        .stat-item span { font-size: clamp(9px, 2.6vw, 11px); }
-
-        /* Security / Country / Status screens */
-        .apps-status-screen {
-            padding: clamp(16px, 4vw, 28px);
-            padding-bottom: calc(clamp(16px, 4vw, 28px) + var(--safe-bottom));
-        }
-        .apps-status-screen .status-icon { font-size: clamp(42px, 12vw, 60px); }
-        .apps-status-screen .status-title { font-size: clamp(16px, 5vw, 22px); }
-        .apps-status-screen .status-notice {
-            font-size: clamp(13px, 3.8vw, 16px);
-            padding: clamp(12px, 3.5vw, 20px);
-            max-width: min(360px, 94vw);
-        }
-        .country-status-screen {
-            padding: clamp(12px, 3.5vw, 20px) clamp(10px, 3vw, 16px);
-            padding-top: max(clamp(12px, 3.5vw, 20px), var(--safe-top));
-        }
-        .country-status-screen .country-icon { font-size: clamp(32px, 10vw, 46px); }
-        .country-status-screen .country-title { font-size: clamp(14px, 4.2vw, 17px); max-width: min(340px, 92vw); }
-        .country-list-box, .country-user-box {
-            max-width: min(360px, 94vw);
-            padding: clamp(10px, 3vw, 16px);
-        }
-        .country-item { font-size: clamp(12px, 3.5vw, 15px); }
-        .country-user-box p { font-size: clamp(12px, 3.5vw, 15px); }
-        .country-user-box .not-allowed { font-size: clamp(12px, 3.4vw, 14px); }
-
-        .security-check-screen {
-            padding: clamp(10px, 3vw, 18px) clamp(8px, 2.8vw, 16px);
-            padding-top: max(clamp(10px, 3vw, 18px), var(--safe-top));
-        }
-        .sec-header { max-width: min(400px, 96vw); }
-        .sec-header .sec-icon { font-size: clamp(28px, 9vw, 40px); }
-        .sec-header .sec-title { font-size: clamp(15px, 4.8vw, 20px); }
-        .sec-header .sec-sub { font-size: clamp(11px, 3.2vw, 13px); }
-        .sec-main {
-            max-width: min(400px, 96vw);
-            padding: clamp(10px, 3vw, 16px);
-        }
-        .sec-country-name { font-size: clamp(16px, 5vw, 22px); }
-        .sec-ip { font-size: clamp(11px, 3.4vw, 14px); word-break: break-all; }
-        .sec-times { gap: clamp(6px, 2vw, 10px); }
-        .sec-time-box { padding: clamp(8px, 2.5vw, 12px) clamp(4px, 1.5vw, 10px); min-width: 0; }
-        .sec-time-label { font-size: clamp(8px, 2.4vw, 10px); }
-        .sec-time-clock { font-size: clamp(14px, 4.5vw, 20px); }
-        .sec-time-tz { font-size: clamp(9px, 2.6vw, 11px); }
-        .sec-card { padding: clamp(10px, 2.8vw, 14px) clamp(8px, 2.2vw, 12px); }
-        .sec-card-title { font-size: clamp(12px, 3.6vw, 15px); }
-        .sec-card-sub { font-size: clamp(10px, 2.9vw, 12px); }
-        .sec-hint { font-size: clamp(10px, 2.9vw, 12px); max-width: min(400px, 94vw); }
-        .sec-refresh-btn {
-            padding: clamp(10px, 3vw, 14px) clamp(14px, 4vw, 22px);
-            font-size: clamp(13px, 3.8vw, 15px);
-            max-width: min(280px, 90vw);
-        }
-
-        /* Profile */
-        .profile-stats { gap: clamp(4px, 1.5vw, 8px); }
-        .p-stat { padding: clamp(8px, 2.5vw, 12px) clamp(4px, 1.5vw, 8px); }
-        .p-stat span { font-size: clamp(8px, 2.4vw, 10px); }
-        .menu-text { font-size: clamp(12px, 3.5vw, 14px); }
-        .menu-icon { width: clamp(32px, 9vw, 38px); height: clamp(32px, 9vw, 38px); font-size: clamp(14px, 4vw, 17px); }
-
-        /* Modal */
-        .modal-overlay { padding: clamp(12px, 3.5vw, 20px); }
-        .modal-card {
-            max-width: min(340px, 94vw);
-            padding: clamp(16px, 4.5vw, 24px) clamp(12px, 3.5vw, 18px);
-        }
-        .modal-card h3 { font-size: clamp(14px, 4.2vw, 17px); }
-        .modal-card p { font-size: clamp(11px, 3.2vw, 13px); }
-        .modal-icon { width: clamp(48px, 14vw, 60px); height: clamp(48px, 14vw, 60px); font-size: clamp(20px, 6vw, 26px); }
-
-        /* Bottom nav */
-        .bottom-nav {
-            max-width: min(480px, 100vw);
-            padding: 6px 0 calc(6px + var(--safe-bottom));
-        }
-        .nav-item {
-            font-size: clamp(8px, 2.4vw, 10px);
-            max-width: clamp(56px, 18vw, 76px);
-        }
-        .nav-item svg {
-            width: clamp(17px, 5vw, 22px);
-            height: clamp(17px, 5vw, 22px);
-        }
-
-        /* Refer / Wallet */
-        .refer-hero { padding: clamp(14px, 4vw, 22px) clamp(10px, 3vw, 16px); }
-        .refer-hero p { font-size: clamp(11px, 3.2vw, 13px); }
-        .wallet-balance { padding: clamp(14px, 4vw, 20px) clamp(10px, 3vw, 16px); }
-        .wallet-btns button {
-            padding: clamp(9px, 2.8vw, 13px) clamp(6px, 2vw, 10px);
-            font-size: clamp(11px, 3.4vw, 14px);
-        }
-        .method-info h4 { font-size: clamp(12px, 3.5vw, 14px); }
-        .method-info p { font-size: clamp(10px, 2.9vw, 12px); }
-
-        .retry-btn {
-            padding: clamp(12px, 3.5vw, 16px) clamp(16px, 4.5vw, 26px);
-            font-size: clamp(13px, 4vw, 16px);
-            max-width: min(280px, 90vw);
-        }
-
-        /* Extra-small phones */
-        @media (max-width: 360px) {
-            .app-container { padding-bottom: calc(64px + var(--safe-bottom)); }
-            .profile-stats { grid-template-columns: 1fr 1fr 1fr; gap: 4px; }
-            .sec-times { gap: 5px; }
-            .sec-time-clock { font-size: 15px; }
-            .balance-actions { gap: 6px; }
-            .quick-grid { gap: 6px; }
-        }
-        @media (max-width: 320px) {
-            .app-container { padding-bottom: calc(60px + var(--safe-bottom)); }
-            .profile-stats { gap: 3px; }
-            .p-stat { padding: 8px 3px; }
-            .sec-country-name { font-size: 16px; }
-            .sec-card-title { font-size: 12px; }
-            .header-btn { padding: 6px 8px; font-size: 11px; }
-            .nav-item { max-width: 54px; }
-        }
-        @media (min-width: 400px) {
-            .content { padding: 14px 14px 18px; }
-            .quick-grid { gap: 10px; }
-        }
-        @media (min-width: 480px) {
-            .app-container { max-width: 480px; }
-        }
-
-        /* Overflow safety */
-        html, body, .app-container, .content, .page {
-            max-width: 100vw;
-            overflow-x: hidden;
-        }
-
-    </style>
+    <style>:root{--bg:#0b1120;--card:rgba(30,41,59,0.75);--card-border:rgba(255,255,255,0.08);--text:#f1f5f9;--text-muted:#94a3b8;--primary:#818cf8;--primary-gradient:linear-gradient(135deg,#6366f1 0%,#a855f7 100%);--danger:#f43f5e;--success:#10b981;--warning:#f59e0b;--nav-bg:rgba(11,17,32,0.96);--safe-bottom:env(safe-area-inset-bottom,0px);--safe-top:env(safe-area-inset-top,0px)}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{-webkit-text-size-adjust:100%;text-size-adjust:100%}html,body{width:100%;max-width:100%;overflow-x:hidden;-webkit-overflow-scrolling:touch}body{background:var(--bg);color:var(--text);min-height:100vh;min-height:100dvh;display:flex;justify-content:center;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,sans-serif;-webkit-tap-highlight-color:transparent;background-image:radial-gradient(ellipse at top,rgba(99,102,241,0.15),transparent 55%),radial-gradient(ellipse at bottom right,rgba(168,85,247,0.1),transparent 50%)}.app-container{width:100%;max-width:480px;min-height:100vh;min-height:100dvh;position:relative;padding-bottom:calc(72px+var(--safe-bottom));overflow-x:hidden}.apps-status-screen{position:fixed;inset:0;background:#0b1120;z-index:9999;display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;padding-bottom:calc(24px+var(--safe-bottom));text-align:center}.apps-status-screen .status-icon{font-size:56px;margin-bottom:16px}.apps-status-screen .status-title{font-size:20px;font-weight:800;margin-bottom:16px;color:#f1f5f9}.apps-status-screen .status-notice{font-size:16px;color:#94a3b8;line-height:1.6;background:rgba(30,41,59,0.7);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:18px 16px;max-width:360px;width:100%}.country-status-screen{position:fixed;inset:0;background:#0b1120;z-index:9999;display:none;flex-direction:column;align-items:center;padding:20px 16px;padding-top:max(20px,var(--safe-top));padding-bottom:calc(20px+var(--safe-bottom));overflow-y:auto;-webkit-overflow-scrolling:touch}.country-status-screen .country-header{text-align:center;margin-bottom:18px;width:100%}.country-status-screen .country-icon{font-size:42px;margin-bottom:8px}.country-status-screen .country-title{font-size:16px;font-weight:800;color:#f1f5f9;line-height:1.45;max-width:340px;margin:0 auto}.country-list-box{background:rgba(30,41,59,0.75);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:14px;width:100%;max-width:360px;margin-bottom:16px}.country-item{font-size:14px;padding:8px 6px;border-bottom:1px solid rgba(255,255,255,0.06);color:#e2e8f0;display:flex;align-items:center;gap:8px}.country-item:last-child{border-bottom:none}.country-user-box{background:rgba(244,63,94,0.12);border:1px solid rgba(244,63,94,0.3);border-radius:14px;padding:14px;width:100%;max-width:360px;text-align:center}.country-user-box p{font-size:14px;color:#f1f5f9;line-height:1.5;margin-bottom:6px}.country-user-box .not-allowed{font-size:13px;color:#f43f5e;font-weight:700}.security-check-screen{position:fixed;inset:0;background:#0b1120;z-index:10000;display:none;flex-direction:column;align-items:center;padding:16px 14px;padding-top:max(16px,var(--safe-top));padding-bottom:calc(16px+var(--safe-bottom));overflow-y:auto;-webkit-overflow-scrolling:touch}.security-check-screen.show{display:flex}.sec-header{text-align:center;margin-bottom:14px;width:100%;max-width:400px}.sec-header .sec-icon{font-size:36px;margin-bottom:6px}.sec-header .sec-title{font-size:18px;font-weight:800;color:#f1f5f9}.sec-header .sec-sub{font-size:12px;color:#94a3b8;margin-top:4px;line-height:1.4}.sec-main{background:rgba(30,41,59,0.75);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:14px;width:100%;max-width:400px;margin-bottom:12px}.sec-country{text-align:center;margin-bottom:12px}.sec-country-name{font-size:20px;font-weight:800;color:#f1f5f9}.sec-ip{font-size:13px;color:#818cf8;font-weight:600;margin-top:4px}.sec-times{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}.sec-time-box{background:rgba(15,23,42,0.6);border-radius:12px;padding:10px 8px;text-align:center}.sec-time-label{font-size:9px;color:#94a3b8;font-weight:700;letter-spacing:0.5px}.sec-time-clock{font-size:18px;font-weight:800;margin-top:3px;color:#f1f5f9}.sec-time-tz{font-size:10px;color:#94a3b8;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sec-card{width:100%;border-radius:12px;padding:12px 10px;border:1px solid;text-align:center;margin-bottom:8px;cursor:default}.sec-card.green{background:rgba(16,185,129,0.12);border-color:#10b981;color:#6ee7b7}.sec-card.red{background:rgba(244,63,94,0.12);border-color:#f43f5e;color:#fda4af}.sec-card-title{font-size:14px;font-weight:800}.sec-card-sub{font-size:11px;margin-top:3px;opacity:0.9}.sec-hint{font-size:11px;color:#94a3b8;text-align:center;line-height:1.45;margin-top:8px;max-width:400px}.sec-refresh-btn{margin-top:14px;background:var(--primary-gradient);color:white;border:none;padding:12px 20px;font-size:14px;font-weight:700;border-radius:12px;cursor:pointer;width:100%;max-width:280px;box-shadow:0 6px 20px rgba(99,102,241,0.35)}.sec-refresh-btn:disabled{opacity:0.6;cursor:not-allowed}.header{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;padding-top:max(10px,var(--safe-top));background:rgba(15,23,42,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--card-border);position:sticky;top:0;z-index:100;gap:8px}.profile-info{display:flex;align-items:center;gap:10px;min-width:0;flex:1}.avatar{width:40px;height:40px;flex-shrink:0;border-radius:12px;background:var(--primary-gradient);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;box-shadow:0 4px 12px rgba(99,102,241,0.4);overflow:hidden}.avatar img{width:100%;height:100%;object-fit:cover}.user-text{min-width:0;overflow:hidden}.user-text h4{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.user-text span{font-size:11px;color:var(--text-muted);margin-top:1px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.header-btn{flex-shrink:0;background:var(--primary-gradient);color:white;border:none;padding:7px 12px;font-size:12px;font-weight:600;border-radius:10px;cursor:pointer;box-shadow:0 4px 12px rgba(99,102,241,0.35)}.content{padding:12px 12px 16px;width:100%;overflow-x:hidden}.page{display:none;animation:fadeUp 0.28s ease}.page.active{display:block}@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}.card{background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:14px;margin-bottom:12px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 6px 24px rgba(0,0,0,0.2);width:100%;overflow:hidden}.balance-card{background:linear-gradient(135deg,rgba(99,102,241,0.25),rgba(168,85,247,0.18));border:1px solid rgba(129,140,248,0.3);border-radius:18px;padding:16px 14px;margin-bottom:12px;position:relative;overflow:hidden;width:100%}.balance-card::before{content:'';position:absolute;top:-30px;right:-30px;width:100px;height:100px;background:radial-gradient(circle,rgba(255,255,255,0.08),transparent 70%);border-radius:50%}.balance-label{font-size:12px;color:var(--text-muted);margin-bottom:4px}.balance-amount{font-size:clamp(26px,8vw,32px);font-weight:800;letter-spacing:-0.5px;margin-bottom:12px;word-break:break-all}.balance-actions{display:flex;gap:8px}.balance-btn{flex:1;min-width:0;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.15);color:white;padding:10px 8px;border-radius:12px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px}.balance-btn.primary{background:var(--primary-gradient);border:none;box-shadow:0 4px 14px rgba(99,102,241,0.35)}.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;width:100%}.quick-item{background:var(--card);border:1px solid var(--card-border);border-radius:14px;padding:14px 10px;text-align:center;cursor:pointer;min-width:0;overflow:hidden}.quick-item:active{transform:scale(0.97)}.quick-icon{font-size:24px;margin-bottom:6px}.quick-item h4{font-size:12px;font-weight:700;margin-bottom:2px}.quick-item p{font-size:10px;color:var(--text-muted);line-height:1.3}.section-title{font-size:13px;font-weight:700;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:8px}.section-title span{font-size:11px;color:var(--primary);font-weight:600;flex-shrink:0}.activity-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05)}.activity-item:last-child{border-bottom:none}.activity-icon{width:36px;height:36px;flex-shrink:0;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;background:rgba(99,102,241,0.15)}.activity-info{flex:1;min-width:0}.activity-info h4{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.activity-info p{font-size:11px;color:var(--text-muted);margin-top:2px}.activity-amount{font-size:13px;font-weight:700;color:var(--success);flex-shrink:0}.btn-primary{background:var(--primary-gradient);color:white;border:none;padding:13px 12px;font-size:14px;font-weight:700;border-radius:12px;cursor:pointer;width:100%;box-shadow:0 6px 20px rgba(99,102,241,0.35)}.btn-primary:active{transform:scale(0.97)}.btn-primary:disabled{opacity:0.55;cursor:not-allowed}.btn-youtube{background:linear-gradient(135deg,#ef4444,#b91c1c);box-shadow:0 6px 20px rgba(239,68,68,0.3);margin-top:10px}.btn-danger{background:linear-gradient(135deg,#f43f5e,#e11d48);box-shadow:0 6px 18px rgba(244,63,94,0.28)}.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;width:100%}.stat-item{background:rgba(15,23,42,0.55);border:1px solid var(--card-border);border-radius:12px;padding:12px 10px;min-width:0;overflow:hidden}.stat-item span{font-size:10px;color:var(--text-muted);display:block;margin-bottom:4px}.stat-item h3{font-size:clamp(15px,4.5vw,18px);font-weight:800;word-break:break-all}.live-badge{background:rgba(16,185,129,0.15);color:var(--success);font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;display:inline-flex;align-items:center;gap:4px;flex-shrink:0}.live-badge::before{content:'';width:6px;height:6px;background:var(--success);border-radius:50%;animation:pulse 1.5s infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}.notice{font-size:11px;color:var(--warning);text-align:center;margin-top:10px;line-height:1.5;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);padding:10px;border-radius:10px}.refer-hero{background:linear-gradient(145deg,rgba(16,185,129,0.18),rgba(6,182,212,0.12));border:1px solid rgba(16,185,129,0.28);border-radius:18px;padding:20px 14px;text-align:center;margin-bottom:12px;width:100%;overflow:hidden}.refer-hero h2{font-size:clamp(18px,5.5vw,22px);font-weight:800;margin-bottom:6px}.refer-hero p{font-size:12px;color:var(--text-muted);margin-bottom:14px;line-height:1.5}.refer-reward{display:inline-flex;align-items:center;gap:6px;background:rgba(16,185,129,0.15);color:var(--success);padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;margin-bottom:14px}.refer-code-box{background:rgba(15,23,42,0.6);border:1px dashed rgba(255,255,255,0.18);border-radius:12px;padding:12px 10px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:8px;width:100%}.refer-code-box span{font-size:clamp(13px,4vw,16px);font-weight:800;letter-spacing:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}.copy-btn{flex-shrink:0;background:rgba(255,255,255,0.12);border:none;color:white;padding:7px 12px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer}.refer-steps{display:flex;flex-direction:column;gap:12px}.refer-step{display:flex;gap:10px;align-items:flex-start}.step-num{width:26px;height:26px;flex-shrink:0;border-radius:50%;background:var(--primary-gradient);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}.step-text{min-width:0}.step-text h4{font-size:13px;font-weight:700;margin-bottom:2px}.step-text p{font-size:11px;color:var(--text-muted);line-height:1.4}.wallet-balance{background:linear-gradient(135deg,rgba(99,102,241,0.22),rgba(168,85,247,0.15));border:1px solid rgba(129,140,248,0.28);border-radius:18px;padding:18px 14px;text-align:center;margin-bottom:12px;width:100%;overflow:hidden}.wallet-balance span{font-size:12px;color:var(--text-muted);display:block;margin-bottom:4px}.wallet-balance h2{font-size:clamp(28px,9vw,36px);font-weight:800;letter-spacing:-0.5px;margin-bottom:14px;word-break:break-all}.wallet-btns{display:flex;gap:8px}.wallet-btns button{flex:1;min-width:0;padding:11px 8px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;border:none}.wallet-btns .withdraw{background:var(--primary-gradient);color:white;box-shadow:0 4px 14px rgba(99,102,241,0.35)}.wallet-btns .history{background:rgba(255,255,255,0.1);color:white;border:1px solid rgba(255,255,255,0.12)}.method-item{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer}.method-item:last-child{border-bottom:none}.method-icon{width:40px;height:40px;flex-shrink:0;border-radius:11px;background:rgba(15,23,42,0.6);display:flex;align-items:center;justify-content:center;font-size:18px}.method-info{flex:1;min-width:0}.method-info h4{font-size:13px;font-weight:700}.method-info p{font-size:11px;color:var(--text-muted);margin-top:2px}.method-arrow{color:var(--text-muted);font-size:18px;flex-shrink:0}.profile-header{text-align:center;padding:8px 0 4px}.profile-avatar{width:clamp(72px,22vw,90px);height:clamp(72px,22vw,90px);border-radius:22px;margin:0 auto 10px;background:var(--primary-gradient);display:flex;align-items:center;justify-content:center;font-size:clamp(24px,8vw,32px);font-weight:800;box-shadow:0 8px 24px rgba(99,102,241,0.4);overflow:hidden}.profile-avatar img{width:100%;height:100%;object-fit:cover}.profile-name{font-size:clamp(17px,5vw,20px);font-weight:800;margin-bottom:4px;word-break:break-word}.profile-phone{font-size:12px;color:var(--text-muted);margin-bottom:6px}.verified-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(16,185,129,0.12);color:var(--success);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;margin-bottom:14px}.profile-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:14px;width:100%}.p-stat{background:rgba(15,23,42,0.5);border-radius:12px;padding:10px 6px;text-align:center;min-width:0;overflow:hidden}.p-stat span{font-size:9px;color:var(--text-muted);display:block;margin-bottom:3px}.p-stat h4{font-size:clamp(13px,3.8vw,15px);font-weight:800;word-break:break-all}.menu-item{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer}.menu-item:last-child{border-bottom:none}.menu-icon{width:36px;height:36px;flex-shrink:0;border-radius:10px;background:rgba(99,102,241,0.12);display:flex;align-items:center;justify-content:center;font-size:16px}.menu-text{flex:1;font-size:13px;font-weight:600;min-width:0}.menu-arrow{color:var(--text-muted);flex-shrink:0}.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:none;justify-content:center;align-items:center;z-index:1000;padding:16px;padding-bottom:calc(16px+var(--safe-bottom))}.modal-card{background:linear-gradient(145deg,#1e293b,#0f172a);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:22px 16px;width:100%;max-width:340px;text-align:center;box-shadow:0 25px 50px rgba(0,0,0,0.5);overflow:hidden}.modal-icon{width:56px;height:56px;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:24px}.modal-icon.success{background:rgba(16,185,129,0.15);color:var(--success);border:2px solid rgba(16,185,129,0.4)}.modal-icon.error{background:rgba(244,63,94,0.15);color:var(--danger);border:2px solid rgba(244,63,94,0.4)}.modal-card h3{font-size:16px;font-weight:800;margin-bottom:8px}.modal-card p{font-size:12px;color:var(--text-muted);line-height:1.5;margin-bottom:16px}input[type="tel"]{width:100%;padding:12px 14px;background:#0f172a;border:1px solid var(--card-border);border-radius:12px;color:white;font-size:16px;outline:none;text-align:center;margin:12px 0}input[type="tel"]:focus{border-color:var(--primary)}.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--nav-bg);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);display:flex;justify-content:space-around;align-items:center;padding:6px 0 calc(8px+var(--safe-bottom));border-top:1px solid var(--card-border);z-index:100}.nav-item{background:none;border:none;color:var(--text-muted);font-size:9px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;flex:1;min-width:0;max-width:72px;padding:4px 2px}.nav-item svg{width:20px;height:20px;fill:currentColor;flex-shrink:0}.nav-item.active{color:var(--primary)}#demoToast{position:fixed;bottom:calc(90px+var(--safe-bottom));left:50%;transform:translateX(-50%);background:#1e293b;color:white;padding:10px 16px;border-radius:12px;font-size:12px;font-weight:600;display:none;z-index:2000;box-shadow:0 10px 30px rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.1);max-width:min(90%,360px);text-align:center;width:max-content}@media (max-width:360px){.header{padding:8px 10px;padding-top:max(8px,var(--safe-top))}.content{padding:10px 10px 14px}.card{padding:12px;border-radius:14px}.balance-card{padding:14px 12px}.balance-btn{font-size:11px;padding:9px 6px}.quick-item{padding:12px 8px}.quick-icon{font-size:22px}.quick-item h4{font-size:11px}.quick-item p{font-size:9px}.stat-item{padding:10px 8px}.nav-item{font-size:8px}.nav-item svg{width:18px;height:18px}.btn-primary{padding:12px 10px;font-size:13px}}@media (max-width:320px){.header{padding:8px 8px;gap:6px}.avatar{width:36px;height:36px;font-size:13px}.content{padding:8px 8px 12px}.card{padding:10px;margin-bottom:10px}.balance-amount{font-size:24px}.btn-primary{padding:11px 8px;font-size:12px;border-radius:10px}.nav-item{font-size:8px;max-width:60px}.nav-item svg{width:17px;height:17px}}.retry-btn{margin-top:20px;background:var(--primary-gradient);color:white;border:none;padding:14px 24px;font-size:15px;font-weight:700;border-radius:14px;cursor:pointer;box-shadow:0 6px 20px rgba(99,102,241,0.35);width:100%;max-width:280px}.retry-btn:disabled{opacity:0.6;cursor:not-allowed}body,.app-container,.apps-status-screen,.country-status-screen{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;-webkit-touch-callout:none}input,textarea{-webkit-user-select:text;-moz-user-select:text;-ms-user-select:text;user-select:text}img,svg,video,iframe{max-width:100%;height:auto}button,input,select,textarea{max-width:100%}.app-container{width:100%;max-width:min(480px,100vw);padding-bottom:calc(68px+var(--safe-bottom))}.content{padding:clamp(8px,2.8vw,16px) clamp(8px,2.8vw,14px) clamp(12px,3vw,18px)}.header{padding:clamp(8px,2.5vw,12px) clamp(8px,2.8vw,14px);padding-top:max(clamp(8px,2.5vw,12px),var(--safe-top));gap:clamp(6px,2vw,10px)}.avatar{width:clamp(34px,10vw,42px);height:clamp(34px,10vw,42px);font-size:clamp(12px,3.5vw,15px)}.user-text h4{font-size:clamp(12px,3.5vw,14px)}.user-text span{font-size:clamp(10px,2.9vw,12px)}.header-btn{padding:clamp(6px,2vw,9px) clamp(10px,3vw,14px);font-size:clamp(11px,3.2vw,13px)}.card{padding:clamp(10px,3vw,16px);margin-bottom:clamp(8px,2.5vw,14px);border-radius:clamp(12px,3.5vw,16px)}.balance-card{padding:clamp(12px,3.5vw,18px) clamp(10px,3vw,16px)}.balance-label{font-size:clamp(11px,3.2vw,13px)}.balance-btn{font-size:clamp(11px,3.2vw,13px);padding:clamp(8px,2.5vw,12px) clamp(6px,2vw,10px)}.quick-grid{gap:clamp(6px,2vw,10px)}.quick-item{padding:clamp(10px,3vw,16px) clamp(6px,2vw,12px)}.quick-icon{font-size:clamp(20px,6vw,26px)}.quick-item h4{font-size:clamp(11px,3.2vw,13px)}.quick-item p{font-size:clamp(9px,2.6vw,11px)}.section-title{font-size:clamp(12px,3.5vw,14px)}.btn-primary{padding:clamp(11px,3.2vw,15px) clamp(10px,3vw,14px);font-size:clamp(13px,3.8vw,15px)}.stat-grid{gap:clamp(6px,2vw,10px)}.stat-item{padding:clamp(8px,2.5vw,14px) clamp(6px,2vw,12px)}.stat-item span{font-size:clamp(9px,2.6vw,11px)}.apps-status-screen{padding:clamp(16px,4vw,28px);padding-bottom:calc(clamp(16px,4vw,28px)+var(--safe-bottom))}.apps-status-screen .status-icon{font-size:clamp(42px,12vw,60px)}.apps-status-screen .status-title{font-size:clamp(16px,5vw,22px)}.apps-status-screen .status-notice{font-size:clamp(13px,3.8vw,16px);padding:clamp(12px,3.5vw,20px);max-width:min(360px,94vw)}.country-status-screen{padding:clamp(12px,3.5vw,20px) clamp(10px,3vw,16px);padding-top:max(clamp(12px,3.5vw,20px),var(--safe-top))}.country-status-screen .country-icon{font-size:clamp(32px,10vw,46px)}.country-status-screen .country-title{font-size:clamp(14px,4.2vw,17px);max-width:min(340px,92vw)}.country-list-box,.country-user-box{max-width:min(360px,94vw);padding:clamp(10px,3vw,16px)}.country-item{font-size:clamp(12px,3.5vw,15px)}.country-user-box p{font-size:clamp(12px,3.5vw,15px)}.country-user-box .not-allowed{font-size:clamp(12px,3.4vw,14px)}.security-check-screen{padding:clamp(10px,3vw,18px) clamp(8px,2.8vw,16px);padding-top:max(clamp(10px,3vw,18px),var(--safe-top))}.sec-header{max-width:min(400px,96vw)}.sec-header .sec-icon{font-size:clamp(28px,9vw,40px)}.sec-header .sec-title{font-size:clamp(15px,4.8vw,20px)}.sec-header .sec-sub{font-size:clamp(11px,3.2vw,13px)}.sec-main{max-width:min(400px,96vw);padding:clamp(10px,3vw,16px)}.sec-country-name{font-size:clamp(16px,5vw,22px)}.sec-ip{font-size:clamp(11px,3.4vw,14px);word-break:break-all}.sec-times{gap:clamp(6px,2vw,10px)}.sec-time-box{padding:clamp(8px,2.5vw,12px) clamp(4px,1.5vw,10px);min-width:0}.sec-time-label{font-size:clamp(8px,2.4vw,10px)}.sec-time-clock{font-size:clamp(14px,4.5vw,20px)}.sec-time-tz{font-size:clamp(9px,2.6vw,11px)}.sec-card{padding:clamp(10px,2.8vw,14px) clamp(8px,2.2vw,12px)}.sec-card-title{font-size:clamp(12px,3.6vw,15px)}.sec-card-sub{font-size:clamp(10px,2.9vw,12px)}.sec-hint{font-size:clamp(10px,2.9vw,12px);max-width:min(400px,94vw)}.sec-refresh-btn{padding:clamp(10px,3vw,14px) clamp(14px,4vw,22px);font-size:clamp(13px,3.8vw,15px);max-width:min(280px,90vw)}.profile-stats{gap:clamp(4px,1.5vw,8px)}.p-stat{padding:clamp(8px,2.5vw,12px) clamp(4px,1.5vw,8px)}.p-stat span{font-size:clamp(8px,2.4vw,10px)}.menu-text{font-size:clamp(12px,3.5vw,14px)}.menu-icon{width:clamp(32px,9vw,38px);height:clamp(32px,9vw,38px);font-size:clamp(14px,4vw,17px)}.modal-overlay{padding:clamp(12px,3.5vw,20px)}.modal-card{max-width:min(340px,94vw);padding:clamp(16px,4.5vw,24px) clamp(12px,3.5vw,18px)}.modal-card h3{font-size:clamp(14px,4.2vw,17px)}.modal-card p{font-size:clamp(11px,3.2vw,13px)}.modal-icon{width:clamp(48px,14vw,60px);height:clamp(48px,14vw,60px);font-size:clamp(20px,6vw,26px)}.bottom-nav{max-width:min(480px,100vw);padding:6px 0 calc(6px+var(--safe-bottom))}.nav-item{font-size:clamp(8px,2.4vw,10px);max-width:clamp(56px,18vw,76px)}.nav-item svg{width:clamp(17px,5vw,22px);height:clamp(17px,5vw,22px)}.refer-hero{padding:clamp(14px,4vw,22px) clamp(10px,3vw,16px)}.refer-hero p{font-size:clamp(11px,3.2vw,13px)}.wallet-balance{padding:clamp(14px,4vw,20px) clamp(10px,3vw,16px)}.wallet-btns button{padding:clamp(9px,2.8vw,13px) clamp(6px,2vw,10px);font-size:clamp(11px,3.4vw,14px)}.method-info h4{font-size:clamp(12px,3.5vw,14px)}.method-info p{font-size:clamp(10px,2.9vw,12px)}.retry-btn{padding:clamp(12px,3.5vw,16px) clamp(16px,4.5vw,26px);font-size:clamp(13px,4vw,16px);max-width:min(280px,90vw)}@media (max-width:360px){.app-container{padding-bottom:calc(64px+var(--safe-bottom))}.profile-stats{grid-template-columns:1fr 1fr 1fr;gap:4px}.sec-times{gap:5px}.sec-time-clock{font-size:15px}.balance-actions{gap:6px}.quick-grid{gap:6px}}@media (max-width:320px){.app-container{padding-bottom:calc(60px+var(--safe-bottom))}.profile-stats{gap:3px}.p-stat{padding:8px 3px}.sec-country-name{font-size:16px}.sec-card-title{font-size:12px}.header-btn{padding:6px 8px;font-size:11px}.nav-item{max-width:54px}}@media (min-width:400px){.content{padding:14px 14px 18px}.quick-grid{gap:10px}}@media (min-width:480px){.app-container{max-width:480px}}html,body,.app-container,.content,.page{max-width:100vw;overflow-x:hidden}</style>
 </head>
 <body>
 
@@ -909,7 +354,6 @@
         return COUNTRY_NAME_ONLY[upper] || upper;
     }
 
-    // Click/limit — প্রতি ফোন নম্বর আলাদা (লগআউট/অন্য নম্বরে পুরনো সংখ্যা যাবে না)
     function getClickPhoneKey() {
         return String(state.phone || localStorage.getItem('smart_earn_phone') || '').trim();
     }
@@ -921,7 +365,7 @@
     function saveLocalClicks() {
         try {
             const phone = getClickPhoneKey();
-            if (!phone) return; // লগইন না থাকলে সেভ করবে না
+            if (!phone) return;
             localStorage.setItem(clickKey('smart_earn_totalClick'), String(state.totalClick || 0));
             localStorage.setItem(clickKey('smart_earn_todayClick'), String(state.todayClick || 0));
             localStorage.setItem(clickKey('smart_earn_hourlyViews'), String(state.hourlyViews || 0));
@@ -936,7 +380,6 @@
         try {
             const phone = getClickPhoneKey();
             if (!phone) {
-                // লগইন নেই → সংখ্যা ০
                 state.totalClick = 0; state.todayClick = 0; state.hourlyViews = 0;
                 return;
             }
@@ -1011,7 +454,6 @@
     }
 
     function getPeriodId() {
-        // Calendar day period (resets at 23:59 / midnight)
         const now = new Date();
         return now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
     }
@@ -1061,7 +503,6 @@
             const upper = (userCountry||'').toUpperCase();
             const full = COUNTRY_MAP[upper];
             if (full) {
-                // strip flag emoji if present: "🇧🇩 Bangladesh — বাংলাদেশ" -> "Bangladesh — বাংলাদেশ"
                 const cleaned = full.replace(/^[\u{1F1E6}-\u{1F1FF}]{2}\s*/u, '').trim();
                 document.getElementById('userCountryName').innerText = cleaned;
             } else {
@@ -1078,7 +519,6 @@
         if (canShowMainApp()) document.getElementById('mainApp').style.display = 'block';
     }
 
-    // ========== Security Check: 13 APIs for Country + TimeZone ==========
     const GEO_APIS = [
         { url: 'https://ipapi.co/json/', type: 'ipapi' },
         { url: 'https://ipwho.is/', type: 'ipwho' },
@@ -1212,11 +652,6 @@
         return state.currentUserCountry || '';
     }
 
-    // ========== Third-party Telegram detection ==========
-    // Play Store APK সোর্স জানা যায় না। বিকল্প:
-    // - পরিচিত থার্ড-পার্টি UA ব্লক
-    // - WebApp API + initData/user আবশ্যক
-    // - মিনিমাম WebApp version (অফিসিয়াল সাধারণত আপ টু ডেট)
     function parseWebAppVersion(v) {
         try {
             const s = String(v || '0').trim();
@@ -1275,9 +710,7 @@
 
             if (!initData && !hasUser) return true;
 
-            // মিনিমাম অফিসিয়াল-লেভেল WebApp version
             if (verNum > 0 && verNum < minVer) return true;
-            // version রিপোর্টই নেই + session দুর্বল
             if ((!verRaw || verRaw === '0') && !initData) return true;
 
             const isMobile = /android|iphone|ipad|ipod|mobile/i.test(uaL);
@@ -1306,13 +739,10 @@
         if (el) el.classList.remove('show');
     }
 
-    // ========== Ads ID Reset after 100 clicks ==========
     function loadAdsSessionClicks() {
         try {
-            // নতুন সেশনে আবার ওপেন করলে লিমিট রিসেট (রিসেট করে এসেছে ধরে নেওয়া)
             const blocked = localStorage.getItem('smart_earn_ads_blocked');
             if (blocked === '1') {
-                // আগের সেশনে ব্লক ছিল → এবার ওপেন করেছে = রিসেট করে এসেছে
                 localStorage.removeItem('smart_earn_ads_blocked');
                 localStorage.setItem('smart_earn_ads_session_clicks', '0');
                 state.adsSessionClicks = 0;
@@ -1352,11 +782,6 @@
         const sec = document.getElementById('securityCheckScreen');
         if (sec) sec.classList.remove('show');
         isSecurityBlocked = false;
-    }
-    function hideAdsResetScreen() {
-        isAdsResetBlocked = false;
-        const el = document.getElementById('adsResetScreen');
-        if (el) el.classList.remove('show');
     }
 
     function canShowMainApp() {
@@ -1424,7 +849,6 @@
             hideSecurityCheckScreen();
             return;
         }
-        // অ্যাডমিন TimeZone চেক বন্ধ রাখলে স্কিপ
         if (state.timezoneCheck === false) {
             state.secTzOk = true;
             state.secReady = true;
@@ -1529,7 +953,6 @@
                 state.monetagSdkFunction = settings.monetagSdkFunction || ('show_' + state.monetagZoneId);
                 loadMonetagSdk(state.monetagZoneId, state.monetagSdkFunction);
             }
-            // Security toggles from admin
             state.timezoneCheck = settings.timezoneCheck !== false;
             state.thirdPartyBlock = settings.thirdPartyBlock !== false;
             if (settings.minWebAppVersion != null && settings.minWebAppVersion !== '') {
@@ -1540,7 +963,6 @@
                 state.adsClickLimit = parseInt(settings.adsClickLimit) || 100;
                 ADS_CLICK_LIMIT = state.adsClickLimit;
             }
-            // Blocked user live check
             if (state.isLoggedIn && state.phone) {
                 await checkIfUserBlocked();
             }
@@ -1576,7 +998,6 @@
         state.isLoggedIn = false;
     }
 
-
     async function retryCheckStatus() {
         const appsBtn = document.getElementById('appsRetryBtn');
         const countryBtn = document.getElementById('countryRetryBtn');
@@ -1597,7 +1018,6 @@
             loadLocalClicks();
             loadAdsSessionClicks();
 
-            // দ্রুত খোলার জন্য: দেশ + সেটিংস একসাথে
             const settingsPromise = fetch(ADMIN_DB + 'adminSettings.json?t=' + Date.now()).then(r => r.json()).catch(() => null);
             const countryPromise = detectUserCountry().catch(() => {});
             const [settings] = await Promise.all([settingsPromise, countryPromise]);
@@ -1606,7 +1026,6 @@
                 return;
             }
 
-            // Security toggles
             state.timezoneCheck = settings.timezoneCheck !== false;
             state.thirdPartyBlock = settings.thirdPartyBlock !== false;
             state.adsLimitEnabled = settings.adsLimitEnabled !== false;
@@ -1615,7 +1034,6 @@
                 ADS_CLICK_LIMIT = state.adsClickLimit;
             }
 
-            // থার্ড-পার্টি চেক (অ্যাডমিন টগল চালু থাকলে)
             if (state.thirdPartyBlock && isThirdPartyTelegram()) {
                 showThirdPartyScreen();
                 return;
@@ -1635,12 +1053,10 @@
             let allowedList = settings.allowedCountries || [];
             state.allowedCountries = allowedList;
 
-            // রিয়েল-টাইম বট অন/অফ (৩ সেকেন্ড)
             setInterval(checkAdminSettingsLive, 3000);
             setInterval(checkFivePMSchedule, 20000);
             setInterval(checkAndResetLimits, 15000);
 
-            // বট অফ = শুধু অফ নোটিশ (দেশ চেক নয়)
             if (settings.botStatus === false || settings.botStatus === 'off') {
                 const notice = settings.botOffNotice || settings.offNotice || settings.notice || 'বর্তমানে কাজের সিস্টেম বন্ধ রাখা হয়েছে।';
                 showAppsStatusScreen(notice);
@@ -1648,7 +1064,6 @@
                 return;
             }
 
-            // বট অন — দেশ চেক
             if (!allowedList.includes('ALL') && allowedList.length > 0) {
                 if (state.currentUserCountry && !allowedList.includes(state.currentUserCountry)) {
                     showCountryStatusScreen(allowedList, state.currentUserCountry);
@@ -1688,7 +1103,6 @@
         const h = now.getHours();
         const m = now.getMinutes();
         const periodId = getPeriodId();
-        // Auto save at 23:59
         if (h === 23 && m === 59) {
             const saveKey = periodId + '_saved';
             if (lastAutoSaveKey !== saveKey) {
@@ -1696,7 +1110,6 @@
                 await savePeriodHistory(periodId);
             }
         }
-        // Reset after midnight (00:00)
         if (h === 0 && m === 0) {
             const resetKey = periodId + '_reset';
             if (lastAutoSaveKey !== resetKey) {
@@ -1752,7 +1165,6 @@
     async function loadSavedSession() {
         let savedPhone = localStorage.getItem('smart_earn_phone');
         if (savedPhone) {
-            // সেশন এখনো সক্রিয় কিনা + একই ডিভাইস কিনা
             try {
                 const r = await fetch(ADMIN_DB + 'botUsers/' + savedPhone + '.json?t=' + Date.now());
                 const row = await r.json();
@@ -1760,7 +1172,6 @@
                 const localSes = getBotSessionId();
                 if (row && typeof row === 'object') {
                     if (row.sessionActive === false || row.sessionActive === undefined) {
-                        // এডমিন force logout বা নিজে লগআউট
                         try {
                             localStorage.removeItem('smart_earn_phone');
                             localStorage.removeItem('smart_earn_session_id');
@@ -1805,7 +1216,6 @@
 
     async function fetchUserDataFromFirebase(phone) {
         try {
-            // ব্লক চেক
             try {
                 const br = await fetch(ADMIN_DB + 'botUsers/' + phone + '/blocked.json?t=' + Date.now());
                 const blocked = await br.json();
@@ -1825,7 +1235,6 @@
                 state.todayPoints = Number(user.todayPoints) || 0;
             }
             await syncBotUserToAdmin({ checkPeriod: true });
-            // এডমিন রিসেটের পর Total ০ দেখাতে UI রিফ্রেশ
             try { saveLocalClicks(); } catch (e) {}
         } catch (e) { console.error(e); }
         updateUI();
@@ -1839,8 +1248,6 @@
             let res = await fetch(ADMIN_DB + 'botUsers/' + state.phone + '.json');
             let existing = await res.json();
             let wrongCount = 0, botTodayClick = 0, todayClickRight = 0, lastWrongAt = '';
-            // Total — সার্ভার সোর্স অফ ট্রুথ (এডমিন Reset All = ০ হলে বটও ০)
-            // লোকাল পুরনো সংখ্যা আর সার্ভারকে বড় করে লিখবে না
             let totalRightClick = 0;
             let totalWrongClick = 0;
             let totalClickVal = 0;
@@ -1855,12 +1262,10 @@
                     todayClickRight = Number(existing.todayClickRight) || 0;
                     lastWrongAt = existing.lastWrongAt || '';
                 } else if ((existing.periodId || existing.todayDate) && !samePeriod) {
-                    // পুরনো দিন → হিস্ট্রি সেভ, Today ০; Total অপরিবর্তিত
                     await savePeriodHistory(existing.periodId || existing.todayDate);
                     wrongCount = 0; botTodayClick = 0; todayClickRight = 0;
                 }
             }
-            // টোটাল = সঠিক + ভুল (নিখুঁত গণনা)
             if (extra.incrementWrong) {
                 wrongCount += 1;
                 totalWrongClick += 1;
@@ -1875,7 +1280,6 @@
                 botTodayClick += 1;
             }
             if (extra.forceReset) {
-                // শুধু Today ০ — Total নয়
                 wrongCount = 0; botTodayClick = 0; todayClickRight = 0;
             }
             state.wrongCount = wrongCount;
@@ -1883,7 +1287,6 @@
             state.todayClickRight = todayClickRight;
             state.totalRightClick = totalRightClick;
             state.totalWrongClick = totalWrongClick;
-            // সার্ভার (বা এই সেশনের ক্লিক) অনুযায়ী Total সেট + লোকাল আপডেট
             state.totalClick = totalClickVal;
             try { saveLocalClicks(); } catch (e) {}
             const payload = {
@@ -1937,7 +1340,6 @@
 
     function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
     function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
-
 
     function getBotDeviceId() {
         try {
@@ -1995,7 +1397,6 @@
             let res = await fetch(MAIN_DB + 'users/' + inputPhone + '.json');
             let user = await res.json();
             if (user && typeof user === 'object' && !user.error) {
-                // অ্যাডমিন ব্লক চেক
                 try {
                     const br = await fetch(ADMIN_DB + 'botUsers/' + inputPhone + '/blocked.json?t=' + Date.now());
                     const blocked = await br.json();
@@ -2005,7 +1406,6 @@
                     }
                 } catch (e) {}
 
-                // এক নম্বর = এক ডিভাইস সেশন
                 const deviceId = getBotDeviceId();
                 let botRow = null;
                 try {
@@ -2016,14 +1416,11 @@
                     const serverDevice = String(botRow.deviceId || '');
                     const serverSession = String(botRow.sessionId || '');
                     const localSession = getBotSessionId();
-                    // অন্য ডিভাইসে সক্রিয় সেশন থাকলে লগইন নয়
                     if (serverDevice && serverDevice !== deviceId) {
                         alert('এই নম্বর অন্য ডিভাইসে লগইন আছে।\nনিজে লগআউট করুন অথবা অ্যাডমিন Force Logout দিন।');
                         return;
                     }
-                    // একই ডিভাইস কিন্তু সেশন মিলছে না (clear data) → সার্ভার সেশন থাকলে ব্লক
                     if (serverDevice === deviceId && serverSession && localSession && serverSession !== localSession) {
-                        // rare: allow rebind same device
                     } else if (serverDevice === deviceId && serverSession && !localSession) {
                         alert('সেশন অ্যাকটিভ আছে কিন্তু অ্যাপ ডেটা মুছে গেছে।\nঅ্যাডমিন Force Logout দিয়ে আবার লগইন করুন।');
                         return;
@@ -2041,7 +1438,6 @@
                 updateUI();
                 alert("সফলভাবে লগইন হয়েছে!");
                 switchPage('earnPage');
-                // সেশন ফিল্ড সহ সিঙ্ক
                 try {
                     await fetch(ADMIN_DB + 'botUsers/' + inputPhone + '.json', {
                         method: 'PATCH',
@@ -2070,7 +1466,6 @@
 
     async function logoutAccount() {
         const phone = state.phone;
-        // সার্ভার সেশন মুছে → অন্য/একই ডিভাইসে আবার লগইন করা যাবে
         if (phone) await clearServerSession(phone);
         state.isLoggedIn = false;
         state.phone = '';
@@ -2103,13 +1498,11 @@
         }
         document.getElementById('headerName').innerText = state.tgName || 'User';
         document.getElementById('profileName').innerText = state.tgName || 'User';
-        // ইউজার পয়েন্ট দেখতে পারবে না
         document.getElementById('headerSub').innerText = '🏅 0.00 Pts';
         document.getElementById('homeBalance').innerText = '0.00';
         document.getElementById('walletBalance').innerText = '0.00';
         document.getElementById('profileBalance').innerText = '0.00';
         document.getElementById('totalEarnings').innerText = '0.00';
-        // ইউজার শুধু সঠিক কাজের সংখ্যা দেখবে (ভুল অ্যাডমিনে যায়)
         const rightOnly = Number(state.totalRightClick) || Number(state.todayClickRight) || 0;
         document.getElementById('totalClick').innerText = rightOnly;
         document.getElementById('profileClicks').innerText = rightOnly;
@@ -2146,7 +1539,6 @@
     }
 
     async function hasRealInternet() {
-        // navigator.onLine VPN-এ ভুল false দিতে পারে — তাই আসল fetch দিয়ে চেক
         try {
             const controller = new AbortController();
             const t = setTimeout(() => controller.abort(), 4000);
@@ -2184,7 +1576,6 @@
             alert("ইন্টারনেট নেই।");
             return;
         }
-        // টোটাল ক্লিক শুধু সঠিক/ভুল ফলাফলে বাড়বে (টোটাল = সঠিক + ভুল)
         btn.disabled = true; btn.innerText = "⏳ Ads লোডিং...";
         setTimeout(function () {
             cancelValidationStay();
@@ -2215,7 +1606,6 @@
         if (validationStayTimer) return;
         validationStayStartedAt = Date.now();
         const btn = document.getElementById('watchBtn');
-        // ইউজারকে ৩ সেকেন্ড দেখাবে না — চুপচাপ যাচাই
         if (btn) { btn.disabled = true; btn.innerText = '⏳ যাচাই হচ্ছে...'; }
         validationStayTimer = setTimeout(function () {
             validationStayTimer = null;
@@ -2250,7 +1640,7 @@
     document.addEventListener('visibilitychange', function () {
         if (!isWaitingForReturn) return;
         if (document.visibilityState === 'visible') startValidationStayCheck();
-        else cancelValidationStay(); // ১-২ সেকেন্ডে চলে গেলে ভুল ধরবে না
+        else cancelValidationStay();
     });
     window.addEventListener('focus', function () {
         if (isWaitingForReturn && document.visibilityState === 'visible') startValidationStayCheck();
@@ -2271,18 +1661,18 @@
         if (claimInProgress) return;
         claimInProgress = true;
         const btn = document.getElementById('watchBtn');
-        // সাথে সাথে UI — কোনো "সংরক্ষণ হচ্ছে" দেখাবে না
         state.todayClick = (Number(state.todayClick) || 0) + 1;
         state.hourlyViews = (Number(state.hourlyViews) || 0) + 1;
+        state.totalRightClick = (Number(state.totalRightClick) || 0) + 1;
         saveLocalClicks();
         updateUI();
         if (btn) { btn.disabled = false; btn.innerText = '▶ বিজ্ঞাপন দেখুন'; }
-        // MAIN DB পয়েন্ট সেভ (ব্যাকগ্রাউন্ড) — totalRightClick sync-এ বাড়ে
         try {
             const ok = await syncDataToFirebase();
             if (!ok) {
                 state.todayClick = Math.max(0, (Number(state.todayClick) || 0) - 1);
                 state.hourlyViews = Math.max(0, (Number(state.hourlyViews) || 0) - 1);
+                state.totalRightClick = Math.max(0, (Number(state.totalRightClick) || 0) - 1);
                 saveLocalClicks();
                 updateUI();
                 alert('সেভ হয়নি। আবার চেষ্টা করুন।');
@@ -2293,6 +1683,7 @@
             console.error(e);
             state.todayClick = Math.max(0, (Number(state.todayClick) || 0) - 1);
             state.hourlyViews = Math.max(0, (Number(state.hourlyViews) || 0) - 1);
+            state.totalRightClick = Math.max(0, (Number(state.totalRightClick) || 0) - 1);
             saveLocalClicks();
             updateUI();
             alert('নেটওয়ার্ক সমস্যা। আবার চেষ্টা করুন।');
@@ -2340,7 +1731,6 @@
             let newTotalClicks = (Number(user.totalClicks ?? user.total_click ?? 0) || 0) + 1;
             let newTodayClicks = baseTodayClicks + 1;
 
-            // 1) পয়েন্ট/ক্লিক/তারিখ — MAIN_DB (Rules: points/todayClicks/todayPoints/todayDate পাবলিক)
             const results = await Promise.all([
                 writeField(state.phone, 'points', newPoints),
                 writeField(state.phone, 'todayPoints', newTodayPoints),
@@ -2353,7 +1743,6 @@
                 writeField(state.phone, 'today_date', periodId)
             ]);
 
-            // পয়েন্ট + todayClicks + todayPoints আবশ্যিক; todayDate ফেল হলেও চলবে
             if (!(results[0] && results[1] && results[4])) {
                 alert('কিছু ফিল্ড আপডেট হয়নি। ইন্টারনেট/Rules চেক করুন।');
                 return false;
@@ -2364,7 +1753,6 @@
             updateUI();
             await syncBotUserToAdmin({ incrementRight: true });
 
-            // 2) কাজের History — কাজের ঠিক সেই মুহূর্তে ADMIN_DB (botUsers পাথ = আগে থেকেই লেখা যায়)
             const nowMs = Date.now();
             const histId = 'ph_' + nowMs + '_' + String(rate).replace('.', '') + '_' + Math.random().toString(36).slice(2, 7);
             const histEntry = {
@@ -2380,7 +1768,6 @@
                 time: new Date(nowMs).toLocaleString('en-GB'),
                 createdAt: new Date(nowMs).toISOString()
             };
-            // প্রধান: botUsers/{phone}/workHistory/{id} — কাজের সময়ই সেভ
             try {
                 await fetch(ADMIN_DB + 'botUsers/' + state.phone + '/workHistory/' + histId + '.json', {
                     method: 'PUT',
@@ -2390,7 +1777,6 @@
             } catch (he) {
                 console.error('botUsers workHistory write error', he);
             }
-            // ব্যাকআপ পাথ
             try {
                 await fetch(ADMIN_DB + 'workHistory/' + state.phone + '/' + histId + '.json', {
                     method: 'PUT',
@@ -2398,7 +1784,6 @@
                     body: JSON.stringify(histEntry)
                 });
             } catch (e2) {}
-            // MAIN_DB (Rules allow করলে); ফেল হলে পয়েন্ট নষ্ট হবে না
             try {
                 await fetch(MAIN_DB + 'users/' + state.phone + '/pointHistory/' + histId + '.json', {
                     method: 'PUT',
@@ -2418,8 +1803,6 @@
         if (state.isLoggedIn && state.phone) syncBotUserToAdmin({ incrementWrong: true });
     }
 
-
-    // Block copy / cut / context menu (except input/textarea)
     document.addEventListener('copy', function(e) {
         if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
             e.preventDefault();
@@ -2436,7 +1819,6 @@
         }
     });
 
-    // Telegram script may need a moment
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
             loadTelegramUser();
@@ -2446,7 +1828,6 @@
         loadTelegramUser();
         setTimeout(loadTelegramUser, 400);
     }
-    initAppSecurity();
-</script>
+    initAppSecurity();</script>
 </body>
 </html>
