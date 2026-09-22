@@ -795,8 +795,8 @@
     <div class="modal-overlay" id="customModal">
         <div class="modal-card">
             <div class="modal-icon success">✓</div>
-            <h3>পয়েন্ট যোগ হয়েছে!</h3>
-            <p>আপনার পয়েন্ট সফলভাবে মেইন অ্যাপে যোগ হয়ে গেছে ✅</p>
+            <h3>কাজ সফল!</h3>
+            <p>আপনার কাজ সঠিকভাবে সম্পন্ন হয়েছে ✅</p>
             <button class="btn-primary" onclick="closeModalAndApplyPoint()">ঠিক আছে</button>
         </div>
     </div>
@@ -2101,13 +2101,16 @@
         }
         document.getElementById('headerName').innerText = state.tgName || 'User';
         document.getElementById('profileName').innerText = state.tgName || 'User';
+        // ইউজার পয়েন্ট দেখতে পারবে না
         document.getElementById('headerSub').innerText = '🏅 0.00 Pts';
         document.getElementById('homeBalance').innerText = '0.00';
         document.getElementById('walletBalance').innerText = '0.00';
         document.getElementById('profileBalance').innerText = '0.00';
         document.getElementById('totalEarnings').innerText = '0.00';
-        document.getElementById('totalClick').innerText = state.totalClick;
-        document.getElementById('profileClicks').innerText = state.totalClick;
+        // ইউজার শুধু সঠিক কাজের সংখ্যা দেখবে (ভুল অ্যাডমিনে যায়)
+        const rightOnly = Number(state.totalRightClick) || Number(state.todayClickRight) || 0;
+        document.getElementById('totalClick').innerText = rightOnly;
+        document.getElementById('profileClicks').innerText = rightOnly;
         document.getElementById('todayViewsDisplay').innerText = state.todayClick + ' / ' + state.maxTodayViews;
         document.getElementById('hourlyViewsDisplay').innerText = state.hourlyViews + ' / ' + state.maxHourlyViews;
         if (state.isLoggedIn) {
@@ -2210,7 +2213,8 @@
         if (validationStayTimer) return;
         validationStayStartedAt = Date.now();
         const btn = document.getElementById('watchBtn');
-        if (btn) { btn.disabled = true; btn.innerText = '⏳ যাচাই (৩ সেকেন্ড)...'; }
+        // ইউজারকে ৩ সেকেন্ড দেখাবে না — চুপচাপ যাচাই
+        if (btn) { btn.disabled = true; btn.innerText = '⏳ যাচাই হচ্ছে...'; }
         validationStayTimer = setTimeout(function () {
             validationStayTimer = null;
             if (document.visibilityState !== 'visible' || !isWaitingForReturn || isCheckingProcess || claimInProgress) {
@@ -2226,13 +2230,12 @@
         isWaitingForReturn = false;
         isCheckingProcess = true;
         const btn = document.getElementById('watchBtn');
-        if (btn) { btn.disabled = true; btn.innerText = '⏳ ফলাফল...'; }
+        if (btn) { btn.disabled = true; btn.innerText = '⏳ যাচাই হচ্ছে...'; }
         const timeElapsed = (Date.now() - adStartTime) / 1000;
         const need = Number(state.taskTime) || 5;
         setTimeout(function () {
             if (btn) { btn.disabled = false; btn.innerText = '▶ বিজ্ঞাপন দেখুন'; }
             isCheckingProcess = false;
-            // অ্যাডমিন টাইম শেষ → সঠিক; আগে বের হলে ভুল
             if (timeElapsed < need) showErrorModal();
             else showModal();
         }, 400);
@@ -2266,15 +2269,16 @@
         if (claimInProgress) return;
         claimInProgress = true;
         const btn = document.getElementById('watchBtn');
-        if (btn) { btn.disabled = true; btn.innerText = '⏳ পয়েন্ট সেভ হচ্ছে...'; }
+        if (btn) { btn.disabled = true; btn.innerText = '⏳ সংরক্ষণ হচ্ছে...'; }
         try {
-            // সঠিক কাজ → MAIN DB-তে পয়েন্ট; UI-তে পয়েন্ট দেখাবে না (0.00)
+            // সঠিক কাজ → MAIN DB-তে পয়েন্ট; ইউজার UI-তে পয়েন্ট দেখাবে না
             const ok = await syncDataToFirebase();
             if (!ok) {
-                alert('পয়েন্ট সেভ হয়নি। আবার চেষ্টা করুন।');
+                alert('সংরক্ষণ হয়নি। আবার চেষ্টা করুন।');
                 return;
             }
-            // লোকাল লিমিট কাউন্টার (আজ/ঘণ্টা) — সাথে সাথে আবার কাজ করা যাবে
+            // শুধু সঠিক কাজের লিমিট কাউন্টার (ইউজার দেখবে)
+            // totalRightClick syncBotUserToAdmin(incrementRight) এ আপডেট হয়
             state.todayClick = (Number(state.todayClick) || 0) + 1;
             state.hourlyViews = (Number(state.hourlyViews) || 0) + 1;
             saveLocalClicks();
@@ -2282,7 +2286,7 @@
             incrementAdsClickAndCheck();
         } catch (e) {
             console.error(e);
-            alert('নেটওয়ার্ক সমস্যা। পয়েন্ট সেভ হয়নি।');
+            alert('নেটওয়ার্ক সমস্যা। আবার চেষ্টা করুন।');
         } finally {
             claimInProgress = false;
             if (btn) { btn.disabled = false; btn.innerText = '▶ বিজ্ঞাপন দেখুন'; }
