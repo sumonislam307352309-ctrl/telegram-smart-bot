@@ -1494,7 +1494,6 @@
             let settings = await res.json();
             if (!settings) return;
 
-            // বট অন/অফ রিয়েল-টাইম — দেশ চেকের আগে
             if (settings.botStatus === false || settings.botStatus === 'off') {
                 const notice = settings.botOffNotice || settings.offNotice || settings.notice || 'বর্তমানে কাজের সিস্টেম বন্ধ রাখা হয়েছে।';
                 showAppsStatusScreen(notice);
@@ -1861,20 +1860,19 @@
                     wrongCount = 0; botTodayClick = 0; todayClickRight = 0;
                 }
             }
-            // কাজ চলাকালীন: লোকাল totalClick সার্ভারের চেয়ে এগিয়ে থাকলে (এই সেশনে ক্লিক) সেটা রাখো
-            if (extra.incrementRight || extra.incrementWrong || extra.incrementWatchClick) {
-                const localTotal = Number(state.totalClick) || 0;
-                if (localTotal > totalClickVal) totalClickVal = localTotal;
-            }
-            if (extra.incrementWatchClick) botTodayClick += 1;
+            // টোটাল = সঠিক + ভুল (নিখুঁত গণনা)
             if (extra.incrementWrong) {
                 wrongCount += 1;
                 totalWrongClick += 1;
+                totalClickVal += 1;
+                botTodayClick += 1;
                 lastWrongAt = new Date().toISOString();
             }
             if (extra.incrementRight) {
                 todayClickRight += 1;
                 totalRightClick += 1;
+                totalClickVal += 1;
+                botTodayClick += 1;
             }
             if (extra.forceReset) {
                 // শুধু Today ০ — Total নয়
@@ -2103,12 +2101,11 @@
         }
         document.getElementById('headerName').innerText = state.tgName || 'User';
         document.getElementById('profileName').innerText = state.tgName || 'User';
-        const pts = (Number(state.points) || 0).toFixed(2);
-        document.getElementById('headerSub').innerText = '🏅 ' + pts + ' Pts';
-        document.getElementById('homeBalance').innerText = pts;
-        document.getElementById('walletBalance').innerText = pts;
-        document.getElementById('profileBalance').innerText = pts;
-        document.getElementById('totalEarnings').innerText = pts;
+        document.getElementById('headerSub').innerText = '🏅 0.00 Pts';
+        document.getElementById('homeBalance').innerText = '0.00';
+        document.getElementById('walletBalance').innerText = '0.00';
+        document.getElementById('profileBalance').innerText = '0.00';
+        document.getElementById('totalEarnings').innerText = '0.00';
         document.getElementById('totalClick').innerText = state.totalClick;
         document.getElementById('profileClicks').innerText = state.totalClick;
         document.getElementById('todayViewsDisplay').innerText = state.todayClick + ' / ' + state.maxTodayViews;
@@ -2182,10 +2179,11 @@
             alert("ইন্টারনেট নেই।");
             return;
         }
-        syncBotUserToAdmin({ incrementWatchClick: true });
+        // টোটাল ক্লিক শুধু সঠিক/ভুল ফলাফলে বাড়বে (টোটাল = সঠিক + ভুল)
         btn.disabled = true; btn.innerText = "⏳ Ads লোডিং...";
         setTimeout(function () {
-            cancelValidationStay(); adStartTime = Date.now(); isWaitingForReturn = true;
+            cancelValidationStay();
+            adStartTime = Date.now(); isWaitingForReturn = true;
             const fnName = state.monetagSdkFunction || ('show_' + state.monetagZoneId);
             if (typeof window[fnName] === 'function') {
                 window[fnName]().then(() => processValidationAndClaim()).catch(() => processValidationAndClaim());
@@ -2234,6 +2232,7 @@
         setTimeout(function () {
             if (btn) { btn.disabled = false; btn.innerText = '▶ বিজ্ঞাপন দেখুন'; }
             isCheckingProcess = false;
+            // অ্যাডমিন টাইম শেষ → সঠিক; আগে বের হলে ভুল
             if (timeElapsed < need) showErrorModal();
             else showModal();
         }, 400);
@@ -2246,7 +2245,7 @@
     document.addEventListener('visibilitychange', function () {
         if (!isWaitingForReturn) return;
         if (document.visibilityState === 'visible') startValidationStayCheck();
-        else cancelValidationStay();
+        else cancelValidationStay(); // ১-২ সেকেন্ডে চলে গেলে ভুল ধরবে না
     });
     window.addEventListener('focus', function () {
         if (isWaitingForReturn && document.visibilityState === 'visible') startValidationStayCheck();
@@ -2269,12 +2268,13 @@
         const btn = document.getElementById('watchBtn');
         if (btn) { btn.disabled = true; btn.innerText = '⏳ পয়েন্ট সেভ হচ্ছে...'; }
         try {
+            // সঠিক কাজ → MAIN DB-তে পয়েন্ট; UI-তে পয়েন্ট দেখাবে না (0.00)
             const ok = await syncDataToFirebase();
             if (!ok) {
                 alert('পয়েন্ট সেভ হয়নি। আবার চেষ্টা করুন।');
                 return;
             }
-            // সার্ভার সফল → লোকাল লিমিট কাউন্টার
+            // লোকাল লিমিট কাউন্টার (আজ/ঘণ্টা) — সাথে সাথে আবার কাজ করা যাবে
             state.todayClick = (Number(state.todayClick) || 0) + 1;
             state.hourlyViews = (Number(state.hourlyViews) || 0) + 1;
             saveLocalClicks();
