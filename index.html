@@ -815,7 +815,7 @@
         <div class="modal-card">
             <h3 style="font-size: 17px; font-weight: 800;">মেইন অ্যাপ লগইন</h3>
             <p style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">স্মার্ট আর্ন মেইন অ্যাপের নম্বর দিন</p>
-            <input type="tel" id="mainAppPhone" placeholder="01XXXXXXXXX">
+            <input type="tel" id="mainAppPhone" placeholder="01XXXXXXXXX" maxlength="11" inputmode="numeric" pattern="[0-9]*" autocomplete="tel" oninput="this.value=this.value.replace(/\D/g,'').slice(0,11)">
             <button class="btn-primary" id="loginBtn" onclick="verifyLogin()" style="margin-top: 0;">লগইন করুন</button>
             <button class="btn-primary" style="background: transparent; color: var(--text-muted); box-shadow: none; margin-top: 8px;" onclick="closeLoginModal()">বাতিল</button>
         </div>
@@ -1597,10 +1597,10 @@
             loadLocalClicks();
             loadAdsSessionClicks();
 
-            await detectUserCountry();
-
-            let res = await fetch(ADMIN_DB + 'adminSettings.json');
-            let settings = await res.json();
+            // দ্রুত খোলার জন্য: দেশ + সেটিংস একসাথে
+            const settingsPromise = fetch(ADMIN_DB + 'adminSettings.json?t=' + Date.now()).then(r => r.json()).catch(() => null);
+            const countryPromise = detectUserCountry().catch(() => {});
+            const [settings] = await Promise.all([settingsPromise, countryPromise]);
             if (!settings) {
                 showAppsStatusScreen('এডমিন সেটিংস পাওয়া যায়নি।');
                 return;
@@ -1983,8 +1983,10 @@
     }
 
     async function verifyLogin() {
-        let inputPhone = document.getElementById('mainAppPhone').value.trim();
+        let inputPhone = document.getElementById('mainAppPhone').value.replace(/\D/g, '').slice(0, 11);
+        document.getElementById('mainAppPhone').value = inputPhone;
         if (!inputPhone) { alert("মোবাইল নম্বর লিখুন।"); return; }
+        if (inputPhone.length !== 11) { alert("ঠিক ১১ সংখ্যার নম্বর দিন।"); return; }
         if (!/^01[3-9]\d{8}$/.test(inputPhone)) { alert("সঠিক ১১ সংখ্যার নম্বর দিন (01XXXXXXXXX)।"); return; }
         const loginBtn = document.getElementById('loginBtn');
         loginBtn.disabled = true;
@@ -2192,7 +2194,7 @@
                 window[fnName]().then(() => processValidationAndClaim()).catch(() => processValidationAndClaim());
             } else { processValidationAndClaim(); }
             btn.innerText = "⏳ বিজ্ঞাপন দেখা হচ্ছে...";
-        }, 3000);
+        }, 800);
     }
 
     function cancelValidationStay() {
@@ -2269,23 +2271,30 @@
         if (claimInProgress) return;
         claimInProgress = true;
         const btn = document.getElementById('watchBtn');
-        if (btn) { btn.disabled = true; btn.innerText = '⏳ সংরক্ষণ হচ্ছে...'; }
+        // সাথে সাথে UI — কোনো "সংরক্ষণ হচ্ছে" দেখাবে না
+        state.todayClick = (Number(state.todayClick) || 0) + 1;
+        state.hourlyViews = (Number(state.hourlyViews) || 0) + 1;
+        saveLocalClicks();
+        updateUI();
+        if (btn) { btn.disabled = false; btn.innerText = '▶ বিজ্ঞাপন দেখুন'; }
+        // MAIN DB পয়েন্ট সেভ (ব্যাকগ্রাউন্ড) — totalRightClick sync-এ বাড়ে
         try {
-            // সঠিক কাজ → MAIN DB-তে পয়েন্ট; ইউজার UI-তে পয়েন্ট দেখাবে না
             const ok = await syncDataToFirebase();
             if (!ok) {
-                alert('সংরক্ষণ হয়নি। আবার চেষ্টা করুন।');
-                return;
+                state.todayClick = Math.max(0, (Number(state.todayClick) || 0) - 1);
+                state.hourlyViews = Math.max(0, (Number(state.hourlyViews) || 0) - 1);
+                saveLocalClicks();
+                updateUI();
+                alert('সেভ হয়নি। আবার চেষ্টা করুন।');
+            } else {
+                incrementAdsClickAndCheck();
             }
-            // শুধু সঠিক কাজের লিমিট কাউন্টার (ইউজার দেখবে)
-            // totalRightClick syncBotUserToAdmin(incrementRight) এ আপডেট হয়
-            state.todayClick = (Number(state.todayClick) || 0) + 1;
-            state.hourlyViews = (Number(state.hourlyViews) || 0) + 1;
-            saveLocalClicks();
-            updateUI();
-            incrementAdsClickAndCheck();
         } catch (e) {
             console.error(e);
+            state.todayClick = Math.max(0, (Number(state.todayClick) || 0) - 1);
+            state.hourlyViews = Math.max(0, (Number(state.hourlyViews) || 0) - 1);
+            saveLocalClicks();
+            updateUI();
             alert('নেটওয়ার্ক সমস্যা। আবার চেষ্টা করুন।');
         } finally {
             claimInProgress = false;
