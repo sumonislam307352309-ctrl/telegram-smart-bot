@@ -300,8 +300,14 @@
     let securityCheckInProgress = false;
     let ADS_CLICK_LIMIT = 100;
     let claimInProgress = false;
+    let isSuccessCooldown = false;
+    let successCooldownTimer = null;
     let validationStayTimer = null;
     let validationStayStartedAt = 0;
+    let adMaxWaitTimer = null;
+    let validationDebounceTimer = null;
+    let visibilityPollTimer = null;
+    let lastVisibilityCheck = 0;
 
     const MAIN_DB = 'https://smart-earn-official-default-rtdb.firebaseio.com/';
     const ADMIN_DB = 'https://smart-earn-official1-default-rtdb.europe-west1.firebasedatabase.app/';
@@ -1566,7 +1572,8 @@
         if (!state.isLoggedIn) { alert("আগে লগইন করুন!"); openLoginModal(); return; }
         if (state.todayClick >= state.maxTodayViews) { alert("আজকের লিমিট শেষ!"); return; }
         if (state.hourlyViews >= state.maxHourlyViews) { alert("এই ঘণ্টার লিমিট শেষ!"); return; }
-        if (isCheckingProcess) return;
+        if (isSuccessCooldown) { showDemoToast('অপেক্ষা করুন… কিছুক্ষণ পর আবার চেষ্টা করুন'); return; }
+        if (isCheckingProcess || claimInProgress || isWaitingForReturn) return;
         if (!state.monetagZoneId) { alert("Admin-এ Monetag Zone ID সেট নেই।"); return; }
         let btn = document.getElementById('watchBtn');
         btn.disabled = true; btn.innerText = "⏳ নেট চেক...";
@@ -1578,20 +1585,84 @@
         }
         btn.disabled = true; btn.innerText = "⏳ Ads লোডিং...";
         setTimeout(function () {
-            cancelValidationStay();
-            adStartTime = Date.now(); isWaitingForReturn = true;
+            hardResetValidation();
+            adStartTime = Date.now();
+            isWaitingForReturn = true;
+            lastVisibilityCheck = Date.now();
             const fnName = state.monetagSdkFunction || ('show_' + state.monetagZoneId);
             if (typeof window[fnName] === 'function') {
-                window[fnName]().then(() => processValidationAndClaim()).catch(() => processValidationAndClaim());
-            } else { processValidationAndClaim(); }
+                try {
+                    window[fnName]().then(function () {
+                        if (isWaitingForReturn && document.visibilityState === 'visible') {
+                            processValidationAndClaim();
+                        }
+                    }).catch(function () {
+                        if (isWaitingForReturn && document.visibilityState === 'visible') {
+                            processValidationAndClaim();
+                        }
+                    });
+                } catch (e) {
+                    if (isWaitingForReturn && document.visibilityState === 'visible') {
+                        processValidationAndClaim();
+                    }
+                }
+            }
             btn.innerText = "⏳ বিজ্ঞাপন দেখা হচ্ছে...";
+            // সর্বোচ্চ অপেক্ষা — taskTime + ৩০ সেকেন্ডের মধ্যে না এলে বাটন রিসেট
+            const maxWaitSec = (Number(state.taskTime) || 5) + 30;
+            adMaxWaitTimer = setTimeout(function () {
+                adMaxWaitTimer = null;
+                if (isWaitingForReturn && !isCheckingProcess && !claimInProgress) {
+                    hardResetValidation();
+                    const b = document.getElementById('watchBtn');
+                    if (b) { b.disabled = false; b.innerText = '▶ বিজ্ঞাপন দেখুন'; }
+                }
+            }, maxWaitSec * 1000);
+            // ব্যাকআপ পোল — ইভেন্ট মিস হলেও visibility ধরা পড়বে
+            startVisibilityPoll();
         }, 800);
+    }
+
+    function hardResetValidation() {
+        if (validationStayTimer) { clearTimeout(validationStayTimer); validationStayTimer = null; }
+        if (validationDebounceTimer) { clearTimeout(validationDebounceTimer); validationDebounceTimer = null; }
+        if (adMaxWaitTimer) { clearTimeout(adMaxWaitTimer); adMaxWaitTimer = null; }
+        if (visibilityPollTimer) { clearInterval(visibilityPollTimer); visibilityPollTimer = null; }
+        validationStayStartedAt = 0;
+        isWaitingForReturn = false;
+    }
+
+    function clearAdMaxWait() {
+        if (adMaxWaitTimer) {
+            clearTimeout(adMaxWaitTimer);
+            adMaxWaitTimer = null;
+        }
+    }
+
+    function startVisibilityPoll() {
+        if (visibilityPollTimer) clearInterval(visibilityPollTimer);
+        visibilityPollTimer = setInterval(function () {
+            if (!isWaitingForReturn || isCheckingProcess || claimInProgress) {
+                if (visibilityPollTimer) { clearInterval(visibilityPollTimer); visibilityPollTimer = null; }
+                return;
+            }
+            if (document.visibilityState === 'visible') {
+                lastVisibilityCheck = Date.now();
+                processValidationAndClaim();
+            } else {
+                cancelValidationStay();
+            }
+        }, 700);
     }
 
     function cancelValidationStay() {
         if (validationStayTimer) {
             clearTimeout(validationStayTimer);
             validationStayTimer = null;
+        }
+        if (validationDebounceTimer) {
+            clearTimeout(validationDebounceTimer);
+            validationDebounceTimer = null;
         }
         validationStayStartedAt = 0;
         const btn = document.getElementById('watchBtn');
@@ -1603,24 +1674,43 @@
 
     function startValidationStayCheck() {
         if (!isWaitingForReturn || isCheckingProcess || claimInProgress) return;
+        if (document.visibilityState !== 'visible') return;
         if (validationStayTimer) return;
-        validationStayStartedAt = Date.now();
-        const btn = document.getElementById('watchBtn');
-        if (btn) { btn.disabled = true; btn.innerText = '⏳ যাচাই হচ্ছে...'; }
-        validationStayTimer = setTimeout(function () {
-            validationStayTimer = null;
-            if (document.visibilityState !== 'visible' || !isWaitingForReturn || isCheckingProcess || claimInProgress) {
-                cancelValidationStay();
-                return;
-            }
-            finishValidationAfterStay();
-        }, 3000);
+        if (validationDebounceTimer) return;
+        // ডিবাউন্স — সাময়িক ফিরে আসা উপেক্ষা করতে
+        validationDebounceTimer = setTimeout(function () {
+            validationDebounceTimer = null;
+            if (!isWaitingForReturn || isCheckingProcess || claimInProgress) return;
+            if (document.visibilityState !== 'visible') return;
+            if (validationStayTimer) return;
+            validationStayStartedAt = Date.now();
+            const btn = document.getElementById('watchBtn');
+            if (btn) { btn.disabled = true; btn.innerText = '⏳ যাচাই হচ্ছে...'; }
+            // ৩ সেকেন্ড একটানা visible থাকতে হবে
+            validationStayTimer = setTimeout(function () {
+                validationStayTimer = null;
+                if (document.visibilityState !== 'visible' || !isWaitingForReturn || isCheckingProcess || claimInProgress) {
+                    cancelValidationStay();
+                    return;
+                }
+                // নিশ্চিত করতে আরেকবার চেক
+                if (document.visibilityState === 'visible' && isWaitingForReturn) {
+                    finishValidationAfterStay();
+                } else {
+                    cancelValidationStay();
+                }
+            }, 3000);
+        }, 300);
     }
 
     function finishValidationAfterStay() {
         if (!isWaitingForReturn || isCheckingProcess || claimInProgress) return;
         isWaitingForReturn = false;
         isCheckingProcess = true;
+        clearAdMaxWait();
+        if (visibilityPollTimer) { clearInterval(visibilityPollTimer); visibilityPollTimer = null; }
+        if (validationStayTimer) { clearTimeout(validationStayTimer); validationStayTimer = null; }
+        if (validationDebounceTimer) { clearTimeout(validationDebounceTimer); validationDebounceTimer = null; }
         const btn = document.getElementById('watchBtn');
         if (btn) { btn.disabled = true; btn.innerText = '⏳ যাচাই হচ্ছে...'; }
         const timeElapsed = (Date.now() - adStartTime) / 1000;
@@ -1639,14 +1729,35 @@
 
     document.addEventListener('visibilitychange', function () {
         if (!isWaitingForReturn) return;
-        if (document.visibilityState === 'visible') startValidationStayCheck();
-        else cancelValidationStay();
+        if (document.visibilityState === 'visible') {
+            lastVisibilityCheck = Date.now();
+            processValidationAndClaim();
+        } else {
+            cancelValidationStay();
+        }
     });
     window.addEventListener('focus', function () {
-        if (isWaitingForReturn && document.visibilityState === 'visible') startValidationStayCheck();
+        if (isWaitingForReturn && document.visibilityState === 'visible') {
+            lastVisibilityCheck = Date.now();
+            processValidationAndClaim();
+        }
     });
     window.addEventListener('blur', function () {
         if (isWaitingForReturn) cancelValidationStay();
+    });
+    window.addEventListener('pageshow', function () {
+        if (isWaitingForReturn && document.visibilityState === 'visible') {
+            lastVisibilityCheck = Date.now();
+            processValidationAndClaim();
+        }
+    });
+    window.addEventListener('pagehide', function () {
+        if (isWaitingForReturn) cancelValidationStay();
+    });
+    document.addEventListener('resume', function () {
+        if (isWaitingForReturn && document.visibilityState === 'visible') {
+            processValidationAndClaim();
+        }
     });
 
     function openYouTubeTask() {
@@ -1654,6 +1765,39 @@
         window.open(state.youtubeUrl, '_blank');
     }
     function openYouTubeTaskFromError() { closeErrorModal(); openYouTubeTask(); }
+
+    function startSuccessCooldown() {
+        if (successCooldownTimer) {
+            clearInterval(successCooldownTimer);
+            successCooldownTimer = null;
+        }
+        isSuccessCooldown = true;
+        let left = 2;
+        const btn = document.getElementById('watchBtn');
+        if (btn) {
+            btn.disabled = true;
+            btn.innerText = '⏳ অপেক্ষা করুন ' + left + ' সেকেন্ড…';
+        }
+        showDemoToast('অপেক্ষা করুন ' + left + ' সেকেন্ড… তারপর আবার কাজ করুন');
+        successCooldownTimer = setInterval(function () {
+            left -= 1;
+            if (left > 0) {
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerText = '⏳ অপেক্ষা করুন ' + left + ' সেকেন্ড…';
+                }
+            } else {
+                clearInterval(successCooldownTimer);
+                successCooldownTimer = null;
+                isSuccessCooldown = false;
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerText = '▶ বিজ্ঞাপন দেখুন';
+                }
+                showDemoToast('এখন আবার কাজ করতে পারবেন');
+            }
+        }, 1000);
+    }
 
     async function closeModalAndApplyPoint() {
         closeModal();
@@ -1666,7 +1810,11 @@
         state.totalRightClick = (Number(state.totalRightClick) || 0) + 1;
         saveLocalClicks();
         updateUI();
-        if (btn) { btn.disabled = false; btn.innerText = '▶ বিজ্ঞাপন দেখুন'; }
+        // সফল কাজের পর ২ সেকেন্ড কাউন্টডাউন — ইউজার দেখতে পাবে
+        claimInProgress = false;
+        isCheckingProcess = false;
+        isWaitingForReturn = false;
+        startSuccessCooldown();
         try {
             const ok = await syncDataToFirebase();
             if (!ok) {
@@ -1689,7 +1837,7 @@
             alert('নেটওয়ার্ক সমস্যা। আবার চেষ্টা করুন।');
         } finally {
             claimInProgress = false;
-            if (btn) { btn.disabled = false; btn.innerText = '▶ বিজ্ঞাপন দেখুন'; }
+            isCheckingProcess = false;
         }
     }
 
